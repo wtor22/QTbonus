@@ -1,0 +1,21 @@
+server:
+  port: 8081
+  tomcat:
+    uri-encoding: UTF-8
+    max-http-header-size: 8096
+  error:
+    whitelabel.enabled: false
+    path: /error
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bonus_qt
+    username: admin_bonus
+    password: T-6917111t
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: false
+    hibernate.ddl-auto: create
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
