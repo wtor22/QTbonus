@@ -1,0 +1,15 @@
+@media (min-width: 768px) {
+    .offcanvas.offcanvas-custom-width {
+        width: 500px; /* Ширина для экранов >= 768px */
+    }
+    .offcanvas-custom-width .offcanvas-body {
+    width: 360px;
+    margin-left: 100px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .offcanvas.offcanvas-custom-width {
+        width: 600px; /* Ширина для экранов >= 1024px */
+    }
+}

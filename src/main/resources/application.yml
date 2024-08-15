@@ -1,3 +1,8 @@
+#logging:
+#  level:
+#    org.springframework.mail: DEBUG
+#    org.springframework.web: DEBUG
+#    org.apache.http: DEBUG
 server:
   port: 8081
   tomcat:
@@ -13,9 +18,24 @@ spring:
     password: T-6917111t
     driver-class-name: org.postgresql.Driver
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate.ddl-auto: create
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
     cache: false
+  messages:
+    encoding: UTF-8
+  mail:
+    host: smtp.yandex.ru
+    port: 465
+    username: wtorushin@yandex.ru
+    password: asakuebskebobmmt
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: false  # Отключаем, так как SSL на порту 465 уже достаточно
