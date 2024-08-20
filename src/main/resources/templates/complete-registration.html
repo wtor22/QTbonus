@@ -11,6 +11,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="/js/formHandler.js"></script>
+    <meta name="_csrf" data-th-content="${_csrf.token}"/>
+    <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
 </head>
 <body>
 <div class="container">
@@ -18,7 +20,7 @@
     <div class="row">
         <div id="usregistr" class="col-6 ">
             <h2>Заполните данные пользователя</h2>
-            <form id="myForm" action="#" th:action="@{${formUrl}}" method="post" class="mt-3">
+            <form id="regForm" action="#" th:action="@{${formUrl}}" method="post" class="mt-3">
                 <div class="">
                     <input type="hidden" th:value="${token}" name="token" id="token"/>
                     <div class="mb-3">

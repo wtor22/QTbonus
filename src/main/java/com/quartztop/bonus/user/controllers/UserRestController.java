@@ -34,7 +34,7 @@ public class UserRestController {
 
         UserEntity existingUser = userCrudService.findByEmail(userDto.getEmail());
 
-        if (existingUser != null) {
+        if (existingUser != null && existingUser.getPassword().isEmpty()) {
 
                 // Если пароля нет, обновляем существующую запись
                 existingUser.setPhone(userDto.getPhone());
@@ -50,11 +50,14 @@ public class UserRestController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
         }
 
+
         // Если юзера нет то создаем
         UserDto createdUser = userCrudService.create(userDto).orElseThrow();
         senderLinkToCreatePassword(createdUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
+
+
 
     @GetMapping
     public ResponseEntity<Optional<UserDto>> getUser(@RequestParam Integer id) {

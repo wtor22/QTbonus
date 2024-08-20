@@ -1,15 +1,16 @@
-#logging:
-#  level:
-#    org.springframework.mail: DEBUG
-#    org.springframework.web: DEBUG
-#    org.apache.http: DEBUG
+logging:
+  level:
+    org.springframework.mail: DEBUG
+    org.springframework.web: DEBUG
+    org.apache.http: DEBUG
 server:
   port: 8081
   tomcat:
     uri-encoding: UTF-8
     max-http-header-size: 8096
   error:
-    whitelabel.enabled: false
+    whitelabel:
+      enabled: false
     path: /error
 spring:
   datasource:

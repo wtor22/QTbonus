@@ -4,31 +4,57 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler1) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler1;
+    }
+
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // Отключаем CSRF для тестирования (не рекомендуется для продакшн)
-                .authorizeHttpRequests((requests) -> requests
-                        .anyRequest().permitAll()  // Разрешаем все запросы без авторизации
+                .csrf(withDefaults())
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers("/**","/error/**","/css/**", "/js/**", "/api/user","/login").permitAll()
+                                .anyRequest().authenticated()
                 )
-                .formLogin((form) -> form
-                        .loginPage("/login") // URL кастомной страницы входа
+                .formLogin(form -> form
+                        //.loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        //.defaultSuccessUrl("/")
+                        .failureHandler(new CustomAuthenticationFailureHandler())
                         .permitAll()
+                        .successHandler(customAuthenticationSuccessHandler)
                 )
-                .logout(LogoutConfigurer::permitAll); // Разрешаем всем доступ к странице выхода
+                .userDetailsService(customUserDetailsService)
+                .logout(logout ->
+                        logout
+                                .logoutUrl("/logout")  // URL для logout
+                                .logoutSuccessUrl("/")  // URL после успешного logout
+                                .invalidateHttpSession(true)  // Инвалидируем сессию
+                                .deleteCookies("JSESSIONID")  // Удаляем cookies
+                                .permitAll()
+                );
         return http.build();
     }
 }

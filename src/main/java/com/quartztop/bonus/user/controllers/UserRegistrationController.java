@@ -5,9 +5,12 @@ import com.quartztop.bonus.tokens.TokenEntity;
 import com.quartztop.bonus.user.UserCrudService;
 import com.quartztop.bonus.user.UserDto;
 import com.quartztop.bonus.user.UserEntity;
+import com.quartztop.bonus.user.roles.RolesRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +26,10 @@ import java.util.NoSuchElementException;
 @RequestMapping("/registration")
 public class UserRegistrationController {
 
-    private UserCrudService userCrudService;
-    private TokenCrudService tokenCrudService;
+    private final UserCrudService userCrudService;
+    private final TokenCrudService tokenCrudService;
+    private final RolesRepository rolesRepository;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping
     public String getToken(@RequestParam String token, Model model) {
@@ -73,7 +78,9 @@ public class UserRegistrationController {
         UserEntity userEntity = userCrudService.getUserById(
                 tokenEntity.getUser().getId()).orElseThrow(() -> new NoSuchElementException("пользователь не найден"));
 
-        userEntity.setPassword(userDto.getPassword());
+        //шифрую пароль
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        userEntity.setPassword(encodedPassword);
         userEntity.setManager(userDto.getManager());
         userEntity.setAddress(userDto.getAddress());
         userEntity.setNameSalon(userDto.getNameSalon());

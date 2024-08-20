@@ -1,8 +1,18 @@
 $(document).ready(function () {
+
+// Получаем CSRF токен из meta-тегов
+const csrfToken = $('meta[name="_csrf"]').attr('content');
+const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+console.log('CSRF Token:', csrfToken);
+console.log('CSRF Header:', csrfHeader);
+
     // Находим форму по id
-    const form = $('#myForm');
+    const form = $('#regForm');
     const successMessage = $('#successMessage');
     const errorMessage = $('#errorMessage');
+
+
 
     form.on('submit', function (event) {
         // Предотвращаем отправку формы
@@ -24,10 +34,15 @@ $(document).ready(function () {
                 errorMessage.hide();
         // Отправляем данные через AJAX
         $.ajax({
+            //type: 'POST',  // Явно указываем метод POST
             type: form.attr('method'), // Используем метод, указанный в форме
             url: form.attr('action'), // Используем URL, указанный в форме
             contentType: 'application/json', // Тип данных
             data: JSON.stringify(formData), // Преобразуем данные в JSON
+            beforeSend: function(xhr) {
+            // Добавляем CSRF токен в заголовок запроса
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
             success: function (response) {
 
             // Обработка успешного ответа

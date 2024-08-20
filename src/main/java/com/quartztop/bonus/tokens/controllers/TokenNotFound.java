@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @AllArgsConstructor
-@Slf4j
 @RequestMapping("/token-not-found")
 public class TokenNotFound {
 

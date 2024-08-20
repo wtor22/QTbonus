@@ -1,8 +1,10 @@
 package com.quartztop.bonus.user;
 
+import com.quartztop.bonus.user.roles.Roles;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 
 @Setter
 @Getter
@@ -22,4 +24,8 @@ public class UserEntity {
     private String nameSalon;
     private String address;
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Roles roles;
 }
