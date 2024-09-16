@@ -1,7 +1,7 @@
 package com.quartztop.bonus.configs;
 
 import com.quartztop.bonus.user.UserEntity;
-import com.quartztop.bonus.user.UserRepository;
+import com.quartztop.bonus.repositoriesBonus.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

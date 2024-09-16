@@ -1,11 +1,11 @@
-package com.quartztop.bonus.user.controllers;
+package com.quartztop.bonus.controllers;
 
 import com.quartztop.bonus.tokens.TokenCrudService;
 import com.quartztop.bonus.tokens.TokenEntity;
 import com.quartztop.bonus.user.UserCrudService;
 import com.quartztop.bonus.user.UserDto;
 import com.quartztop.bonus.user.UserEntity;
-import com.quartztop.bonus.user.roles.RolesRepository;
+import com.quartztop.bonus.repositoriesBonus.RolesRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

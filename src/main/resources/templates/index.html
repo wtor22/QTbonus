@@ -10,29 +10,19 @@
             crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
     <script src="/js/formHandler.js"></script>
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <meta name="_csrf" data-th-content="${_csrf.token}"/>
     <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
 </head>
 <body>
-
-<!-- Встраиваю верхнюю правую панель -->
-<div th:insert="fragments :: toprightpanel"></div>
+<div th:insert="fragments :: toprightpanel" class="position-top-panel"></div>
 <div th:insert="fragments :: inputform"></div>
 <div th:insert="fragments :: registerform"></div>
-
-<div class="container">
-    <h1 class="text-center my-5">КАБИНЕТ ДИЗАЙНЕРА</h1>
-    <div class="row">
-    </div>
-</div>
-
-
-
+<div th:insert="fragments :: WelcomePage"></div>
+<div th:insert="fragments :: WelcomePageUnregistered"></div>
 <div th:insert="fragments :: DashBoard"></div>
-
-
-
+<div th:insert="fragments :: Messages"></div>
 </body>
 </html>

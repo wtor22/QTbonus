@@ -1,6 +1,6 @@
-package com.quartztop.bonus.user.roles;
+package com.quartztop.bonus.repositoriesBonus;
 
-import com.quartztop.bonus.user.UserEntity;
+import com.quartztop.bonus.user.roles.Roles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

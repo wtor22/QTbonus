@@ -1,8 +1,9 @@
 package com.quartztop.bonus.tokens;
 
+import com.quartztop.bonus.repositoriesBonus.TokenRepository;
 import com.quartztop.bonus.user.UserDto;
 import com.quartztop.bonus.user.UserEntity;
-import com.quartztop.bonus.user.UserRepository;
+import com.quartztop.bonus.repositoriesBonus.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

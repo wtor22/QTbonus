@@ -1,4 +1,4 @@
-package com.quartztop.bonus.user.controllers;
+package com.quartztop.bonus.controllers;
 
 import com.quartztop.bonus.DuplicateResourceException;
 import com.quartztop.bonus.servises.EmailService;
@@ -34,9 +34,9 @@ public class UserRestController {
 
         UserEntity existingUser = userCrudService.findByEmail(userDto.getEmail());
 
-        if (existingUser != null && existingUser.getPassword().isEmpty()) {
+        if (existingUser != null && existingUser.getPassword() == null) {
 
-                // Если пароля нет, обновляем существующую запись
+            // Если пароля нет, обновляем существующую запись
                 existingUser.setPhone(userDto.getPhone());
                 existingUser.setFio(userDto.getFio());
 
@@ -49,7 +49,6 @@ public class UserRestController {
 
                 return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
         }
-
 
         // Если юзера нет то создаем
         UserDto createdUser = userCrudService.create(userDto).orElseThrow();

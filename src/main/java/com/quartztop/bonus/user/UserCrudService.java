@@ -1,9 +1,10 @@
 package com.quartztop.bonus.user;
 
 import com.quartztop.bonus.DuplicateResourceException;
+import com.quartztop.bonus.repositoriesBonus.UserRepository;
 import com.quartztop.bonus.servises.MessageService;
 import com.quartztop.bonus.user.roles.Roles;
-import com.quartztop.bonus.user.roles.RolesRepository;
+import com.quartztop.bonus.repositoriesBonus.RolesRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class UserCrudService {
 
     public void updateUser(UserEntity userEntity) {
         userRepository.save(userEntity);
-        mapToDto(userEntity);
+        //mapToDto(userEntity);
     }
 
     @Transactional
@@ -53,16 +54,15 @@ public class UserCrudService {
             Throwable cause = e.getMostSpecificCause();
 
             // Обработка уникальных ограничений на email и телефон
-            if (cause.getMessage() != null && cause.getMessage().contains("users_e_mail_key")) {
+            if (cause.getMessage() != null && cause.getMessage().contains("(e_mail)=")) {
                 throw new DuplicateResourceException(messageService.getErrorMessageEmail());
-            } else if (cause.getMessage() != null && cause.getMessage().contains("users_phone_key")) {
+            } else if (cause.getMessage() != null && cause.getMessage().contains("(phone)=")) {
                 throw new DuplicateResourceException(messageService.getErrorMessagePhone());
             } else {
                 throw e; // Перебрасываем оригинальное исключение, если оно не связано с уникальными ключами
             }
         }
     }
-
 
     public Optional<UserDto> getUser(int id) {
         Optional<UserEntity> userEntityOpt = userRepository.findById(id);

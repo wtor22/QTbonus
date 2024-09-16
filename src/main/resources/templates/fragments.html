@@ -1,54 +1,72 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Fragments Example</title>
+    <title>Fragments</title>
 </head>
 <body>
-<!-- Фрагмент навигации -->
-<div th:fragment="toprightpanel">
-    <div class="d-flex">
 
-        <div class="p-3 me-auto">
+<div th:fragment="buttonUserSvg">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><defs><mask x="0" y="0" width="60" height="60"><g><circle cx="30" cy="30" r="30" fill="#fff"></circle></g></mask></defs><g><g><circle cx="30" cy="30" r="30" fill-opacity="0"></circle><g><path class="cls-4" fill="#000" fill-opacity=".8" d="M0 0h60v60H0z"></path></g><g><path class="cls-5" d="M46.68 43.83c-2-5.8-6.9-9.69-16.63-9.69s-14.58 3.77-16.84 9.69"></path></g><g><circle class="cls-5" cx="30" cy="20.86" r="8.29"></circle></g></g></g>
+    </svg>
+</div>
+<div th:fragment="buttonLogOutSvg">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.76206 1.66675C3.9731 1.66675 3.3335 2.25585 3.3335 2.98253V17.0176C3.3335 17.7442 3.9731 18.3334 4.76206 18.3334H15.2383C16.0272 18.3334 16.6668 17.7442 16.6668 17.0176V15.2632H15.7144V17.0176C15.7144 17.2599 15.5012 17.4562 15.2383 17.4562H4.76206C4.49908 17.4562 4.28588 17.2599 4.28588 17.0176V2.98253C4.28588 2.74031 4.49908 2.54395 4.76206 2.54395H15.2383C15.5012 2.54395 15.7144 2.74031 15.7144 2.98253V5.00008H16.6668V2.98253C16.6668 2.25585 16.0272 1.66675 15.2383 1.66675H4.76206ZM18.2115 9.68L15.5598 6.79933C15.3971 6.62255 15.1333 6.62255 14.9705 6.79933C14.8078 6.9761 14.8078 7.2627 14.9705 7.43948L16.9108 9.54743H10.0002V10.4527H16.9108L14.9705 12.5607C14.8078 12.7375 14.8078 13.0241 14.9705 13.2008C15.1333 13.3776 15.3971 13.3776 15.5598 13.2008L18.2115 10.3202C18.3742 10.1434 18.3742 9.85678 18.2115 9.68Z" fill="#8F8F8F"></path><path d="M16.6667 15.2632H16.8334V15.0965H16.6667V15.2632ZM15.7144 15.2632V15.0965H15.5477V15.2632H15.7144ZM15.7144 5H15.5477V5.16667H15.7144V5ZM16.6667 5V5.16667H16.8334V5H16.6667ZM16.9107 9.54735V9.71402H17.2907L17.0334 9.43447L16.9107 9.54735ZM10.0001 9.54735V9.38068H9.83341V9.54735H10.0001ZM10.0001 10.4527H9.83341V10.6193H10.0001V10.4527ZM16.9107 10.4527L17.0334 10.5655L17.2907 10.286H16.9107V10.4527ZM3.50008 2.98245C3.50008 2.36045 4.05188 1.83333 4.76198 1.83333V1.5C3.89413 1.5 3.16675 2.15108 3.16675 2.98245H3.50008ZM3.50008 17.0175V2.98245H3.16675V17.0175H3.50008ZM4.76198 18.1667C4.05188 18.1667 3.50008 17.6395 3.50008 17.0175H3.16675C3.16675 17.849 3.89413 18.5 4.76198 18.5V18.1667ZM15.2382 18.1667H4.76198V18.5H15.2382V18.1667ZM16.5001 17.0175C16.5001 17.6395 15.9483 18.1667 15.2382 18.1667V18.5C16.106 18.5 16.8334 17.849 16.8334 17.0175H16.5001ZM16.5001 15.2632V17.0175H16.8334V15.2632H16.5001ZM15.7144 15.4298H16.6667V15.0965H15.7144V15.4298ZM15.881 17.0175V15.2632H15.5477V17.0175H15.881ZM15.2382 17.6228C15.58 17.6228 15.881 17.3645 15.881 17.0175H15.5477C15.5477 17.1552 15.4223 17.2895 15.2382 17.2895V17.6228ZM4.76198 17.6228H15.2382V17.2895H4.76198V17.6228ZM4.11913 17.0175C4.11913 17.3645 4.42011 17.6228 4.76198 17.6228V17.2895C4.57786 17.2895 4.45246 17.1552 4.45246 17.0175H4.11913ZM4.11913 2.98245V17.0175H4.45246V2.98245H4.11913ZM4.76198 2.3772C4.42011 2.3772 4.11913 2.63553 4.11913 2.98245H4.45246C4.45246 2.84492 4.57786 2.71053 4.76198 2.71053V2.3772ZM15.2382 2.3772H4.76198V2.71053H15.2382V2.3772ZM15.881 2.98245C15.881 2.63553 15.58 2.3772 15.2382 2.3772V2.71053C15.4223 2.71053 15.5477 2.84492 15.5477 2.98245H15.881ZM15.881 5V2.98245H15.5477V5H15.881ZM16.6667 4.83333H15.7144V5.16667H16.6667V4.83333ZM16.5001 2.98245V5H16.8334V2.98245H16.5001ZM15.2382 1.83333C15.9483 1.83333 16.5001 2.36045 16.5001 2.98245H16.8334C16.8334 2.15108 16.106 1.5 15.2382 1.5V1.83333ZM4.76198 1.83333H15.2382V1.5H4.76198V1.83333ZM15.4371 6.91212L18.0887 9.7928L18.3341 9.56705L15.6823 6.68637L15.4371 6.91212ZM15.0931 6.91212C15.1898 6.80707 15.3404 6.80707 15.4371 6.91212L15.6823 6.68637C15.4536 6.43788 15.0766 6.43788 14.8478 6.68637L15.0931 6.91212ZM15.0931 7.32652C14.9891 7.21355 14.9891 7.0251 15.0931 6.91212L14.8478 6.68637C14.6264 6.92693 14.6264 7.3117 14.8478 7.55227L15.0931 7.32652ZM17.0334 9.43447L15.0931 7.32652L14.8478 7.55227L16.7882 9.66022L17.0334 9.43447ZM10.0001 9.71402H16.9107V9.38068H10.0001V9.71402ZM10.1667 10.4527V9.54735H9.83341V10.4527H10.1667ZM16.9107 10.286H10.0001V10.6193H16.9107V10.286ZM15.0931 12.6735L17.0334 10.5655L16.7882 10.3398L14.8478 12.4477L15.0931 12.6735ZM15.0931 13.0879C14.9891 12.9749 14.9891 12.7865 15.0931 12.6735L14.8478 12.4477C14.6264 12.6883 14.6264 13.0731 14.8478 13.3136L15.0931 13.0879ZM15.4371 13.0879C15.3404 13.1929 15.1898 13.1929 15.0931 13.0879L14.8478 13.3136C15.0766 13.5621 15.4536 13.5621 15.6823 13.3136L15.4371 13.0879ZM18.0887 10.2072L15.4371 13.0879L15.6823 13.3136L18.3341 10.433L18.0887 10.2072ZM18.0887 9.7928C18.1927 9.90578 18.1927 10.0942 18.0887 10.2072L18.3341 10.433C18.5554 10.1924 18.5554 9.80762 18.3341 9.56705L18.0887 9.7928Z" fill="#8F8F8F"></path>
+    </svg>
+</div>
+
+<!-- Навигация -->
+<div th:fragment="toprightpanel" >
+    <div class="d-flex flex-column flex-xl-row justify-content-between top-panel">
+        <div class="logo">
             <a th:href="@{/}">
                 <img th:src="@{/images/logo.svg}" alt="Company Logo">
             </a>
         </div>
-
-
-        <div class="p-3" sec:authorize="isAuthenticated()">
-            <h2><span th:text="${welcome}"></span> <span th:text="${nameRole}"></span> <strong
-                    th:text="${username}"></strong></h2>
-            <form th:action="@{/logout}" method="post">
-                <button type="submit" class="btn btn-outline-secondary">Выйти</button>
-            </form>
-        </div>
-        <div sec:authorize="!isAuthenticated()" class="d-flex justify-content-end">
-            <div class="p-3">
-                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasInput" aria-controls="offcanvasRight">Вход
+        <div sec:authorize="!isAuthenticated()" class="d-flex my-1">
+            <div class="py-3 col-6 col-xl-auto d-flex mr-xl-1" >
+                <button class="btn btn-outline-bonus ms-xl-auto" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasInput" aria-controls="offcanvasInputLabel">Вход
                 </button>
             </div>
-            <div class="p-3">
-                <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas"
+            <div class="py-3 col-6 col-xl-auto text-end">
+                <button class="btn btn-bonus" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasRegistry"
                         aria-controls="offcanvasRight">Регистрация
                 </button>
             </div>
         </div>
+        <div class="dropdown absolute-input" sec:authorize="isAuthenticated()">
+            <button class="btn user-click dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                <div th:insert="fragments :: buttonUserSvg"></div>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
+                <li>
+                    <p class="user-name" th:text="${username}"></p>
+                    <span class="user-logout">
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="clear" th:insert="fragments :: buttonLogOutSvg">
+                            </button>
+                        </form>
+                    </span>
+                    <a class="dropdown-item" href="#">Редактировать профиль</a>
+                    <span class="headerLine "></span>
+                </li>
+                <li><h3>ГРУППЫ</h3></li>
+                <li><p>Кабинет дизайнера</p></li>
+            </ul>
+        </div>
     </div>
-
     <!-- Сообщение об ошибке -->
     <div th:if="${error}" class="alert alert-danger col-4 m-auto my-5 text-center" role="alert">
         <h3 th:text="${error}"></h3>
     </div>
-
 </div>
 
 <div th:fragment="inputform">
     <div class="offcanvas offcanvas-end offcanvas-custom-width" tabindex="-1" id="offcanvasInput"
-         aria-labelledby="offcanvasRightLabel">
+         aria-labelledby="offcanvasInputLabel">
         <div class="offcanvas-header">
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close text-reset d-none d-xl-block" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             <div id="user-data-input" class=" ">
@@ -68,7 +86,14 @@
                              th:text="#{app.registr.un-succes-registr-user}">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3 m-auto">Войти</button>
+                    <div class="d-flex flex-column">
+                        <button type="submit" class="btn btn-bonus mt-3 m-auto">
+                            Войти
+                        </button>
+                        <button type="button" class="btn btn-bonus mt-3 m-auto d-xl-none" data-bs-dismiss="offcanvas" aria-label="Close">
+                            Закрыть
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -79,28 +104,28 @@
     <div class="offcanvas offcanvas-end offcanvas-custom-width" tabindex="-1" id="offcanvasRegistry"
          aria-labelledby="offcanvasRightLabel">
         <div class="offcanvas-header">
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close text-reset d-none d-xl-block" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             <div id="user-registration" class=" ">
                 <form id="regForm" action="#" th:action="@{${formUrl}}" method="post" class="mt-3">
                     <div class="">
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                        <div class="mb-3">
+                        <div class="mb-5 mb-xl-3">
                             <label for="emailReg" class="form-label">Email</label>
                             <input type="email" class="form-control" id="emailReg" placeholder="name@example.com"
                                    required>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-5 mb-xl-3">
                             <label for="fioInput" class="form-label">ФИО</label>
                             <input type="text" class="form-control" id="fioInput" required>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-5 mb-xl-3">
                             <label for="phoneInput" class="form-label">Телефон</label>
-                            <input type="text" class="form-control" id="phoneInput" placeholder="+7 (999) 999-99-99"
+                            <input type="text" class="form-control" name="phone" id="phoneInput" placeholder="+7 (___) ___-__-__"
                                    required>
                         </div>
-                        <div class="mb-3 form-check">
+                        <div class="mb-5 mb-xl-3 form-check check-box">
                             <input type="checkbox" class="form-check-input" id="dataConsent" name="dataConsent"
                                    required>
                             <label class="form-check-label" for="dataConsent">Я согласен на обработку своих персональных
@@ -111,14 +136,38 @@
                              th:text="#{app.registr.un-succes-registr-user}">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3 m-auto">Зарегистрироваться</button>
+                    <div class="d-flex flex-column">
+                        <button type="submit" class="btn btn-bonus mt-3 m-auto">
+                            Зарегистрироваться
+                        </button>
+                        <button class="btn btn-bonus mt-3 m-auto d-xl-none" data-bs-dismiss="offcanvas" aria-label="Close">
+                            Закрыть
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
-    <!-- Сообщение об успешной отправке -->
-    <div id="successMessage" class="alert alert-success mt-3" role="alert" style="display: none;"
-         th:text="#{app.registr.succes-registr-user}">
+</div>
+
+<!-- Сообщения об успешной отправке -->
+<div th:fragment="Messages">
+    <div id="successMessage" class="success-message alert alert-success alert-dismissible fade show mt-3" role="alert" style="display: none;">
+        <span th:text="#{app.registr.succes-create-order}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true"></span>
+        </button>
+    </div>
+    <div id="successRegMessage" class="success-message alert alert-success alert-dismissible fade show m-5" role="alert" style="display: none;">
+        <div class="text-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:" width="16" height="16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+            <span th:text="#{app.registr.succes-registr-user}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true"></span>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -126,7 +175,6 @@
     <!-- DashBoard для супер админа -->
     <div sec:authorize="hasRole('ROLE_SUPER_ADMIN')">
         <h2>DashBoard for SupperAdmin</h2>
-
         <table class="table">
             <thead>
             <tr>
@@ -150,7 +198,6 @@
                        data-bs-target="#editRoleModal">
                         <span class="badge bg-info" th:text="${user.roles.nameRole}"> </span>
                     </a>
-
                     <a href="#"
                        th:case="'ROLE_USER'"
                        th:attr="data-userid=${user.id}"
@@ -159,6 +206,25 @@
                         <span class="badge bg-warning" th:text="${user.roles.nameRole}"> </span>
                     </a>
                 </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>№ инвойса</th>
+                <th>дата инвойса</th>
+                <th>сумма</th>
+                <th>Внешний id контракта</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="invoice : ${invoicesList}">
+                <td th:text="${invoice.id}">1</td>
+                <td th:text="${invoice.id}">Product Name</td>
+                <td th:text="${invoice.sum}">Value</td>
+                <td th:text="${invoice.id}">Value</td>
             </tr>
             </tbody>
         </table>
@@ -195,30 +261,482 @@
         <h2>DashBoard for Admin</h2>
     </div>
 
-    <div th:fragment="DashBoard" class="container">
-        <!-- DashBoard для пользователя -->
-        <div sec:authorize="hasRole('ROLE_USER')">
-            <h2>DashBoard for User</h2>
-            <form id="orderForm" action="#" th:action="@{${formUrl}}" method="post" class="mt-3">
-                <div class="">
-                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                    <div class="mb-3">
-                        <label for="inn" class="form-label">ИНН Покупателя</label>
-                        <input type="text" class="form-control" id="inn" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="art" class="form-label">Артикул товара</label>
-                        <input type="text" class="form-control" id="art" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="numberInvoice" class="form-label">Номер счёта</label>
-                        <input type="text" class="form-control" id="numberInvoice" required>
-                    </div>
+    <!-- DashBoard для пользователя -->
+    <div sec:authorize="hasRole('ROLE_USER')" th:fragment="DashBoard" class="container">
+        <h2>DashBoard for User</h2>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                        role="tab" aria-controls="home" aria-selected="true">Home
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"
+                        role="tab" aria-controls="order" aria-selected="false">Form create order
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <h3>Ваши заказы</h3>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                        <th>Счет</th>
+                        <th>Название товара</th>
+                        <th>Количество товара</th>
+                    </tr>
+                    </thead>
+                    <tbody id="ordersTable">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="order" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="container">
+                    <div th:insert="fragments :: OrderCreateForm"></div>
+
+
+<!--                    <form id="orderForm" action="#" th:action="@{${formCreateOrder}}" method="post">-->
+<!--                        <div class="d-flex col-lg-5 flex-column">-->
+<!--                            <h3 class="mt-3">Укажите данные об отгрузке</h3>-->
+<!--                            <div class="col mb-5">-->
+<!--                                <label for="innNumber">ИНН Покупателя:&nbsp</label>-->
+<!--                                <input type="text" id="innNumber" class="form-control" name="innNumber"-->
+<!--                                       maxlength="10" minlength="10" onblur="validateInn()" required>-->
+<!--                                <span id="innErrorForm" style="color: red; position: absolute;"></span>-->
+<!--                            </div>-->
+<!--                            <div class="row g-3 mb-5">-->
+<!--                                <div class="col">-->
+<!--                                    <label for="invoiceNumber">Номер счета:&nbsp</label>-->
+<!--                                    <input type="text" id="invoiceNumber" class="form-control" name="invoiceNumber"-->
+<!--                                           onblur="validateInvoice()" required>-->
+<!--                                    <span id="invoiceErrorForm" style="color: red; position: absolute;"></span>-->
+<!--                                    <span id="invoiceError" style="color: red; position: absolute;"></span>-->
+<!--                                </div>-->
+<!--                                <div class="col-auto">-->
+<!--                                    <label for="invoiceDate">&nbsp от:&nbsp</label>-->
+<!--                                    <input type="date" id="invoiceDate" name="invoiceDate" class="form-control"-->
+<!--                                           onblur="validateInvoice()" required>-->
+<!--                                </div>-->
+<!--                                <input id="fieldInvoiceExternalId" type="hidden" name="fieldInvoiceExternalId"-->
+<!--                                       value=""/>-->
+<!--                            </div>-->
+<!--                            <div class="row g-3 mb-5">-->
+<!--                                <div class="col">-->
+<!--                                    <label for="productName">Наименование товара: </label>-->
+<!--                                    <input type="text" id="productName" class="form-control" name="productName" onkeyup="searchProducts()"-->
+<!--                                           onblur="validateProductInInvoice()" required>-->
+<!--                                    <ul id="productSuggestions"-->
+<!--                                        style="border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none;-->
+<!--                                        position: absolute; background: white; z-index: 1;"></ul>-->
+<!--                                    <span id="productError" style="color: red; position: absolute;"></span>-->
+<!--                                </div>-->
+<!--                                <input type="hidden" id="productExternalId" name="productExternalId">-->
+<!--                                <div class="col-auto">-->
+<!--                                    <label for="productQuantity">Количество товара:</label>-->
+<!--                                    <input type="number" step="0.25" size="2" id="productQuantity"-->
+<!--                                           class="form-control" name="productQuantity" required>-->
+<!--                                    <span id="productQuantityError" style="color: red; position: absolute;"></span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <h3 class="mt-3">Укажите предпочитаемый способ зачисления вознаграждения</h3>-->
+<!--                            <div class="d-flex">-->
+<!--                                <div class="form-check p-3 me-4">-->
+<!--                                    <input class="form-check-input" type="radio" name="paymentOption" id="phoneOption" value="1">-->
+<!--                                    <label class="form-check-label" for="phoneOption">-->
+<!--                                        На Телефон-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="form-check p-3">-->
+<!--                                    <input class="form-check-input" type="radio" name="paymentOption" id="bankOption" value="2" checked>-->
+<!--                                    <label class="form-check-label" for="bankOption">-->
+<!--                                        На Банковский Счёт-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash; Форма для Телефона &ndash;&gt;-->
+<!--                            <div id="phoneForm" style="display: none;">-->
+<!--                                    <div class="mb-5 d-flex">-->
+<!--                                        <input type="tel" class="form-control" name="phone" id="phoneNumber" placeholder="+7 (___) ___-__-__">-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash; Другие поля формы &ndash;&gt;-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash; Форма для Банковского Счета &ndash;&gt;-->
+<!--                            <div id="bankForm">-->
+<!--                                    <div class="mb-5 d-flex">-->
+<!--                                        <input type="text" class="form-control" id="accountNumber" placeholder="Введите номер счета">-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash; Другие поля формы &ndash;&gt;-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-4 mb-3" style="position: relative;">-->
+<!--                            <span id="successOrderCreated" style="color: green; position: absolute;top: -30px;" th:text="#{app.registr.succes-create-order}"></span>-->
+<!--                            <button class="btn btn-secondary" type="submit">Отправить</button>-->
+<!--                        </div>-->
+<!--                    </form>-->
                 </div>
-                <button type="submit" class="btn btn-primary mt-3 m-auto">Отправить</button>
-            </form>
+            </div>
         </div>
     </div>
+</div>
+
+<!-- Приветствие зарегистрированного пользователя -->
+<div sec:authorize="hasRole('ROLE_USER')" th:fragment="WelcomePage" class="top d-flex flex-column justify-content-between welcome-page">
+    <div class="container fullwidth d-flex flex-column flex-xl-row mt-xl-auto ">
+        <div class="col col-xl-auto text-center">
+            <h1 class="futura-medium-c">Добро пожаловать в личный кабинет дизайнера</h1>
+        </div>
+        <div class="col col-xl-auto text-center ms-xl-auto">
+            <p class="text-intro-header">Дорогие партнеры!</p>
+        </div>
+    </div>
+    <div class="container fullwidth d-flex justify-content-center" style="padding-bottom: 60px;">
+        <div class="col-xl-6 ms-xl-auto text-center text-xl-end">
+            <p class="text-intro">Для того, чтобы выразить благодарность за ваше усердие и профессионализм, мы рады объявить о запуске программы мотивации.</p>
+
+            <button class="btn btn-outline-bonus btn-lighter" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft">
+                Узнать подробнее
+            </button>
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasLeft" aria-labelledby="offcanvasLeftLabel">
+                <div class="offcanvas-header">
+                    <button type="button" class="btn btn-outline-bonus ms-auto" data-bs-dismiss="offcanvas" aria-label="Close">Закрыть</button>
+                </div>
+                <div class="offcanvas-body text-start">
+                    <h2>Дорогие партнеры</h2>
+                    <div>
+                        <p>
+                            Вы работаете усердно каждый день, чтобы предложить клиентам лучшие каменные изделия. Мы очень ценим Ваш труд и стремление достигать лучших результатов.
+                        </p>
+
+                    </div>
+                    <div>
+                        <p>
+                            Для того, чтобы выразить благодарность за ваше усердие и профессионализм, мы рады объявить о запуске программы мотивации: ежемесячно вы имеете возможность получать дополнительный бонус на карту за ваши успешно реализованные проекты с использованием нашего высококачественного камня.
+                        </p>
+                    </div>
+
+                    <div>
+                        <p>
+                            Весь материал, приобретенный у нас в течение месяца — это ценный вклад в наше общее дело. Поэтому наша компания рада достойно отблагодарить вас.
+                        </p>
+                    </div>
+
+                    <div>
+                        <p>
+                            Заполните форму на получение бонуса до конца месяца, чтобы мы могли рассчитать ваш бонус, а вы — получить его на карту 10 числа следующего месяца.
+                        </p>
+                    </div>
+
+                    <button type="submit" class="btn btn-bonus" style="margin-bottom: 45px;">
+                        Заполнить форму
+                    </button>
+
+                    <div>
+                        <p>
+                            Не упускайте возможность увеличить свой доход и получить дополнительные бонусы за свой труд. Мы уверены в ваших высоких результатах.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container fullwidth d-flex flex-column flex-xl-row flex-xl-fill pb-4 " style="max-height: 55vh;">
+        <div class="col col-xl-6 mb-3 mb-xl-0">
+            <button class="btn btn-bonus btn-gigantic" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCreateOrder" aria-controls="offcanvasCreateOrder">
+                Заполнить заявку на бонус
+            </button>
+        </div>
+        <div class="col col-xl-6 text-end">
+            <button class="btn btn-outline-bonus btn-gigantic" type="button">
+                Учавствовать в розыгрыше
+            </button>
+        </div>
+    </div>
+    <div th:insert="fragments :: OffcanvasOrderCreateForm"></div>
+</div>
+
+// Панель для создания ордера
+<div th:fragment="OffcanvasOrderCreateForm">
+    <div class="offcanvas offcanvas-end offcanvas-custom-width" tabindex="-1" id="offcanvasCreateOrder" aria-labelledby="offcanvasCreateOrderLabel">
+        <div class="offcanvas-body">
+            <div class="d-flex">
+                <div class="d-none d-xl-block">
+                    <h2 class="offcanvas-title" >Заявка на получение бонуса</h2>
+                    <p>Для получения бонуса заполните необходимые данные по реализованному вами проекту с использованием нашего материла</p>
+                </div>
+                <button type="button" class="btn btn-outline-bonus ms-auto" data-bs-dismiss="offcanvas" aria-label="Close">Закрыть</button>
+            </div>
+            <div class="d-xl-none">
+                <h2 class="offcanvas-title" style="margin-bottom: 15px;">Заявка на получение бонуса</h2>
+                <p>Для получения бонуса заполните необходимые данные по реализованному вами проекту с использованием нашего материла</p>
+            </div>
+            <div th:insert="fragments :: OrderCreateForm"></div>
+        </div>
+    </div>
+</div>
+
+// Форма создания ордера
+<div th:fragment="OrderCreateForm">
+    <form id="orderForm" action="#" th:action="@{${formCreateOrder}}" method="post">
+        <div class="d-flex flex-column">
+            <h3 class="">Тип покупателя</h3>
+            <div class="d-flex my-xl-3 mb-5">
+                <div class="form-check me-4">
+                    <input class="form-check-input" type="radio" name="innOption" id="llcOption" value="1" checked>
+                    <label class="form-check-label" for="llcOption">
+                        Юридическое лицо
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="innOption" id="individualOption" value="2">
+                    <label class="form-check-label" for="individualOption">
+                        Индивидуальный предприниматель
+                    </label>
+                </div>
+            </div>
+        </div>
+
+            <div class="col d-flex g-3 mb-3 flex-column flex-xl-row">
+                <div class="col mb-5 mb-xl-0 pe-xl-3 position-relative">
+                    <label class="form-label" for="innNumber">ИНН покупателя:&nbsp</label>
+                    <input type="text" id="innNumber" class="form-control" name="innNumber"
+                           maxlength="10" minlength="10" onblur="validateInn()" required>
+                    <span id="innErrorForm" class="error-message"></span>
+                </div>
+
+                <div class="col d-flex position-relative">
+                    <div class="col mb-5 mb-xl-0 pe-3">
+                        <label class="form-label" for="invoiceNumber">Номер счета:&nbsp</label>
+                        <input id="invoiceNumber" class="form-control" name="invoiceNumber"
+                               onblur="validateInvoice()" required pattern="\d*" inputmode="numeric">
+                        <span id="invoiceErrorForm" class="error-message"></span>
+                        <span id="invoiceError" class="error-message"></span>
+                    </div>
+                    <div class="col-auto mb-5 mb-xl-0">
+                        <label class="form-label" for="invoiceDate">&nbsp от:&nbsp</label>
+                        <input type="date" id="invoiceDate" name="invoiceDate" class="form-control"
+                               onblur="validateInvoice()" required>
+                    </div>
+                    <input id="fieldInvoiceExternalId" type="hidden" name="fieldInvoiceExternalId"
+                           value=""/>
+                </div>
+            </div>
+            <div class="row g-3 mb-5 position-relative">
+                <div class="col mb-5 mb-xl-0">
+                    <label class="form-label" for="productName">Наименование товара: </label>
+                    <input type="text" id="productName" class="form-control" name="productName" onkeyup="searchProducts()"
+                           onblur="validateProductInInvoice()" required>
+                    <ul id="productSuggestions"
+                        style="border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none;
+                                        position: absolute; background: white; z-index: 1;"></ul>
+                    <span id="productError" class="error-message"></span>
+                </div>
+                <input type="hidden" id="productExternalId" name="productExternalId">
+                <div class="col-auto">
+                    <label class="form-label" for="productQuantity">Количество товара:</label>
+                    <input type="number" step="0.25" size="2" id="productQuantity"
+                           class="form-control" name="productQuantity" required>
+                    <span id="productQuantityError" class="error-message"></span>
+                </div>
+            </div>
+            <h3 class="mt-3">Укажите предпочитаемый способ зачисления вознаграждения</h3>
+            <div class="d-flex my-xl-3 mb-5">
+                <div class="form-check me-4">
+                    <input class="form-check-input" type="radio" name="paymentOption" id="phoneOption" value="1" checked>
+                    <label class="form-check-label" for="phoneOption">
+                        На телефон
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="paymentOption" id="bankOption" value="2" >
+                    <label class="form-check-label" for="bankOption">
+                        На банковский счёт
+                    </label>
+                </div>
+            </div>
+            <!-- Форма для Телефона -->
+            <div id="phoneForm"  style="display: none;">
+                <div class="d-flex flex-column flex-xl-row g-3 mb-3">
+                    <div class="col pe-xl-3 mb-5 mb-xl-0">
+                       <label class="form-label" for="phoneNumber">
+                            Номер телефона
+                        </label>
+                        <input type="tel" class="form-control" name="phone" id="phoneNumber" placeholder="+7 (___) ___-__-__">
+                    </div>
+                    <div class="col mb-5 mb-xl-0">
+                        <label class="form-label" for="phoneNumber">
+                            В банке
+                        </label>
+                        <input class="form-control" id="bankName">
+                    </div>
+                </div>
+
+                <h3 class="my-xl-3 mb-5">Получатель платежа</h3>
+                <div class="d-flex flex-column flex-xl-row g-3 mb-5">
+                    <div class="col pe-xl-3 mb-5 mb-xl-0">
+                        <label class="form-label">
+                            Фамилия
+                        </label>
+                        <input class="form-control" name="lastName">
+                    </div>
+                    <div class="col pe-xl-3 mb-5 mb-xl-0">
+                        <label class="form-label">
+                            Имя
+                        </label>
+                        <input class="form-control" name="name">
+                    </div>
+
+                    <div class="col mb-5 mb-xl-0">
+                        <label class="form-label">
+                            Отчество
+                        </label>
+                        <input class="form-control" name="surName">
+                    </div>
+                </div>
+            </div>
+            <!-- Форма для Банковского Счета -->
+            <div id="bankForm">
+                <h3>Получатель платежа</h3>
+                <div class="row g-3 mb-2">
+                    <div class="col">
+                        <label>
+                            Фамилия
+                        </label>
+                        <input class="form-control" name="lastName">
+                    </div>
+                    <div class="col">
+                        <label>
+                            Имя
+                        </label>
+                        <input  class="form-control" name="name">
+                    </div>
+
+                    <div class="col">
+                        <label>
+                            Отчество
+                        </label>
+                        <input class="form-control" name="surName">
+                    </div>
+                </div>
+                <h3>Банк</h3>
+                <div class="row g-3 mb-2">
+                    <div class="col">
+                        <label>
+                            Номер счёта
+                        </label>
+                        <input  class="form-control" id="accountNumber" pattern="\d*" inputmode="numeric">
+                    </div>
+                    <div class="col">
+                        <label>
+                            Банк получателя
+                        </label>
+                        <input type="text" class="form-control" >
+                    </div>
+
+                    <div class="col-auto">
+                        <label>
+                            БИК
+                        </label>
+                        <input class="form-control" pattern="\d*" inputmode="numeric">
+                    </div>
+                </div>
+                <div class="row g-3 mb-2">
+                    <div class="col-auto">
+                        <label>
+                            ИНН банка
+                        </label>
+                        <input class="form-control" pattern="\d*" inputmode="numeric" maxlength="10" minlength="10" >
+                    </div>
+                    <div class="col-auto">
+                        <label>
+                            КПП банка
+                        </label>
+                        <input class="form-control" pattern="\d*" inputmode="numeric" maxlength="9" minlength="9" >
+                    </div>
+                    <div class="col">
+                        <label>
+                            Кор. счёт
+                        </label>
+                        <input class="form-control" pattern="\d*" inputmode="numeric">
+                    </div>
+                </div>
+            </div>
+        <div class="mb-3" style="position: relative;">
+            <span id="successOrderCreated" th:text="#{app.registr.succes-create-order}"></span>
+            <button class="btn btn-bonus" type="submit">Отправить</button>
+        </div>
+    </form>
+</div>
+
+
+// Главная страница для незарегистрированных
+<div sec:authorize="!isAuthenticated()" th:fragment="WelcomePageUnregistered">
+    <div class="vh100 d-flex flex-column justify-content-between">
+        <div class="col-12 d-flex justify-content-center container fullwidth">
+            <div class="col-auto text-center" style="padding-top: 30px;">
+                <p class="text-intro">
+                    Дорогие партнеры.<br>
+                    Мы рады объявить о запуске программы мотивации.<br>
+                    Не упускайте возможность увеличить свой доход.
+                </p>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column flex-xl-row justify-content-between container fullwidth ">
+            <div class="col-xl-5">
+                <h1 class="futura-book-с intro-header">
+                    Ежемесячно получайте бонус за каждый реализованный проект, где был использован материал компании
+                    <span>
+                <img th:src="@{/images/logo.svg}" alt="Company Logo">
+            </span>
+                </h1>
+            </div>
+            <div class="col-xl-6 text-end header-article">
+                <p class="header-article article">
+                    <br>как получить бонус
+                </p>
+                <p class="article">
+                    1. Создайте личный кабинет партнера<br>
+                    2. В личном кабинете заполните форму выполненного проекта<br>
+                    3. Мы рассчитаем ваш бонус и зачислим на вашу карту 10 числа следующего месяца
+                </p>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column justify-content-between mb-3 container fullwidth">
+            <div class="col-12 d-flex justify-content-between">
+                <div class="col-6 col-xl-4 text-gigantic">
+                    КАБИНЕТ
+                </div>
+                <div class="col-4 d-none d-xl-block py-4">
+                    <button class="w-100 h-100 btn btn-outline-bonus" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasRegistry"
+                            aria-controls="offcanvasRight" style="height: 60px;display: block;border-style: dotted;">
+                        Зарегистрировать
+                    </button>
+                </div>
+                <div class="col-6 col-xl-4 text-end text-gigantic">
+                    ДИЗАЙНЕРА
+                </div>
+            </div>
+            <div class="d-flex d-xl-none col-12" style="padding-bottom: 20px;">
+                <button class="w-100 btn btn-outline-bonus" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasRegistry"
+                        aria-controls="offcanvasRight" style="height: 220px;display: block;border-style: dotted;">
+                    Зарегистрировать
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <!-- Другие фрагменты можно добавлять тут -->

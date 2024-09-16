@@ -32,9 +32,9 @@ public class TokenEntity {
     @Column(name = "is_closed")
     private boolean isClosed;
 
-    // Конструктор по умолчанию
     public TokenEntity() {
     }
+
     public TokenEntity(String token, UserEntity userEntity) {
         this.token = token;
         this.user = userEntity;

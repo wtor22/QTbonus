@@ -15,14 +15,6 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-     //Обрабатываем BadCredentialsException
-    @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String handleBadCredentialsException(Model model) {
-        model.addAttribute("error", "Неверный логин или пароль.");
-        return "index"; // Возвращаем страницу логина с сообщением об ошибке
-    }
-
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<Map<String, Object>> handleDuplicateResourceException(DuplicateResourceException ex, WebRequest request) {
         Map<String, Object> body = Map.of(

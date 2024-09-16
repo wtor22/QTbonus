@@ -1,5 +1,6 @@
-package com.quartztop.bonus.tokens;
+package com.quartztop.bonus.repositoriesBonus;
 
+import com.quartztop.bonus.tokens.TokenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

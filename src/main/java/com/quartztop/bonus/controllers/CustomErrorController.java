@@ -1,4 +1,4 @@
-package com.quartztop.bonus.user.controllers;
+package com.quartztop.bonus.controllers;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;

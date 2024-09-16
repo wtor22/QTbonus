@@ -1,11 +1,19 @@
-package com.quartztop.bonus.user.controllers;
+package com.quartztop.bonus.controllers;
 
+import com.quartztop.bonus.crm.Invoices;
+import com.quartztop.bonus.orders.PaymentType;
+import com.quartztop.bonus.orders.StatusOrders;
+import com.quartztop.bonus.repositoriesBonus.PaymentTypeRepository;
+import com.quartztop.bonus.repositoriesBonus.StatusRepository;
+import com.quartztop.bonus.repositoriesCrm.InvoicesRepository;
 import com.quartztop.bonus.servises.MessageService;
 import com.quartztop.bonus.user.UserCrudService;
 import com.quartztop.bonus.user.UserEntity;
 import com.quartztop.bonus.user.roles.Roles;
-import com.quartztop.bonus.user.roles.RolesRepository;
+import com.quartztop.bonus.repositoriesBonus.RolesRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,23 +24,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.management.relation.Role;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
 @RequestMapping("/")
+@AllArgsConstructor
 public class UserWebController {
 
-    private final UserCrudService userCrudService;
-    private final MessageService messageService;
-    private final RolesRepository rolesRepository;
-
-    public UserWebController(UserCrudService userCrudService, MessageService messageService, RolesRepository rolesRepository) {
-        this.userCrudService = userCrudService;
-        this.messageService = messageService;
-        this.rolesRepository = rolesRepository;
-    }
+    private UserCrudService userCrudService;
+    private MessageService messageService;
+    private RolesRepository rolesRepository;
+    private InvoicesRepository invoicesRepository;
+    private StatusRepository statusRepository;
 
     @GetMapping()
     public String getStart(Model model){
@@ -51,12 +56,20 @@ public class UserWebController {
             model.addAttribute("nameRole",userRole.getNameRole());
             model.addAttribute("welcome",welcomeMessage);
 
-
             if(userRole.getRole().equals("ROLE_SUPER_ADMIN")) {
                 model.addAttribute("listUsers", userCrudService.getAllUsers());
                 model.addAttribute("listRoles", rolesRepository.findAllExceptRole("ROLE_SUPER_ADMIN"));
-            }
 
+                List<Invoices> invoicesList = invoicesRepository.findAll();
+                List<StatusOrders> statusOrdersList = statusRepository.findAll();
+
+                model.addAttribute("invoicesList", invoicesList);
+                model.addAttribute("statusList",statusOrdersList);
+            }
+            if(userRole.getRole().equals("ROLE_USER")) {
+
+                model.addAttribute("formCreateOrder","/order/create");
+            }
         } else {
             model.addAttribute("username", "Guest"); // Передаем имя пользователя в модель
         }

@@ -11,15 +11,15 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="/js/formHandler.js"></script>
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
     <meta name="_csrf" data-th-content="${_csrf.token}"/>
     <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
 </head>
 <body>
-<div class="container">
-    <h1>КАБИНЕТ ДИЗАЙНЕРА</h1>
-    <div class="row">
-        <div id="usregistr" class="col-6 ">
-            <h2>Заполните данные пользователя</h2>
+<div class="vh100 d-flex align-items-center d-xl-block">
+    <div class="w-100 d-flex justify-content-center p-5">
+        <div id="usregistr" class="col-auto col-xl-6">
+            <h2>Завершение регистрации</h2>
             <form id="regForm" action="#" th:action="@{${formUrl}}" method="post" class="mt-3">
                 <div class="">
                     <input type="hidden" th:value="${token}" name="token" id="token"/>
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="manager" th:text="#{app.text.manager}"></label>
+                        <label class="form-label" for="manager" th:text="#{app.text.manager}"></label>
                         <select id="manager" name="manager" class="form-control" required>
                             <!-- Опция по умолчанию, если менеджер не выбран -->
                             <option value="" disabled th:selected="${manager == null}" th:text="#{app.text.choice-manager}"></option>
@@ -51,21 +51,19 @@
                         <input type="password" class="form-control" id="password" required>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3 m-auto" th:text="#{app.text.button-registry}"></button>
+                <button type="submit" class="btn btn-bonus mt-3 m-auto" th:text="#{app.text.button-registry}"></button>
             </form>
-        </div>
-        <!-- Сообщение об успешной отправке -->
-        <div id="successMessage" class="alert alert-success mt-3" role="alert" style="display: none;">
-            Форма успешно отправлена!
-        </div>
-
-        <!-- Сообщение об ошибке -->
-        <div id="errorMessage" class="alert alert-danger mt-3" role="alert" style="display: none;">
-            Произошла ошибка при отправке формы.
         </div>
 
     </div>
+    <!-- Сообщение об успешной отправке -->
+    <div id="successRegMessage" class="alert alert-success mt-3" role="alert" style="display: none;">
+        Форма успешно отправлена!
+    </div>
+    <!-- Сообщение об ошибке -->
+    <div id="errorMessage" class="alert alert-danger mt-3" role="alert" style="display: none;">
+        Произошла ошибка при отправке формы.
+    </div>
 </div>
-
 </body>
 </html>
