@@ -13,7 +13,6 @@ import lombok.Setter;
 public class Roles {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String role;
     String nameRole;

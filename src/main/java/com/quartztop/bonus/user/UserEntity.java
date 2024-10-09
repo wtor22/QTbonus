@@ -20,10 +20,13 @@ public class UserEntity {
     private String fio;
     @Column(name = "phone", unique = true)
     private String phone;
-    private String manager;
     private String nameSalon;
     private String address;
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "manager_id")  // Ссылка на менеджера
+    private UserEntity manager;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

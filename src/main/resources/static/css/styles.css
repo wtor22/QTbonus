@@ -85,22 +85,22 @@
 }
 .form-control {
   /* стили для bootstrap input */
-  color: rgb(51, 63, 72);
-  border: 1px solid rgb(196, 196, 196);
-  border-radius: 0px;
-  font-size: 16px;
-  line-height: 35px;
-  color: #333;
+    color: rgb(51, 63, 72);
+    border: 1px solid rgb(196, 196, 196);
+    border-radius: 0px;
+    font-size: 16px;
+    line-height: 35px;
+    color: #333;
 }
 
 .form-control:focus, .form-check-input:focus {
-  outline: none;
-  border-color: rgb(196, 196, 196);
-  box-shadow: none;
+    outline: none;
+    border-color: rgb(196, 196, 196);
+    box-shadow: none;
 }
 /* Стиль для placeholder */
 .form-control::placeholder {
-  color:  rgb(196, 196, 196);
+    color:  rgb(196, 196, 196);
 }
 .form-label, .form-check-label {
     font-size: 16px;
@@ -130,10 +130,11 @@
     height: 30px;
 }
 .form-check-input:checked[type="checkbox"] {
+    background-color: #fff;
     --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23444' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
 }
 .offcanvas-body, .offcanvas-header {
-    padding: 0px 55px 0 45px;
+    padding: 0px 55px 30px 45px;
 }
 .offcanvas-header {
     padding-top: 15px;
@@ -146,9 +147,18 @@
     padding: 50px;
     font-size: 20px;
 }
+.btn-close:focus {
+    box-shadow: none;
+    border: none;
+}
 
 p {
     font-family: 'FuturaMediumC', sans-serif;
+}
+a, .btn.btn-link, .btn.btn-link:focus {
+    color: inherit;
+    font-size: 16px;
+    font-weight: bold;
 }
 h1.futura-book-с {
     font-family: 'FuturaBookC', sans-serif;
@@ -214,8 +224,8 @@ button.clear {
     margin-bottom: 35px;
 }
 .logo {
-    margin-top: 25px;
-    width: 150px;
+    margin-top: 20px;
+    width: 350px;
 }
 
 .fullwidth,  .container.fullwidth{
@@ -224,8 +234,8 @@ button.clear {
     padding-right: 50px;
 }
 .user-click {
-    width: 62px;
-    height: 62px;
+    width: 60px;
+    height: 60px;
     padding: 0;
     border-radius: 50%;
     box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
@@ -242,7 +252,7 @@ button.clear {
 }
 .absolute-input {
     position: absolute;
-    top: 20px;
+    top: 10px;
     right: 20px;
 }
 .absolute-input > ul {
@@ -327,9 +337,7 @@ button.clear {
     font-width: normal;
     margin-bottom: 5px;
 }
-.welcome-page .text-intro {
-    max-width:630px;
-}
+
 .btn.btn-outline-bonus, .btn.btn-bonus {
     height: 46px;
     font-size: 18px;
@@ -347,9 +355,13 @@ button.clear {
 .btn.btn-outline-bonus.btn-gigantic, .btn.btn-bonus.btn-gigantic {
     height: 100%;
     width: 98%;
-    min-height: 400px;
+    min-height: 150px;
     margin: 0;
     max-height: 50vh;
+}
+a.btn.btn-outline-bonus.btn-gigantic {
+    display: grid;
+    align-content: center;
 }
 .offcanvas .btn.btn-outline-bonus, .btn.btn-outline-bonus {
     width: 140px;
@@ -379,6 +391,21 @@ button.clear {
     color: #fff;
     background-color: #414141;
 }
+.actions-bar .btn.btn-bonus {
+    height: 60px;
+}
+.description-left {
+    position: absolute;
+    top: -30px;
+    left: 50px;
+    font-size: 17px;
+}
+.description-right {
+    position: absolute;
+    top: -30px;
+    right: 50px;
+    font-size: 17px;
+}
 
 .vh100 {
     height: 100vh;
@@ -397,7 +424,7 @@ button.clear {
     margin-bottom: 0;
  }
 #offcanvasLeft .offcanvas-header .btn.btn-outline-bonus,
-#offcanvasCreateOrder .btn.btn-outline-bonus {
+#offcanvasCreateOrder .btn.btn-outline-bonus, #offcanvasCreateOrderAction  .btn.btn-outline-bonus{
     border-style: dotted;
     font-size: 14px;
 }
@@ -407,6 +434,58 @@ button.clear {
     text-transform: uppercase;
     margin: 0;
 }
+.arrowUp {
+    width: 21px;
+}
+.top-line-decorate {
+    border-top: 1px solid #333f48;
+}
+.right-line-decorate {
+    border-right: 1px solid #333f48;
+}
+.action{
+    font-size: 32px;
+    letter-spacing: -1.2px;
+    font-family: FuturaMediumC;
+}
+
+.error-page h1{
+    padding: 200px;
+}
+.background-transparent .modal-dialog {
+    max-width: 800px;
+}
+.background-transparent .modal-body, .background-transparent .modal-header {
+    padding: 0;
+    border: 0;
+}
+.background-transparent .modal-content {
+    background-color: transparent;
+    box-shadow: none;
+    border: 0;
+}
+.container-flex {
+    display: flex;
+    justify-content: space-between;
+    width: auto;
+}
+.container-flex img {
+    width: 100%;
+    max-width: 400px;
+    flex-shrink: 1;
+}
+.image-block {
+    width: 180px;
+}
+.img-thumbnail {
+    display: none;
+}
+.image-block .btn.btn-bonus {
+    height: auto;
+    width: auto;
+    padding: 7px 15px;
+    text-transform: lowercase;
+}
 
 @media (min-width: 1201px) {
     .btn.btn-outline-bonus {
@@ -415,151 +494,196 @@ button.clear {
 }
 
 @media (min-width: 1200px) {
+
+    .image-block .btn.btn-close {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+        padding: 3px;
+        box-sizing: border-box;
+        background-size: 55%;
+        opacity: 0;
+        border-radius: 50%;
+        box-shadow: 0px 0px 2px rgba(153, 153, 153, 0.1), 0px 4px 12px rgba(153, 153, 153, 0.3);
+        transition: opacity .1s ease-out, color .15s linear;
+    }
+    .image-block:hover .btn.btn-close {
+        opacity: 0.8;
+    }
+
+    .offcanvas-custom-width .offcanvas-body,
+    #offcanvasLeft, #offcanvasCreateOrder,  #offcanvasCreateOrderAction {
+         padding-top: 15px;
+    }
     .offcanvas.offcanvas-custom-width {
         width: 600px;
     }
     #offcanvasLeft {
         width: 500px;
-        padding-top: 15px;
     }
-    #offcanvasCreateOrder {
+    #offcanvasCreateOrder, #offcanvasCreateOrderAction {
         width: 1200px;
-        padding-top: 15px;
     }
+
 }
 
+@media (max-width: 800px) {
+    .container-flex {
+        flex-direction: column;
+    }
+}
 @media (max-width: 1199.98px) {
 
+    .form-check.check-box {
+        line-height: 14px;
+    }
+    .form-check.check-box label{
+        line-height: inherit;
+        display: inline-block;
+        width: 97%;
+        padding-top: 3px;
+    }
+
+    .success-message {
+        width: 90%;
+        top: 20%;
+        left: 5%;
+        padding: 20px;
+    }
+
+    .absolute-input {
+      top: 60px;
+      right: 8px;
+    }
+
+    .top-line-decorate, .right-line-decorate {
+        border:none;
+    }
+
+    .description-left, .description-right{
+        left: 0;
+        right: auto;
+        top: -25px;
+    }
+
     .error-message {
-        font-size: 30px;
+        bottom: -20px;
+        font-size: 12px;
+    }
+    .error-page h1{
+        padding: 100px 20px;
     }
     #successOrderCreated {
-        top: -60px;
-        font-size: 32px;
+        top: -40px;
+        font-size: 16px;
+        line-height: 1em;
     }
 
     .absolute-input > ul {
         inset: 0px 0 auto auto!Important;
-        width: 650px;
+        /*width: 650px;*/
         margin-top: 10px;
-    }
-    .absolute-input > ul p {
-        font-size: 27px;
-    }
-    .user-click {
-        width: 110px;
-        height: 110px;
     }
 
     .form-control {
-      /* стили для bootstrap input */
-      padding: 30px 60px;
-      font-size: 36px;
+        padding: 15px 20px;
+        font-size: 15px;
+        line-height: 20px;
     }
     .form-label, .form-check-label {
-        font-size: 32px;
-        line-height: 34px;
-        padding-left: 7px;
+        font-size: 12px;
+        line-height: 12px;
+        padding-left: 0px;
     }
     .form-check-input[type="radio"] {
-        width: 25px;
-        height: 25px;
+        width: 15px;
+        height: 15px;
     }
 
     .vh100 {
-        height: calc(100vh - 390px);
+        height: calc(100vh - 120px);
     }
 
     .offcanvas-body {
-        padding: 20px 30px 20px 35px;
+        padding: 20px 25px 20px 25px;
     }
 
+#offcanvasLeft, #offcanvasCreateOrder, #offcanvasCreateOrderAction,
     .offcanvas.offcanvas-custom-width {
         height: 100vh!Important;
         background-color: #f3f3f3;
         width: 100%;
     }
     .offcanvas.offcanvas-start {
-        width: 100%;
+        /*width: 100%;*/
     }
     .position-top-panel {
         position: relative;
     }
     .top-panel {
-        width: calc(100% - 90px);
-        margin-top: 25px;
+        width: calc(100% - 40px);
+        margin-bottom: 0;
     }
     .logo {
       width: 100%;
       margin-bottom: 5px;
+      margin-top: 20px;
     }
     .btn.btn-outline-bonus, .btn.btn-bonus {
-        height: 160px;
         width: 98%;
-        font-size: 36px;
-        line-height: 1.55;
-        border-width: 3px;
     }
     .btn.btn-bonus.btn-gigantic, .btn.btn-outline-bonus.btn-gigantic  {
         width: 100%;
     }
     .welcome-page .btn.btn-outline-bonus.btn-lighter {
-        font-size: 36px;
         height: auto;
-        padding: 30px 100px;
-        margin-top: 100px;
-        margin-bottom: 100px;
+        padding: 10px 70px;
+        margin-top: 70px;
+        margin-bottom: 70px;
     }
-
+    #offcanvasCreateOrder h2 {
+        margin-bottom: 5px;
+        font-size: 21px;font-size:
+    }
+    #offcanvasCreateOrder p {
+        font-size: 14px;
+    }
+    #offcanvasCreateOrder .btn.btn-outline-bonus {
+        height: auto;
+        margin-bottom: 25px;
+    }
     #offcanvasLeft {
-        padding: 15px 30px;
         background-color: #f3f3f3;
     }
     #offcanvasLeft .offcanvas-header .btn.btn-outline-bonus, #offcanvasLeft .offcanvas-header .btn.btn-bonus {
-        width: 345px;
-        height: 95px;
-        font-size: 38px;
-        border-width: 3px;
+        height: 40px;
     }
-    #offcanvasCreateOrder .btn.btn-outline-bonus {
-        font-size: 36px;
-        height: 95px;
-        width: 340px;
-        margin-top: 10px;
-        margin-right: 10px;
-    }
-    #offcanvasLeft h2,
-    #offcanvasCreateOrder h2 {
-        font-size: 52px;
-        margin-top: 25px;
-        margin-bottom: 40px;
-    }
+
     .offcanvas-body h3 {
-        font-size: 30px;
+        font-size: 15px;
     }
-    #offcanvasLeft p,
-    #offcanvasCreateOrder p{
-        font-size: 38px;
-        line-height: 1.35em;
-        margin-bottom: 45px;
+    .fullwidth, .container.fullwidth {
+      padding-left: 15px;
+      padding-right: 15px;
     }
-
     .text-intro {
-        font-size: 37px;
-        line-height: 48px;
-        margin-top: 20px;
+        font-size: 16px;
+        line-height: 20px;
     }
-
     .intro-header {
-        font-size: 52px;
-        line-height: 60px;
+        font-size: 22px;
+        line-height: 27px;
+        font-weight: bold;
         text-align: center;
     }
     .intro-header span {
         display: block;
     }
     .intro-header span img {
-        height: 40px;
+        height: 18px;
     }
 
     .header-article {
@@ -568,26 +692,70 @@ button.clear {
        margin-bottom: 20px;
     }
     .article {
-       font-size: 24px;
-       line-height: 40px;
+        font-size: 11px;
+        margin-bottom: 5px;
+        line-height: 18px;
     }
     .text-gigantic {
-        font-size: 80px;
+        font-size: 32px;
     }
     .welcome-page h1 {
-        font-size: 74px;
+        font-size: 30px;
         font-weight: normal;
-        line-height: 76px;
-        margin-bottom: 100px;
-    }
-    .welcome-page .text-intro-header {
-        font-size: 38px;
+        line-height: 30px;
+        margin-bottom: 40px;
+        letter-spacing: 0;
     }
     .welcome-page .text-intro {
         max-width: 100%;
     }
     .top {
       height: calc(100vh - 100px);
-      padding-top: 40px;
+      padding-top: 60px;
+    }
+    .prize {
+        font-size: 10px;
+    }
+    .prize img {
+        border: 1px dotted #888;
+    }
+    .actions-bar .btn.btn-bonus {
+      height: 90px;
+    }
+    .image-block {
+        width: 100%;
+    }
+    .image-block .img-thumbnail {
+        float: left;
+        margin: 0;
+        padding: 0;
+    }
+    .image-block span {
+        float: left;
+        width: 80%;
+        font-size: 14px;
+        line-height: 14px;
+        padding-left: 1%;
+    }
+    .offcanvas-body button.btn.removeImage {
+        width: 4%;
+        height: 4px;
+    }
+    .image-block .thumb {
+        width: 14%;
+    }
+
+    .image-block .btn.btn-bonus {
+        height: auto;
+        width: auto;
+        padding: 7px 15px;
+        text-transform: lowercase;
+    }
+
+}
+
+@media (max-width: 370px) {
+    .description-left, .description-right{
+        font-size: 15px;
     }
 }

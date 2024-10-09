@@ -25,7 +25,6 @@ public class EmailService {
 
         helper.setTo(to);
         helper.setSubject(messageService.getEmailSubject());
-        //helper.setSubject("КварцТоп");
         helper.setText(text, true); // Если текст письма в формате HTML, передай true
         helper.setFrom(messageService.getEmailFrom());
         mailSender.send(message);

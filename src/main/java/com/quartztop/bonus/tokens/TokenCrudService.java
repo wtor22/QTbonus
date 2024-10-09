@@ -23,6 +23,9 @@ public class TokenCrudService {
         UserEntity user = userRepository.findById(
                 userDto.getId()).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userDto.getId()));
         TokenEntity tokenEntity = new TokenEntity(token,user);
+        if(userDto.getManager() != null) {
+            tokenEntity.setManager(userDto.getManager());
+        }
         tokenRepository.save(tokenEntity);
     }
 

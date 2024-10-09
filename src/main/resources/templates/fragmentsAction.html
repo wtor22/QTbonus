@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>FragmentsAction</title>
+</head>
+<body>
+// Панель для создания ордера на АКЦИЮ
+<div th:fragment="OffcanvasOrderActionCreateForm">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCreateOrderAction" aria-labelledby="offcanvasCreateOrderActionLabel">
+        <div class="offcanvas-body">
+            <div class="d-flex">
+                <div class="d-none d-xl-block">
+                    <h2 class="offcanvas-title" >Заявка на участие в акции</h2>
+                    <p>Заполните необходимые данные по реализованному вами проекту с использованием нашего материла</p>
+                </div>
+                <button type="button" class="btn btn-outline-bonus ms-auto" data-bs-dismiss="offcanvas" aria-label="Close">Закрыть</button>
+            </div>
+            <div class="d-xl-none">
+                <h2 class="offcanvas-title" style="margin-bottom: 15px;">Заявка на участие в акции</h2>
+                <p>Заполните необходимые данные по реализованному вами проекту с использованием нашего материла</p>
+                </p>
+            </div>
+            <div th:insert="~{fragmentsAction :: OrderCreateFormAction}"></div>
+        </div>
+    </div>
+</div>
+// Форма создания ордера на АКЦИЮ
+<div th:fragment="OrderCreateFormAction">
+    <form id="orderForm" action="#" th:action="@{${formCreateOrder}}" method="post" enctype="multipart/form-data">
+        <div class="d-flex flex-column">
+            <h3 class="mb-2">Тип покупателя</h3>
+            <div class="d-flex  flex-wrap my-xl-3 mb-3">
+                <div class="form-check me-4">
+                    <input class="form-check-input" type="radio" name="innOption" id="llcOption" value="1" checked>
+                    <label class="form-check-label" for="llcOption">
+                        Юридическое лицо
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="innOption" id="individualOption" value="2">
+                    <label class="form-check-label" for="individualOption">
+                        Индивидуальный предприниматель
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col d-flex g-3 mb-xl-3 flex-column flex-xl-row">
+            <div class="col mb-3 mb-xl-0 pe-xl-3 position-relative">
+                <label class="form-label" for="innNumber">ИНН покупателя:&nbsp</label>
+                <input type="text" id="innNumber" class="form-control" name="innNumber"
+                       maxlength="10" minlength="10" onblur="validateInn()" required>
+                <span id="innErrorForm" class="error-message"></span>
+            </div>
+
+            <div class="col d-flex mb-3 mb-xl-0 position-relative">
+                <div class="col pe-3">
+                    <label class="form-label" for="invoiceNumber">Номер счета:&nbsp</label>
+                    <input id="invoiceNumber" class="form-control" name="invoiceNumber"
+                           onblur="validateInvoice()" required pattern="\d*" inputmode="numeric">
+                    <span id="invoiceErrorForm" class="error-message"></span>
+                    <span id="invoiceError" class="error-message"></span>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label" for="invoiceDate">&nbsp от:&nbsp</label>
+                    <input type="date" id="invoiceDate" name="invoiceDate" class="form-control"
+                           onblur="validateInvoice()" required>
+                </div>
+                <input id="fieldInvoiceExternalId" type="hidden" name="fieldInvoiceExternalId"
+                       value=""/>
+            </div>
+        </div>
+        <div class="col d-flex g-3 position-relative mb-3 mb-xl-4">
+            <div class="col pe-3">
+                <label class="form-label" for="productName">Наименование товара: </label>
+                <input type="text" id="productName" class="form-control" name="productName" onkeyup="searchProducts()"
+                       onblur="validateProductInInvoice()" required>
+                <ul id="productSuggestions"
+                    style="border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none;
+                                        position: absolute; background: white; z-index: 1;"></ul>
+                <span id="productError" class="error-message"></span>
+            </div>
+            <input type="hidden" id="productExternalId" name="productExternalId">
+            <div class="col-auto">
+                <label class="form-label" for="productQuantity">Количество товара:</label>
+                <input type="number" step="0.25" size="2" id="productQuantity"
+                       class="form-control" name="productQuantity" required>
+                <span id="productQuantityError" class="error-message"></span>
+            </div>
+        </div>
+
+        <div id="additionalImageInputs" class="d-flex flex-wrap my-4">
+            <!-- Первый input скрыт, вместо него кнопка -->
+            <div id="imageBlock1" class="mb-3 me-3 col-auto image-block position-relative d-flex flex-xl-column" >
+                <button type="button" class="btn btn-bonus" id="fileButton1">+ ФОТО</button>
+
+                <div class="thumb">
+                    <input type="file" id="productImages1" name="productImages[]" class="d-none" accept="image/*">
+                    <img id="imagePreview1" src="#" alt="Предпросмотр изображения 1" class="img-thumbnail mb-xl-2 align-self-center" />
+                    <div class="spinner-border" id="spinner1" role="status" style="display: none;">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                </div>
+                <span id="fileName1" class="file-name align-self-center" style="display: none;"></span>
+                <button type="button" class="btn btn-close text-reset removeImage align-self-center ms-auto" data-image-id="1" style="display: none;"></button>
+                <input type="hidden" id="filePath1" name="filePath[]" value="" />
+            </div>
+        </div>
+        <div class="mb-5 mb-xl-3 form-check check-box">
+            <input type="checkbox" class="form-check-input" id="dataConsent" name="dataConsent"
+                   required>
+            <label class="form-check-label" for="dataConsent">Я ознакомлен с условиями проведения акции</label>
+        </div>
+        <div class="mb-5" style="position: relative;">
+            <span id="successOrderCreated" th:text="#{app.registr.succes-create-order}"></span>
+            <button class="btn btn-bonus" type="submit">Отправить</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

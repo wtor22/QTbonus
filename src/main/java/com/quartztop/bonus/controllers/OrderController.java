@@ -40,23 +40,39 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Контрагент с учетным номером " + inn
                 + " не найден");
     }
+    @GetMapping("/validate-agent-by-name")
+    @ResponseBody
+    public ResponseEntity<String> validateAgentByName(@RequestParam("fullNameAgent") String fullNameAgent) {
+
+        List<Agent> agentsList = agentRepository.findAllByName(fullNameAgent);
+        if(!agentsList.isEmpty()) {
+            return ResponseEntity.ok("valid");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Контрагент: " + fullNameAgent
+                + " не найден");
+    }
 
     @GetMapping("/validate-invoice")
     @ResponseBody
     public ResponseEntity<String> validateInvoice(
             @RequestParam("agentInn") String inn,
+            @RequestParam("agentFullName") String agentFullName,
             @RequestParam("invoiceNumber") String invoiceNumber,
             @RequestParam("invoiceDate") LocalDate invoiceDate) {
 
         LocalDateTime startDate = invoiceDate.atStartOfDay();
         LocalDateTime endDate = invoiceDate.atTime(LocalTime.MAX);
 
-//        List<Invoices> invoicesList = invoicesRepository.findByNameAndMomentBetween(invoiceNumber,
-//                startDate, endDate);
+        List<Invoices> invoicesList;
 
-        List<Invoices> invoicesList = invoicesRepository.findByNameAndAgentInnAndMomentBetween(invoiceNumber, inn,
-                startDate,endDate);
-
+        if(agentFullName.equals("null")) {
+            invoicesList = invoicesRepository.findByNameAndAgentInnAndMomentBetween(invoiceNumber, inn,
+                    startDate,endDate);
+        } else {
+            log.info("AGENT FULL NAME NOT NULL " + agentFullName);
+            List<Integer> agentsId = agentRepository.findAgentIdsByFullName(agentFullName);
+            invoicesList = invoicesRepository.findByAgentsIdAndMomentBetween(agentsId,startDate,endDate);
+        }
 
         invoicesList.forEach(o -> log.info(o.getName()));
 
@@ -76,12 +92,12 @@ public class OrderController {
     @ResponseBody
     public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam("query") String query) {
         List<Product> products = productRepositories.findByDescriptionContainingIgnoreCaseAndTypeProduct(query,"product");
-
         List<ProductDto> productDtoList = products.stream()
+                .filter(product -> product.getPathName().startsWith("Кварцевый Агломерат") ||
+                        product.getPathName().startsWith("Керамогранит"))
                 .map(product -> new ProductDto(product.getProductId(), product.getExternalId(), product.getName()))
                 .toList();
-
-        List<String> productsName = products.stream().map(Product::getName).toList();
+        //List<String> productsName = products.stream().map(Product::getName).toList();
         return ResponseEntity.ok(productDtoList);
     }
     @GetMapping("/search-products-in-invoice")
@@ -94,17 +110,13 @@ public class OrderController {
         if (positions.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Указанный товар в счете не найден");
         }
-
         Set<String> listProductsNames = new HashSet<>();
-
         for(InvoicePosition position: positions) {
             String productExternalId = position.getExternalProductId();
             Product product = productRepositories.findByExternalId(productExternalId);
-
             if(position.getProductType().equals("product")) {
                 listProductsNames.add(product.getName());
             }
-
             if(position.getProductType().equals("bundle")) {
                 Bundle bundle = bundleRepository.findByProduct(product);
                 Product parentProduct = bundle.getProductParent();
@@ -175,10 +187,10 @@ public class OrderController {
 
 
         // Стоимость товара по средней цене за товар
-        double price = 0;
+        int price = 0;
         double bonus = 3.00; // 3% Бонус
         if(quantityProduct - quantityFromOldOrders > 0) {
-            price = sumForProduct / quantityProduct / 100 * productQuantity * bonus / 100;
+            price = (int) (sumForProduct / quantityProduct / 100 * productQuantity * bonus / 100);
         }
 
         String priceToString = String.valueOf(price);

@@ -19,10 +19,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    String type;
+
     @Column(name = "create_date")
     private LocalDateTime createDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
@@ -42,7 +44,6 @@ public class Order {
     @Column(name = "invoice_external_id")
     private String invoiceExternalId;
 
-
     @Column(name = "invoice_date")
     private LocalDate invoiceDate; // Дата создания счета
 
@@ -54,5 +55,8 @@ public class Order {
 
     @Column(name = "product_qtty")
     private double productQuantity;
+
+    @Column(name = "data_payment")
+    String dataPayment;
 
 }

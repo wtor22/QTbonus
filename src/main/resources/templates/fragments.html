@@ -23,12 +23,12 @@
             </a>
         </div>
         <div sec:authorize="!isAuthenticated()" class="d-flex my-1">
-            <div class="py-3 col-6 col-xl-auto d-flex mr-xl-1" >
+            <div class="py-xl-3 col-6 col-xl-auto d-flex mr-xl-1" >
                 <button class="btn btn-outline-bonus ms-xl-auto" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasInput" aria-controls="offcanvasInputLabel">Вход
                 </button>
             </div>
-            <div class="py-3 col-6 col-xl-auto text-end">
+            <div class="py-xl-3 col-6 col-xl-auto text-end">
                 <button class="btn btn-bonus" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasRegistry"
                         aria-controls="offcanvasRight">Регистрация
@@ -37,14 +37,14 @@
         </div>
         <div class="dropdown absolute-input" sec:authorize="isAuthenticated()">
             <button class="btn user-click dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                <div th:insert="fragments :: buttonUserSvg"></div>
+                <div th:insert="~{fragments :: buttonUserSvg}"></div>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
                 <li>
                     <p class="user-name" th:text="${username}"></p>
                     <span class="user-logout">
                         <form th:action="@{/logout}" method="post">
-                            <button type="submit" class="clear" th:insert="fragments :: buttonLogOutSvg">
+                            <button type="submit" class="clear" th:insert="~{fragments :: buttonLogOutSvg}">
                             </button>
                         </form>
                     </span>
@@ -52,7 +52,7 @@
                     <span class="headerLine "></span>
                 </li>
                 <li><h3>ГРУППЫ</h3></li>
-                <li><p>Кабинет дизайнера</p></li>
+                <a class="dropdown-item" href="/cabinet">Кабинет дизайнера</a>
             </ul>
         </div>
     </div>
@@ -107,9 +107,9 @@
             <button type="button" class="btn-close text-reset d-none d-xl-block" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <div id="user-registration" class=" ">
+            <div id="user-registration">
                 <form id="regForm" action="#" th:action="@{${formUrl}}" method="post" class="mt-3">
-                    <div class="">
+                    <div>
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         <div class="mb-5 mb-xl-3">
                             <label for="emailReg" class="form-label">Email</label>
@@ -158,7 +158,7 @@
             <span aria-hidden="true"></span>
         </button>
     </div>
-    <div id="successRegMessage" class="success-message alert alert-success alert-dismissible fade show m-5" role="alert" style="display: none;">
+    <div id="successRegMessage" class="success-message alert alert-success alert-dismissible fade show m-xl-5" role="alert" style="display: none;">
         <div class="text-error">
             <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:" width="16" height="16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -171,45 +171,109 @@
     </div>
 </div>
 
+<!-- DashBoard для пользователя -->
+<div th:fragment="UserDashBoard" class="container">
+    <div sec:authorize="hasRole('ROLE_USER')" th:fragment="DashBoard" class="container">
+        <h2>Личный кабинет</h2>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                        role="tab" aria-controls="home" aria-selected="true">Заявки на бонусы
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"
+                        role="tab" aria-controls="order" aria-selected="false">Участие в акциях
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <h3>Ваши заказы</h3>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                        <th>Счет</th>
+                        <th>Название товара</th>
+                        <th>Количество товара</th>
+                    </tr>
+                    </thead>
+                    <tbody id="ordersTable">
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="order" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="container">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div th:fragment="DashBoard" class="container">
     <!-- DashBoard для супер админа -->
     <div sec:authorize="hasRole('ROLE_SUPER_ADMIN')">
         <h2>DashBoard for SupperAdmin</h2>
+<!--        <table class="table">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>ФИО</th>-->
+<!--                <th>Телефон</th>-->
+<!--                <th>Менеджер</th>-->
+<!--                <th>Роль</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr th:each="user : ${listUsers}">-->
+<!--                <td th:text="${user.fio}">1</td>-->
+<!--                <td th:text="${user.phone}">Product Name</td>-->
+<!--                <td th:text="${user.manager}">Value</td>-->
+<!--                &lt;!&ndash; Ссылка на модальное окно &ndash;&gt;-->
+<!--                <td th:switch="${user.roles.role}">-->
+<!--                    <a href="#"-->
+<!--                       th:case="'ROLE_SUPER_ADMIN'"-->
+<!--                       th:attr="data-userid=${user.id}"-->
+<!--                       data-bs-toggle="modal"-->
+<!--                       data-bs-target="#editRoleModal">-->
+<!--                        <span class="badge bg-info" th:text="${user.roles.nameRole}"> </span>-->
+<!--                    </a>-->
+<!--                    <a href="#"-->
+<!--                       th:case="'ROLE_USER'"-->
+<!--                       th:attr="data-userid=${user.id}"-->
+<!--                       data-bs-toggle="modal"-->
+<!--                       data-bs-target="#editRoleModal">-->
+<!--                        <span class="badge bg-warning" th:text="${user.roles.nameRole}"> </span>-->
+<!--                    </a>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
         <table class="table">
             <thead>
             <tr>
-                <th>ФИО</th>
-                <th>Телефон</th>
-                <th>Менеджер</th>
-                <th>Роль</th>
+                <th>ID ордера</th>
+                <th>дата ордера</th>
+                <th>Клиент</th>
+                <th>сумма</th>
+                <th>Статус ордера</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="user : ${listUsers}">
-                <td th:text="${user.fio}">1</td>
-                <td th:text="${user.phone}">Product Name</td>
-                <td th:text="${user.manager}">Value</td>
-                <!-- Ссылка на модальное окно -->
-                <td th:switch="${user.roles.role}">
-                    <a href="#"
-                       th:case="'ROLE_SUPER_ADMIN'"
-                       th:attr="data-userid=${user.id}"
-                       data-bs-toggle="modal"
-                       data-bs-target="#editRoleModal">
-                        <span class="badge bg-info" th:text="${user.roles.nameRole}"> </span>
-                    </a>
-                    <a href="#"
-                       th:case="'ROLE_USER'"
-                       th:attr="data-userid=${user.id}"
-                       data-bs-toggle="modal"
-                       data-bs-target="#editRoleModal">
-                        <span class="badge bg-warning" th:text="${user.roles.nameRole}"> </span>
-                    </a>
-                </td>
-            </tr>
+                <tr th:each="order : ${ordersList}">
+                    <td th:text="${order.id}"></td>
+                    <td th:text="${order.createDate}"></td>
+                    <td th:text="${order.userEntity.fio}"></td>
+                    <td th:text="${order.sum}"></td>
+                    <td th:text="${order.status.name}"></td>
+                </tr>
             </tbody>
-        </table>
 
+        </table>
+        <h2>Счета</h2>
         <table class="table">
             <thead>
             <tr>
@@ -228,7 +292,6 @@
             </tr>
             </tbody>
         </table>
-
         <!-- Модальное окно -->
         <div class="modal fade" id="editRoleModal" tabindex="-1" aria-labelledby="editRoleModalLabel"
              aria-hidden="true">
@@ -255,133 +318,9 @@
             </div>
         </div>
     </div>
-
     <!-- DashBoard для админа -->
     <div sec:authorize="hasRole('ROLE_ADMIN')">
         <h2>DashBoard for Admin</h2>
-    </div>
-
-    <!-- DashBoard для пользователя -->
-    <div sec:authorize="hasRole('ROLE_USER')" th:fragment="DashBoard" class="container">
-        <h2>DashBoard for User</h2>
-
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-                        role="tab" aria-controls="home" aria-selected="true">Home
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"
-                        role="tab" aria-controls="order" aria-selected="false">Form create order
-                </button>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <h3>Ваши заказы</h3>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Дата</th>
-                        <th>Сумма</th>
-                        <th>Статус</th>
-                        <th>Счет</th>
-                        <th>Название товара</th>
-                        <th>Количество товара</th>
-                    </tr>
-                    </thead>
-                    <tbody id="ordersTable">
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="tab-pane fade" id="order" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="container">
-                    <div th:insert="fragments :: OrderCreateForm"></div>
-
-
-<!--                    <form id="orderForm" action="#" th:action="@{${formCreateOrder}}" method="post">-->
-<!--                        <div class="d-flex col-lg-5 flex-column">-->
-<!--                            <h3 class="mt-3">Укажите данные об отгрузке</h3>-->
-<!--                            <div class="col mb-5">-->
-<!--                                <label for="innNumber">ИНН Покупателя:&nbsp</label>-->
-<!--                                <input type="text" id="innNumber" class="form-control" name="innNumber"-->
-<!--                                       maxlength="10" minlength="10" onblur="validateInn()" required>-->
-<!--                                <span id="innErrorForm" style="color: red; position: absolute;"></span>-->
-<!--                            </div>-->
-<!--                            <div class="row g-3 mb-5">-->
-<!--                                <div class="col">-->
-<!--                                    <label for="invoiceNumber">Номер счета:&nbsp</label>-->
-<!--                                    <input type="text" id="invoiceNumber" class="form-control" name="invoiceNumber"-->
-<!--                                           onblur="validateInvoice()" required>-->
-<!--                                    <span id="invoiceErrorForm" style="color: red; position: absolute;"></span>-->
-<!--                                    <span id="invoiceError" style="color: red; position: absolute;"></span>-->
-<!--                                </div>-->
-<!--                                <div class="col-auto">-->
-<!--                                    <label for="invoiceDate">&nbsp от:&nbsp</label>-->
-<!--                                    <input type="date" id="invoiceDate" name="invoiceDate" class="form-control"-->
-<!--                                           onblur="validateInvoice()" required>-->
-<!--                                </div>-->
-<!--                                <input id="fieldInvoiceExternalId" type="hidden" name="fieldInvoiceExternalId"-->
-<!--                                       value=""/>-->
-<!--                            </div>-->
-<!--                            <div class="row g-3 mb-5">-->
-<!--                                <div class="col">-->
-<!--                                    <label for="productName">Наименование товара: </label>-->
-<!--                                    <input type="text" id="productName" class="form-control" name="productName" onkeyup="searchProducts()"-->
-<!--                                           onblur="validateProductInInvoice()" required>-->
-<!--                                    <ul id="productSuggestions"-->
-<!--                                        style="border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none;-->
-<!--                                        position: absolute; background: white; z-index: 1;"></ul>-->
-<!--                                    <span id="productError" style="color: red; position: absolute;"></span>-->
-<!--                                </div>-->
-<!--                                <input type="hidden" id="productExternalId" name="productExternalId">-->
-<!--                                <div class="col-auto">-->
-<!--                                    <label for="productQuantity">Количество товара:</label>-->
-<!--                                    <input type="number" step="0.25" size="2" id="productQuantity"-->
-<!--                                           class="form-control" name="productQuantity" required>-->
-<!--                                    <span id="productQuantityError" style="color: red; position: absolute;"></span>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <h3 class="mt-3">Укажите предпочитаемый способ зачисления вознаграждения</h3>-->
-<!--                            <div class="d-flex">-->
-<!--                                <div class="form-check p-3 me-4">-->
-<!--                                    <input class="form-check-input" type="radio" name="paymentOption" id="phoneOption" value="1">-->
-<!--                                    <label class="form-check-label" for="phoneOption">-->
-<!--                                        На Телефон-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="form-check p-3">-->
-<!--                                    <input class="form-check-input" type="radio" name="paymentOption" id="bankOption" value="2" checked>-->
-<!--                                    <label class="form-check-label" for="bankOption">-->
-<!--                                        На Банковский Счёт-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            &lt;!&ndash; Форма для Телефона &ndash;&gt;-->
-<!--                            <div id="phoneForm" style="display: none;">-->
-<!--                                    <div class="mb-5 d-flex">-->
-<!--                                        <input type="tel" class="form-control" name="phone" id="phoneNumber" placeholder="+7 (___) ___-__-__">-->
-<!--                                    </div>-->
-<!--                                    &lt;!&ndash; Другие поля формы &ndash;&gt;-->
-<!--                            </div>-->
-<!--                            &lt;!&ndash; Форма для Банковского Счета &ndash;&gt;-->
-<!--                            <div id="bankForm">-->
-<!--                                    <div class="mb-5 d-flex">-->
-<!--                                        <input type="text" class="form-control" id="accountNumber" placeholder="Введите номер счета">-->
-<!--                                    </div>-->
-<!--                                    &lt;!&ndash; Другие поля формы &ndash;&gt;-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-4 mb-3" style="position: relative;">-->
-<!--                            <span id="successOrderCreated" style="color: green; position: absolute;top: -30px;" th:text="#{app.registr.succes-create-order}"></span>-->
-<!--                            <button class="btn btn-secondary" type="submit">Отправить</button>-->
-<!--                        </div>-->
-<!--                    </form>-->
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -395,11 +334,11 @@
             <p class="text-intro-header">Дорогие партнеры!</p>
         </div>
     </div>
-    <div class="container fullwidth d-flex justify-content-center" style="padding-bottom: 60px;">
+    <div class="container fullwidth mb-xl-5 d-flex justify-content-center">
         <div class="col-xl-6 ms-xl-auto text-center text-xl-end">
             <p class="text-intro">Для того, чтобы выразить благодарность за ваше усердие и профессионализм, мы рады объявить о запуске программы мотивации.</p>
 
-            <button class="btn btn-outline-bonus btn-lighter" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft">
+            <button class="btn btn-outline-bonus btn-lighter my-xl-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft">
                 Узнать подробнее
             </button>
 
@@ -433,7 +372,7 @@
                         </p>
                     </div>
 
-                    <button type="submit" class="btn btn-bonus" style="margin-bottom: 45px;">
+                    <button type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCreateOrder" aria-controls="offcanvasCreateOrder" class="btn btn-bonus" style="margin-bottom: 45px;">
                         Заполнить форму
                     </button>
 
@@ -454,234 +393,20 @@
                 Заполнить заявку на бонус
             </button>
         </div>
-        <div class="col col-xl-6 text-end">
-            <button class="btn btn-outline-bonus btn-gigantic" type="button">
+        <div class="col col-xl-6">
+            <a class="btn btn-outline-bonus btn-gigantic ms-auto" type="button" href="prize-draw">
                 Учавствовать в розыгрыше
-            </button>
+            </a>
         </div>
     </div>
-    <div th:insert="fragments :: OffcanvasOrderCreateForm"></div>
+    <div th:insert="~{fragmentsOrder :: OffcanvasOrderCreateForm}"></div>
 </div>
-
-// Панель для создания ордера
-<div th:fragment="OffcanvasOrderCreateForm">
-    <div class="offcanvas offcanvas-end offcanvas-custom-width" tabindex="-1" id="offcanvasCreateOrder" aria-labelledby="offcanvasCreateOrderLabel">
-        <div class="offcanvas-body">
-            <div class="d-flex">
-                <div class="d-none d-xl-block">
-                    <h2 class="offcanvas-title" >Заявка на получение бонуса</h2>
-                    <p>Для получения бонуса заполните необходимые данные по реализованному вами проекту с использованием нашего материла</p>
-                </div>
-                <button type="button" class="btn btn-outline-bonus ms-auto" data-bs-dismiss="offcanvas" aria-label="Close">Закрыть</button>
-            </div>
-            <div class="d-xl-none">
-                <h2 class="offcanvas-title" style="margin-bottom: 15px;">Заявка на получение бонуса</h2>
-                <p>Для получения бонуса заполните необходимые данные по реализованному вами проекту с использованием нашего материла</p>
-            </div>
-            <div th:insert="fragments :: OrderCreateForm"></div>
-        </div>
-    </div>
-</div>
-
-// Форма создания ордера
-<div th:fragment="OrderCreateForm">
-    <form id="orderForm" action="#" th:action="@{${formCreateOrder}}" method="post">
-        <div class="d-flex flex-column">
-            <h3 class="">Тип покупателя</h3>
-            <div class="d-flex my-xl-3 mb-5">
-                <div class="form-check me-4">
-                    <input class="form-check-input" type="radio" name="innOption" id="llcOption" value="1" checked>
-                    <label class="form-check-label" for="llcOption">
-                        Юридическое лицо
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="innOption" id="individualOption" value="2">
-                    <label class="form-check-label" for="individualOption">
-                        Индивидуальный предприниматель
-                    </label>
-                </div>
-            </div>
-        </div>
-
-            <div class="col d-flex g-3 mb-3 flex-column flex-xl-row">
-                <div class="col mb-5 mb-xl-0 pe-xl-3 position-relative">
-                    <label class="form-label" for="innNumber">ИНН покупателя:&nbsp</label>
-                    <input type="text" id="innNumber" class="form-control" name="innNumber"
-                           maxlength="10" minlength="10" onblur="validateInn()" required>
-                    <span id="innErrorForm" class="error-message"></span>
-                </div>
-
-                <div class="col d-flex position-relative">
-                    <div class="col mb-5 mb-xl-0 pe-3">
-                        <label class="form-label" for="invoiceNumber">Номер счета:&nbsp</label>
-                        <input id="invoiceNumber" class="form-control" name="invoiceNumber"
-                               onblur="validateInvoice()" required pattern="\d*" inputmode="numeric">
-                        <span id="invoiceErrorForm" class="error-message"></span>
-                        <span id="invoiceError" class="error-message"></span>
-                    </div>
-                    <div class="col-auto mb-5 mb-xl-0">
-                        <label class="form-label" for="invoiceDate">&nbsp от:&nbsp</label>
-                        <input type="date" id="invoiceDate" name="invoiceDate" class="form-control"
-                               onblur="validateInvoice()" required>
-                    </div>
-                    <input id="fieldInvoiceExternalId" type="hidden" name="fieldInvoiceExternalId"
-                           value=""/>
-                </div>
-            </div>
-            <div class="row g-3 mb-5 position-relative">
-                <div class="col mb-5 mb-xl-0">
-                    <label class="form-label" for="productName">Наименование товара: </label>
-                    <input type="text" id="productName" class="form-control" name="productName" onkeyup="searchProducts()"
-                           onblur="validateProductInInvoice()" required>
-                    <ul id="productSuggestions"
-                        style="border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none;
-                                        position: absolute; background: white; z-index: 1;"></ul>
-                    <span id="productError" class="error-message"></span>
-                </div>
-                <input type="hidden" id="productExternalId" name="productExternalId">
-                <div class="col-auto">
-                    <label class="form-label" for="productQuantity">Количество товара:</label>
-                    <input type="number" step="0.25" size="2" id="productQuantity"
-                           class="form-control" name="productQuantity" required>
-                    <span id="productQuantityError" class="error-message"></span>
-                </div>
-            </div>
-            <h3 class="mt-3">Укажите предпочитаемый способ зачисления вознаграждения</h3>
-            <div class="d-flex my-xl-3 mb-5">
-                <div class="form-check me-4">
-                    <input class="form-check-input" type="radio" name="paymentOption" id="phoneOption" value="1" checked>
-                    <label class="form-check-label" for="phoneOption">
-                        На телефон
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="paymentOption" id="bankOption" value="2" >
-                    <label class="form-check-label" for="bankOption">
-                        На банковский счёт
-                    </label>
-                </div>
-            </div>
-            <!-- Форма для Телефона -->
-            <div id="phoneForm"  style="display: none;">
-                <div class="d-flex flex-column flex-xl-row g-3 mb-3">
-                    <div class="col pe-xl-3 mb-5 mb-xl-0">
-                       <label class="form-label" for="phoneNumber">
-                            Номер телефона
-                        </label>
-                        <input type="tel" class="form-control" name="phone" id="phoneNumber" placeholder="+7 (___) ___-__-__">
-                    </div>
-                    <div class="col mb-5 mb-xl-0">
-                        <label class="form-label" for="phoneNumber">
-                            В банке
-                        </label>
-                        <input class="form-control" id="bankName">
-                    </div>
-                </div>
-
-                <h3 class="my-xl-3 mb-5">Получатель платежа</h3>
-                <div class="d-flex flex-column flex-xl-row g-3 mb-5">
-                    <div class="col pe-xl-3 mb-5 mb-xl-0">
-                        <label class="form-label">
-                            Фамилия
-                        </label>
-                        <input class="form-control" name="lastName">
-                    </div>
-                    <div class="col pe-xl-3 mb-5 mb-xl-0">
-                        <label class="form-label">
-                            Имя
-                        </label>
-                        <input class="form-control" name="name">
-                    </div>
-
-                    <div class="col mb-5 mb-xl-0">
-                        <label class="form-label">
-                            Отчество
-                        </label>
-                        <input class="form-control" name="surName">
-                    </div>
-                </div>
-            </div>
-            <!-- Форма для Банковского Счета -->
-            <div id="bankForm">
-                <h3>Получатель платежа</h3>
-                <div class="row g-3 mb-2">
-                    <div class="col">
-                        <label>
-                            Фамилия
-                        </label>
-                        <input class="form-control" name="lastName">
-                    </div>
-                    <div class="col">
-                        <label>
-                            Имя
-                        </label>
-                        <input  class="form-control" name="name">
-                    </div>
-
-                    <div class="col">
-                        <label>
-                            Отчество
-                        </label>
-                        <input class="form-control" name="surName">
-                    </div>
-                </div>
-                <h3>Банк</h3>
-                <div class="row g-3 mb-2">
-                    <div class="col">
-                        <label>
-                            Номер счёта
-                        </label>
-                        <input  class="form-control" id="accountNumber" pattern="\d*" inputmode="numeric">
-                    </div>
-                    <div class="col">
-                        <label>
-                            Банк получателя
-                        </label>
-                        <input type="text" class="form-control" >
-                    </div>
-
-                    <div class="col-auto">
-                        <label>
-                            БИК
-                        </label>
-                        <input class="form-control" pattern="\d*" inputmode="numeric">
-                    </div>
-                </div>
-                <div class="row g-3 mb-2">
-                    <div class="col-auto">
-                        <label>
-                            ИНН банка
-                        </label>
-                        <input class="form-control" pattern="\d*" inputmode="numeric" maxlength="10" minlength="10" >
-                    </div>
-                    <div class="col-auto">
-                        <label>
-                            КПП банка
-                        </label>
-                        <input class="form-control" pattern="\d*" inputmode="numeric" maxlength="9" minlength="9" >
-                    </div>
-                    <div class="col">
-                        <label>
-                            Кор. счёт
-                        </label>
-                        <input class="form-control" pattern="\d*" inputmode="numeric">
-                    </div>
-                </div>
-            </div>
-        <div class="mb-3" style="position: relative;">
-            <span id="successOrderCreated" th:text="#{app.registr.succes-create-order}"></span>
-            <button class="btn btn-bonus" type="submit">Отправить</button>
-        </div>
-    </form>
-</div>
-
 
 // Главная страница для незарегистрированных
 <div sec:authorize="!isAuthenticated()" th:fragment="WelcomePageUnregistered">
     <div class="vh100 d-flex flex-column justify-content-between">
         <div class="col-12 d-flex justify-content-center container fullwidth">
-            <div class="col-auto text-center" style="padding-top: 30px;">
+            <div class="col-auto my-3 text-center" style="padding-top: 30px;">
                 <p class="text-intro">
                     Дорогие партнеры.<br>
                     Мы рады объявить о запуске программы мотивации.<br>
@@ -692,7 +417,7 @@
 
         <div class="d-flex flex-column flex-xl-row justify-content-between container fullwidth ">
             <div class="col-xl-5">
-                <h1 class="futura-book-с intro-header">
+                <h1 class="intro-header">
                     Ежемесячно получайте бонус за каждый реализованный проект, где был использован материал компании
                     <span>
                 <img th:src="@{/images/logo.svg}" alt="Company Logo">
@@ -711,7 +436,7 @@
             </div>
         </div>
 
-        <div class="d-flex flex-column justify-content-between mb-3 container fullwidth">
+        <div class="d-flex flex-column justify-content-between mb-3 mt-auto container fullwidth">
             <div class="col-12 d-flex justify-content-between">
                 <div class="col-6 col-xl-4 text-gigantic">
                     КАБИНЕТ
@@ -723,14 +448,14 @@
                         Зарегистрировать
                     </button>
                 </div>
-                <div class="col-6 col-xl-4 text-end text-gigantic">
+                <div class="col-6 col-xl-4 text-end text-gigantic" style="padding-right: 2.4px;">
                     ДИЗАЙНЕРА
                 </div>
             </div>
             <div class="d-flex d-xl-none col-12" style="padding-bottom: 20px;">
                 <button class="w-100 btn btn-outline-bonus" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasRegistry"
-                        aria-controls="offcanvasRight" style="height: 220px;display: block;border-style: dotted;">
+                        aria-controls="offcanvasRight" style="height: 90px;display: block;border-style: dotted;">
                     Зарегистрировать
                 </button>
             </div>

@@ -76,7 +76,7 @@ public class PrimaryDataSourceConfig {
 
         final HashMap<String, Object> properties = new HashMap<>();
         properties.put("javax.persistence.validation.mode", "none");
-        properties.put("hibernate.hbm2ddl.auto", "validate");
+        properties.put("hibernate.hbm2ddl.auto", "update");
         em.setJpaPropertyMap(properties);
         return em;
     }
@@ -92,6 +92,5 @@ public class PrimaryDataSourceConfig {
         transactionManager.setDataSource(dataSource);
         return transactionManager;
     }
-
 }
 

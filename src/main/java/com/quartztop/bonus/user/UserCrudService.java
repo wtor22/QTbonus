@@ -78,7 +78,7 @@ public class UserCrudService {
     }
 
     public List<UserEntity> getAllUsers(Roles role) {
-        List<UserEntity> users = userRepository.findByRoles(role.getId());
+        List<UserEntity> users = userRepository.findByRoles(role);
         // Удаляем всех пользователей с ролью ROLE_SUPER_ADMIN
         users.removeIf(user -> user.getRoles().getRole().contains("ROLE_SUPER_ADMIN"));
         return users;
@@ -86,6 +86,10 @@ public class UserCrudService {
 
     public Optional<UserEntity> getUserById(int id) {
         return userRepository.findById(id);
+    }
+
+    public UserEntity getUserByFio(String fio) {
+        return userRepository.findByFio(fio);
     }
 
     public UserEntity findByEmail(String email) {
@@ -100,7 +104,7 @@ public class UserCrudService {
         userDto.setEmail(user.getEmail());
         userDto.setAddress(user.getAddress());
         userDto.setPhone(user.getPhone());
-        userDto.setManager(user.getManager());
+        userDto.setManager(user.getManager().getFio());
         userDto.setNameSalon(user.getNameSalon());
         userDto.setId(user.getId());
 
@@ -115,7 +119,7 @@ public class UserCrudService {
         userEntity.setEmail(user.getEmail());
         userEntity.setAddress(user.getAddress());
         userEntity.setPhone(user.getPhone());
-        userEntity.setManager(user.getManager());
+        //userEntity.setManager(user.getManager());
         userEntity.setNameSalon(user.getNameSalon());
         userEntity.setPassword(user.getPassword());
 

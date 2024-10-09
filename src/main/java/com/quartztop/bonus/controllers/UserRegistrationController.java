@@ -6,6 +6,7 @@ import com.quartztop.bonus.user.UserCrudService;
 import com.quartztop.bonus.user.UserDto;
 import com.quartztop.bonus.user.UserEntity;
 import com.quartztop.bonus.repositoriesBonus.RolesRepository;
+import com.quartztop.bonus.user.roles.Roles;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
@@ -49,39 +52,56 @@ public class UserRegistrationController {
             return "tokens/token-not-found"; // имя страницы с ошибкой токен не найден
         }
 
+        UserEntity userEntity = userCrudService.getUserById(
+                tokenEntity.getUser().getId()).orElseThrow(() -> new NoSuchElementException("пользователь не найден"));
+
+        String email = userEntity.getEmail();
         LocalDateTime expireDateToken = tokenEntity.getExpiryDate();
         if(LocalDateTime.now().isAfter(expireDateToken)) {
             return "tokens/token-outdated"; // имя страницы с ошибкой токен просрочен
         }
 
-        Map<String,String> allUsers = new HashMap<>();
-        allUsers.put("Борисов М.","borisov");
-        allUsers.put("Ермолин Н.","ermolin");
-        allUsers.put("Луцевич А.","lutsevich");
-        allUsers.put("Сусликов А.","suslikov");
-        allUsers.put("Закамская П. А.","zakamskaya");
-        allUsers.put("Денисов Ф. Ф.","denisov");
+        Roles role = rolesRepository.getReferenceById(2);
+        List<UserEntity> listManagers = userCrudService.getAllUsers(role);
+
+        Map<String, Integer> allUsers = new HashMap<>();
+
+        if(tokenEntity.getManager() == null) {
+            allUsers.putAll(listManagers.stream()
+                            .collect(Collectors
+                                    .toMap(UserEntity::getFio, UserEntity::getId)));
+        } else {
+            UserEntity manager = userCrudService.getUserByFio(tokenEntity.getManager());
+            allUsers.put(manager.getFio(),manager.getId());
+        }
+
+        allUsers.forEach((fio,id)-> log.info(fio + " " + id));
 
         model.addAttribute("selectedManager",allUsers.keySet());
         model.addAttribute("formUrl","/registration/complete");
         model.addAttribute("token",token);
+        model.addAttribute("userEmail", email);
 
         return "complete-registration";
     }
 
     @PostMapping("/complete")
-    public ResponseEntity<?> competeRegistration(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> competeRegistration(@RequestBody UserDto userDto,  Model model) {
 
+        log.info("USERDTO GET MANAGER " + userDto.getManager());
         TokenEntity tokenEntity = tokenCrudService.getByToken(userDto.getToken())
                 .orElseThrow(() -> new NoSuchElementException("токен не найден"));
 
         UserEntity userEntity = userCrudService.getUserById(
                 tokenEntity.getUser().getId()).orElseThrow(() -> new NoSuchElementException("пользователь не найден"));
 
+        UserEntity manager = userCrudService.getUserByFio(userDto.getManager());
+
+        log.info("MANAGER FIO " + manager.getFio());
         //шифрую пароль
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         userEntity.setPassword(encodedPassword);
-        userEntity.setManager(userDto.getManager());
+        userEntity.setManager(manager);
         userEntity.setAddress(userDto.getAddress());
         userEntity.setNameSalon(userDto.getNameSalon());
 

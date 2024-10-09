@@ -1,10 +1,195 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Розыгрыш Призов</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
+    <script src="/js/orderCreateForm.js"></script>
+    <script src="/js/uploadImages.js" defer></script>
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <meta name="_csrf" data-th-content="${_csrf.token}"/>
+    <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+<div th:insert="~{fragments :: toprightpanel}" class="position-top-panel"></div>
+
+<div class="top d-flex flex-column justify-content-between">
+    <div class="d-flex flex-column flex-xl-row px-3 px-xl-5">
+        <div class="col text-center text-xl-start">
+            <p class="text-intro">Уважаемые дизайнеры и мастера своего дела!</p>
+            <h1 class="mb-4" style="font-family: FuturaMediumC;">Хотите выиграть потрясающие призы за свои профессиональные работы? Участвуйте в нашем розыгрыше.</h1>
+        </div>
+        <div class="col text-center p-3">
+            <div class="m-auto mb-4 arrowUp"><img th:src="@{/images/arrouUp.svg}" alt=""></div>
+            <p class="text-intro px-xl-5"><sup>*</sup>Требования к фотографиям:<br>
+                Фотографии должны быть четкими, хорошо освещенными и показывать детали вашей работы. Пожалуйста, убедитесь, что фото не имеют искажений, плохого разрешения или шума.
+            </p>
+            <p class="mb-5 d-xl-none"></p>
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Пример фотографии проекта
+            </button>
+            <!-- Modal -->
+            <div class="modal fade background-transparent" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header" data-bs-theme="dark">
+                            <button type="button" class="btn-close" style="margin-bottom: 0;" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-flex">
+                                <img src="/dss1.jpg" style="margin-right: 5px;">
+                                <img src="/dss2.jpg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col col-xl-auto d-flex m-auto my-xl-5">
+        <button class="btn btn-outline-bonus btn-lighter me-xl-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft">
+            Правила участия
+        </button>
+        <button class="btn btn-bonus d-none d-xl-block" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasCreateOrderAction" aria-controls="offcanvasCreateOrderAction">
+            Принять участие
+        </button>
+    </div>
+
+    <div class="actions-bar d-flex flex-column p-2 p-xl-5 pb-xl-0 mt-auto">
+        <p class="text-intro mt-5 mt-xl-0 text-center text-xl-start">Чтобы принять участие в розыгрыше, в период до 30.12.2024г., загрузите фото* выполненного проекта с использованием наших материалов и получите шанс выиграть:</p>
+
+        <div class="col-12 d-none d-xl-flex justify-content-center">
+            <div class="col-auto" style="font-size: 25px;font-weight: bold;">
+                Призы
+            </div>
+        </div>
+
+        <div class="d-flex flex-column flex-xl-row flex-wrap justify-content-center">
+            <h2 class="fs-1 fw-bold text-center my-5 d-xl-none">ПРИЗЫ</h2>
+
+            <div class="col col-xl-6 text-center position-relative top-line-decorate right-line-decorate">
+                <p class="description-left">Первая категория: проект задействовал 2+ слэба</p>
+                <div class="row g-2 mb-4">
+                    <div class="col-4">
+                        <div class="p-xl-3 prize">
+                            <img src="/fen2.jpg" alt="">
+                            Фен-стайлер Bork
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-xl-3 prize">
+                            <img src="/appwatch.jpg" alt="">
+                            Apple Watch
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-xl-3 prize">
+                            <img src="/yandexst.jpg" alt="">
+                            Яндекс Станция 2
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3">
+                </div>
+            </div>
+            <div class="col col-xl-6 text-center position-relative top-line-decorate">
+                <p class="description-right">Вторая категория: проект задействовал 1-2 слэба</p>
+                <div class="row g-2 mb-4">
+                    <div class="col-4">
+                        <div class="p-xl-3 prize">
+                            <img src="/hvilina.jpg" alt="">
+                            Часы Hvilina
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-xl-3 prize">
+                            <img src="/airpods.jpg" alt="">
+                            Apple AirPods
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-xl-3 prize">
+                            <img src="/zy22.jpg" alt="">
+                            Сертификат 10 000₽
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex d-xl-none justify-content-between action" >
+                <div class="col">РОЗЫГРЫШ</div>
+                <div class="col text-end">1.08-1.11</div>
+            </div>
+            <div class="col col-xl-6 mb-5 d-xl-none">
+                <button class="btn btn-bonus w-100" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasCreateOrderAction" aria-controls="offcanvasCreateOrderAction">
+                    Принять участие
+                </button>
+            </div>
+            <div th:insert="~{fragmentsAction :: OffcanvasOrderActionCreateForm}"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasLeft" aria-labelledby="offcanvasLeftLabel">
+    <div class="offcanvas-header">
+        <button type="button" class="btn btn-outline-bonus ms-auto" data-bs-dismiss="offcanvas" aria-label="Close">Закрыть</button>
+    </div>
+    <div class="offcanvas-body text-start">
+        <h2>ПРАВИЛА УЧАСТИЯ:</h2>
+        <div>
+            <p><b>1.</b> Для 1ой категория призов (3 призовых места):</p>
+            <ul>
+                <li>фен-стайлер BORK</li>
+                <li>умные часы Apple Watch</li>
+                <li>умная колонка Яндекс Станция 2</li>
+            </ul>
+            <h5>Условия:</h5>
+            <p><b>В проекте задействовано от 2-ух слэбов.</b></p>
+            <p>Категория камней  STRATOS, MATERIA, ITALSTONE, BELENCO (за исключением декоров: 4262 Kristella White,
+                5050 Forza Fume, 5139 Juliet White, 5250 Elixir White, 5751 Gala Black, 8250 Columbia Gray, 8262 Mont
+                Blanc Snow, 8765 Volcano Black.Alinda,  4043 Aizano, 4227 Fairy White, 4444 Sahara Beige, 5329 Mocca
+                Mousse, 6114 Belluno, 6139 Everest White, 7543 Montana.</p>
+
+            <p><b>2.</b> Для 2ой категория (3 призовых места):</p>
+            <ul>
+                <li>часы Hvilina</li>
+                <li>наушники Apple AirPods</li>
+                <li>сертификат в Золотое Яблоко 10000 р</li>
+            </ul>
+            <h5>Условия:</h5>
+            <p><b>В проекте задействовано не менее 1-ого слэба.</b></p>
+            <p>Категория камней  STRATOS, MATERIA, ITALSTONE, BELENCO (все).</p>
+            <p><b>3.</b> Организатор розыгрыша ООО «Кварцтоп».</p>
+            <p><b>4.</b> Участником Розыгрыша может стать любое физическое лицо старше 18 лет, выполнившее условия загрузки фотографий проектов с материалами КВАРЦТОП в личном Кабинете Дизайнера.</p>
+            <p><b>5.</b> Участие в Розыгрыше бесплатное и не связано с внесением платы.</p>
+            <p><b>6.</b> Призовой фонд Розыгрыша сформирован за счет средств Организатора.</p>
+            <p><b>7.</b> Установленные Призы не обмениваются и не могут быть заменены денежным эквивалентом.</p>
+            <p><b>8.</b> Розыгрыш проводится без использования специального оборудования в прямом эфире. Дата Розыгрыша – 10.01.2025г. Наименование ресурса проведения розыгрыша и точное время будет сообщено позже, но не позднее 30.12.2024г.</p>
+            <p><b>9.</b> Для проведения Розыгрыша Организатор формирует список участников, соответствующих п.1. и 2 настоящих Правил с присвоением каждому участнику ID номера, под которым они принимают участие в розыгрыше Призов. Реестр ID номеров для розыгрыша формируется в хронологическом порядке.</p>
+            <p><b>10.</b> Для проведения Розыгрыша Организатор использует электронную систему случайного выбора - генератор выбора случайных чисел, который случайным образом определяет Победителя.</p>
+            <p><b>11.</b> Срок выдачи Призов Розыгрыша: с 13.01.2025 г. до 31.01.2025г, включительно.</p>
+            <p><b>12.</b> Участие в Розыгрыше означает полное и безоговорочное согласие Участника с настоящими Правилами, включая право Организатора и/или третьих лиц, уполномоченных Организатором Розыгрыша на использование имени, фамилии, фотоматериалов, имеющих отношение к Розыгрышу на опубликование на сайте Организатора в сети Интернет, с правом некоммерческого использования созданных автором фотографий со своим изображением полностью или фрагментарно (без дополнительного согласия Участника и без уплаты какого-либо отдельного дополнительного вознаграждения).</p>
+        </div>
+    </div>
+</div>
+<script>
+
+
+</script>
 
 </body>
 </html>

@@ -11,9 +11,7 @@ import lombok.Setter;
 public class StatusOrders {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     String color;
     String name;
 }

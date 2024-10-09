@@ -22,6 +22,8 @@ public class TokenEntity {
     @Column(nullable = false)
     private String token;
 
+    private String manager;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>FragmentsOrder</title>
+</head>
+<body>
+// Панель для создания ордера на бонусы
+<div th:fragment="OffcanvasOrderCreateForm">
+    <div class="offcanvas offcanvas-end offcanvas-custom-width" tabindex="-1" id="offcanvasCreateOrder" aria-labelledby="offcanvasCreateOrderLabel">
+        <div class="offcanvas-body">
+            <div class="d-flex">
+                <div class="d-none d-xl-block">
+                    <h2 class="offcanvas-title" >Заявка на получение бонуса</h2>
+                    <p>Для получения бонуса заполните необходимые данные по реализованному вами проекту с использованием нашего материла</p>
+                </div>
+                <button type="button" class="btn btn-outline-bonus ms-auto" data-bs-dismiss="offcanvas" aria-label="Close">Закрыть</button>
+            </div>
+            <div class="d-xl-none">
+                <h2 class="offcanvas-title" style="margin-bottom: 15px;">Заявка на получение бонуса</h2>
+                <p>Для получения бонуса заполните необходимые данные по реализованному вами проекту с использованием нашего материла</p>
+            </div>
+            <div th:insert="~{fragmentsOrder :: OrderCreateForm}"></div>
+        </div>
+    </div>
+</div>
+
+// Форма создания ордера
+<div th:fragment="OrderCreateForm">
+    <form id="orderForm" action="#" th:action="@{${formCreateOrder}}" method="post">
+        <div class="d-flex flex-column">
+            <h3 class="mb-2">Тип покупателя</h3>
+            <div class="d-flex  flex-wrap my-xl-3 mb-3">
+                <div class="form-check me-4">
+                    <input class="form-check-input" type="radio" name="innOption" id="llcOption" value="1" checked>
+                    <label class="form-check-label" for="llcOption">
+                        Юридическое лицо
+                    </label>
+                </div>
+                <div class="form-check me-4">
+                    <input class="form-check-input" type="radio" name="innOption" id="individualOption" value="2">
+                    <label class="form-check-label" for="individualOption">
+                        Индивидуальный предприниматель
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fizOption" id="fizOption" value="3">
+                    <label class="form-check-label" for="fizOption">
+                        Физическое лицо
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col d-flex g-3 mb-xl-3 flex-column flex-xl-row flex-wrap">
+            <div id="form-by-inn" class="col mb-3 mb-xl-0 pe-xl-3 position-relative">
+                <label class="form-label" for="innNumber">ИНН покупателя:</label>
+                <input type="text" id="innNumber" class="form-control" name="innNumber"
+                       maxlength="10" minlength="10" onblur="validateInn()">
+                <span id="innErrorForm" class="error-message"></span>
+            </div>
+            <div id="form-by-name" class="col-12 mb-3 mb-xl-3 flex-column flex-xl-row position-relative">
+                <div class="col pe-xl-3">
+                    <label class="form-label" for="lastNameAgent">Фамилия</label>
+                    <input type="text" id="lastNameAgent" class="form-control" name="nameAgent" onblur="validateAgentByName()">
+                    <span id="nameAgentErrorForm" class="error-message"></span>
+                </div>
+                <div class="col pe-xl-3">
+                    <label class="form-label" for="nameAgent">Имя</label>
+                    <input type="text" id="nameAgent" class="form-control" name="nameAgent" onblur="validateAgentByName()">
+                </div>
+                <div class="col">
+                    <label class="form-label" for="surNameAgent">Отчество</label>
+                    <input type="text" id="surNameAgent" class="form-control" name="surNameAgent" onblur="validateAgentByName()">
+                </div>
+
+            </div>
+
+            <div class="col d-flex mb-3 mb-xl-0 position-relative">
+                <div class="col pe-3">
+                    <label class="form-label" for="invoiceNumber">Номер счета:&nbsp</label>
+                    <input id="invoiceNumber" class="form-control" name="invoiceNumber"
+                           onblur="validateInvoice()" required pattern="\d*" inputmode="numeric">
+                    <span id="invoiceErrorForm" class="error-message"></span>
+                    <span id="invoiceError" class="error-message"></span>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label" for="invoiceDate">&nbsp от:&nbsp</label>
+                    <input type="date" id="invoiceDate" name="invoiceDate" class="form-control"
+                           onblur="validateInvoice()" required>
+                </div>
+                <input id="fieldInvoiceExternalId" type="hidden" name="fieldInvoiceExternalId"
+                       value=""/>
+            </div>
+        </div>
+        <div class="col d-flex g-3 position-relative mb-3 mb-xl-4">
+            <div class="col pe-3">
+                <label class="form-label" for="productName">Наименование товара: </label>
+                <input type="text" id="productName" class="form-control" name="productName" onkeyup="searchProducts()"
+                       onblur="validateProductInInvoice()" required>
+                <ul id="productSuggestions"
+                    style="border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none;
+                                        position: absolute; background: white; z-index: 1;"></ul>
+                <span id="productError" class="error-message"></span>
+            </div>
+            <input type="hidden" id="productExternalId" name="productExternalId">
+            <div class="col-auto">
+                <label class="form-label" for="productQuantity">Количество товара:</label>
+                <input type="number" step="0.25" size="2" id="productQuantity"
+                       class="form-control" name="productQuantity" required>
+                <span id="productQuantityError" class="error-message"></span>
+            </div>
+        </div>
+        <div class="mb-1 d-xl-none"></div>
+        <div>
+            <h3 class="mb-2">Укажите предпочитаемый способ зачисления вознаграждения</h3>
+        </div>
+        <div class="d-flex flex-wrap my-xl-3 mb-3">
+            <div class="form-check me-4">
+                <input class="form-check-input" type="radio" name="paymentOption" id="phoneOption" value="1">
+                <label class="form-check-label" for="phoneOption">
+                    На карту по номеру телефона
+                </label>
+            </div>
+            <div class="form-check me-4">
+                <input class="form-check-input" type="radio" name="paymentOption" id="cardOption" value="2">
+                <label class="form-check-label" for="cardOption">
+                    На карту по номеру карты
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentOption" id="bankOption" value="3" >
+                <label class="form-check-label" for="bankOption">
+                    На банковский счёт
+                </label>
+            </div>
+        </div>
+        <!-- Форма для Карты -->
+        <div id="cardForm" class="pb-3" style="display: none;">
+            <div class="d-flex flex-column flex-xl-row g-3 mb-3">
+                <div class="col pe-xl-3 mb-3 mb-xl-0">
+                    <label class="form-label" for="cardNumber">
+                        Номер карты
+                    </label>
+                    <input id="cardNumber"  class="form-control card-form" name="card"
+                           placeholder="____ ____ ____ ____">
+                </div>
+            </div>
+            <h3 class="my-3">Получатель платежа</h3>
+            <div class="d-flex flex-column flex-xl-row g-3 mb-4">
+                <div class="col pe-xl-3 mb-3 mb-xl-0">
+                    <label class="form-label" for="lastNameByCard">
+                        Фамилия
+                    </label>
+                    <input id="lastNameByCard" class="form-control phone-form" name="lastName">
+                </div>
+                <div class="col pe-xl-3 mb-3 mb-xl-0">
+                    <label class="form-label" for="nameByCard">
+                        Имя
+                    </label>
+                    <input id="nameByCard" class="form-control phone-form" name="name">
+                </div>
+            </div>
+
+        </div>
+        <!-- Форма для Телефона -->
+        <div id="phoneForm" class="pb-3" style="display: none;">
+            <div class="d-flex flex-column flex-xl-row g-3 mb-3">
+                <div class="col pe-xl-3 mb-3 mb-xl-0">
+                    <label class="form-label" for="phoneNumber">
+                        Номер телефона
+                    </label>
+                    <input id="phoneNumber" type="tel" class="form-control phone-form" name="phone"  placeholder="+7 (___) ___-__-__">
+                </div>
+                <div class="col mb-3 mb-xl-0">
+                    <label class="form-label" for="phoneNumber">
+                        В банке
+                    </label>
+                    <input id="bankByPhoneNumber" class="form-control phone-form" >
+                </div>
+            </div>
+            <h3 class="my-3">Получатель платежа</h3>
+            <div class="d-flex flex-column flex-xl-row g-3 mb-4">
+                <div class="col pe-xl-3 mb-3 mb-xl-0">
+                    <label class="form-label">
+                        Фамилия
+                    </label>
+                    <input id="lastNameByPhoneNumber" class="form-control phone-form" name="lastName">
+                </div>
+                <div class="col pe-xl-3 mb-3 mb-xl-0">
+                    <label class="form-label">
+                        Имя
+                    </label>
+                    <input id="nameByPhoneNumber" class="form-control phone-form" name="name">
+                </div>
+            </div>
+        </div>
+        <!-- Форма для Банковского Счета -->
+        <div id="bankForm" class="pb-3">
+            <h3 class="my-3">Получатель платежа</h3>
+            <div class="d-flex flex-column flex-xl-row g-3 mb-4">
+                <div class="col pe-xl-3 mb-3 mb-xl-0">
+                    <label class="form-label">
+                        Фамилия
+                    </label>
+                    <input id="lastNameByAccount" class="form-control" name="lastName">
+                </div>
+                <div class="col pe-xl-3 mb-3 mb-xl-0">
+                    <label class="form-label">
+                        Имя
+                    </label>
+                    <input  id="nameByAccount" class="form-control" name="name">
+                </div>
+            </div>
+            <h3 class="my-3">Банк</h3>
+            <div class="d-flex flex-column flex-xl-row g-3 mb-3">
+                <div class="col-auto pe-xl-3 mb-3 mb-xl-0">
+                    <label class="form-label">
+                        БИК
+                    </label>
+                    <input id="bic" class="form-control" pattern="\d*" inputmode="numeric"
+                           maxlength="9" minlength="9" onblur="handleBlur()">
+                </div>
+                <div class="col mb-3 mb-xl-0">
+                    <label class="form-label">
+                        Номер счёта
+                    </label>
+                    <input  id="accountNumber" class="form-control"  pattern="\d*" inputmode="numeric"
+                            maxlength="20" minlength="20">
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col">
+                    <label class="form-label">
+                        Банк получателя
+                    </label>
+                    <input id="bankname" type="text" class="form-control" disabled readonly>
+                </div>
+            </div>
+        </div>
+        <div class="mb-5" style="position: relative;">
+            <span id="successOrderCreated" th:text="#{app.registr.succes-create-order}"></span>
+            <button class="btn btn-bonus" type="submit">Отправить</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -15,8 +15,9 @@ public class Agent {
     private int id;
 
     @Column(name = "id_external", unique = true)
-    private String externalId; // id счёта в Мой Склад
-    private String name; // Номер счета в Мой Склад
+    private String externalId;
+    private String name;
     private String inn;
-
+    @Column(name = "legal_title")
+    private String fullName;
 }

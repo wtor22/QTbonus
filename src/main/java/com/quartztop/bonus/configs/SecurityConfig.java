@@ -28,15 +28,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(withDefaults())
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/**","/error/**","/css/**", "/js/**", "/api/user",
-                               " /order/**", "/login").permitAll()
+                                .requestMatchers("/","/registration/**","/registration","/403","/error/**","/fonts/**","/images/**","/css/**", "/js/**", "/api/**",
+                               "/order/**", "/login", "/first-registration").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -55,6 +54,14 @@ public class SecurityConfig {
                                 .invalidateHttpSession(true)  // Инвалидируем сессию
                                 .deleteCookies("JSESSIONID")  // Удаляем cookies
                                 .permitAll()
+                )
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint((request, response, authException) -> {
+                                    // Редирект на 403 для неавторизованных пользователей
+                                    response.sendRedirect("/403");
+                                })
+                                .accessDeniedPage("/403") // для авторизованных, но без прав
                 );
         return http.build();
     }

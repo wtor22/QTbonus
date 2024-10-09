@@ -70,7 +70,7 @@ public class UserRestController {
         String token = UUID.randomUUID().toString();
         tokenCrudService.create(token,userDto);
         // Формирование ссылки для создания пароля
-        String passwordResetLink = "http://" + messageService.getHost()
+        String passwordResetLink = messageService.getHost()
                 + messageService.getPointCreateUser() + "?token=" + token;
         // Отправка письма пользователю
         String to = userDto.getEmail();
