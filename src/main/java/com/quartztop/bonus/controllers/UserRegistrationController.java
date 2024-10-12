@@ -10,6 +10,9 @@ import com.quartztop.bonus.user.roles.Roles;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -109,6 +112,44 @@ public class UserRegistrationController {
         tokenCrudService.updateStatus(tokenEntity.getToken());
 
         return ResponseEntity.ok().body(Map.of("redirectUrl", "/"));
+    }
+
+    @GetMapping("/token")
+    public String registrationByToken(@RequestParam(name = "token", required = true) String token, Model model){
+        log.info("Start  ");
+
+        TokenEntity tokenEntity = tokenCrudService.getByToken(token).orElseThrow();
+        UserEntity manager = tokenEntity.getManagerId();
+
+
+        log.info("MANAGER " + manager.getFio());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+
+            String userEmail = authentication.getName(); // Получаем имя пользователя
+            UserEntity user = userCrudService.findByEmail(userEmail);
+            String username = user.getFio();
+            Roles userRole = user.getRoles();
+
+            model.addAttribute("username", username); // Передаем имя пользователя в модель
+            model.addAttribute("userRole", userRole);
+            model.addAttribute("nameRole",userRole.getNameRole());
+            model.addAttribute("welcome","Вы уже зарегистрированы");
+
+            if(userRole.getRole().equals("ROLE_USER")) {
+
+                model.addAttribute("formCreateOrder","/order/create");
+            }
+        } else {
+            model.addAttribute("username", "Guest"); // Передаем имя пользователя в модель
+            model.addAttribute("manager", manager.getFio());
+        }
+
+        model.addAttribute("formUrl","/api/user");
+
+        return "first-registration";
     }
 
 

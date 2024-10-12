@@ -24,9 +24,13 @@ public class TokenEntity {
 
     private String manager;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "manager_id")
+    private UserEntity managerId;
 
     @Column(nullable = false)
     private LocalDateTime expiryDate;

@@ -23,6 +23,8 @@ public class MessageService {
     }
 
     public String getPointCreateUser() {return messageSource.getMessage("app.pointCreateUser",null,Locale.getDefault());}
+
+    public String getPointCreateUserByLinkManager() {return messageSource.getMessage("app.pointCreateUserByLinkManager",null,Locale.getDefault());}
     public String getWelcomeMessage() {
         return messageSource.getMessage("app.welcome-message", null, Locale.getDefault());
     }

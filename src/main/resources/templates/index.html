@@ -12,7 +12,8 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
     <script th:if="${#authorization.expression('isAnonymous()')}" th:src="@{/js/formHandler.js}"></script>
-    <script th:if="${#authorization.expression('isAuthenticated()')}" th:src="@{/js/orderCreateForm.js}"></script>
+    <script th:if="${#authorization.expression('isAuthenticated() and hasRole(''ROLE_USER'')')}" th:src="@{/js/orderCreateForm.js}"></script>
+    <script th:if="${#authorization.expression('isAuthenticated() and hasRole(''ROLE_MANAGER'')')}" th:src="@{/js/managerHandler.js}"></script>
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <meta name="_csrf" data-th-content="${_csrf.token}"/>
     <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
@@ -24,7 +25,7 @@
 <div th:insert="~{fragments :: registerform}"></div>
 <div th:insert="~{fragments :: WelcomePage}"></div>
 <div th:insert="~{fragments :: WelcomePageUnregistered}"></div>
-<div sec:authorize="hasRole('ROLE_SUPER_ADMIN')" class="top d-flex flex-column justify-content-between">
+<div sec:authorize="hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_MANAGER')" class="top d-flex flex-column justify-content-between">
     <div th:insert="~{fragments :: DashBoard}"></div>
 </div>
 <div th:insert="~{fragments :: Messages}"></div>

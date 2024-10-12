@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -29,12 +31,31 @@ public class TokenCrudService {
         tokenRepository.save(tokenEntity);
     }
 
+    public void createTokenToLinkRegistry(String token, UserEntity manager, LocalDateTime expiryDate) {
+       TokenEntity tokenEntity = new TokenEntity();
+       tokenEntity.setManagerId(manager);
+       tokenEntity.setToken(token);
+       tokenEntity.setExpiryDate(expiryDate);
+
+       tokenRepository.save(tokenEntity);
+    }
+
     public void updateStatus(String token) {
 
         TokenEntity tokenEntity = getByToken(token).orElseThrow();
         tokenEntity.setClosed(true);
         tokenRepository.save(tokenEntity);
     }
+
+    public TokenEntity getLastByManager(UserEntity manager) {
+        List<TokenEntity> listTokenEntity =
+                tokenRepository.findLatestTokenByManagerId(manager);
+        if (listTokenEntity.isEmpty()) {
+            return null;
+        }
+        return listTokenEntity.get(0);
+    }
+
 
     public Optional<TokenEntity> getByToken(String token) {
 

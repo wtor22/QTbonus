@@ -486,6 +486,12 @@ a.btn.btn-outline-bonus.btn-gigantic {
     padding: 7px 15px;
     text-transform: lowercase;
 }
+.link-view {
+border: none;
+    background-color: transparent;
+    height: 1em;
+    padding: 0 20px;
+}
 
 @media (min-width: 1201px) {
     .btn.btn-outline-bonus {
