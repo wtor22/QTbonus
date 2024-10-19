@@ -73,7 +73,6 @@
                     <label class="form-label" for="surNameAgent">Отчество</label>
                     <input type="text" id="surNameAgent" class="form-control" name="surNameAgent" onblur="validateAgentByName()">
                 </div>
-
             </div>
 
             <div class="col d-flex mb-3 mb-xl-0 position-relative">
@@ -96,7 +95,7 @@
         <div class="col d-flex g-3 position-relative mb-3 mb-xl-4">
             <div class="col pe-3">
                 <label class="form-label" for="productName">Наименование товара: </label>
-                <input type="text" id="productName" class="form-control" name="productName" onkeyup="searchProducts()"
+                <input type="text" id="productName" class="form-control" name="productName" autocomplete="off" onkeyup="searchProducts()"
                        onblur="validateProductInInvoice()" required>
                 <ul id="productSuggestions"
                     style="border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none;
@@ -106,8 +105,8 @@
             <input type="hidden" id="productExternalId" name="productExternalId">
             <div class="col-auto">
                 <label class="form-label" for="productQuantity">Количество товара:</label>
-                <input type="number" step="0.25" size="2" id="productQuantity"
-                       class="form-control" name="productQuantity" required>
+                <input id="productQuantity" type="number" step="0.25" size="2"
+                       class="form-control" name="productQuantity" disabled required>
                 <span id="productQuantityError" class="error-message"></span>
             </div>
         </div>
@@ -117,7 +116,7 @@
         </div>
         <div class="d-flex flex-wrap my-xl-3 mb-3">
             <div class="form-check me-4">
-                <input class="form-check-input" type="radio" name="paymentOption" id="phoneOption" value="1">
+                <input class="form-check-input" type="radio" name="paymentOption" id="phoneOption" checked value="1">
                 <label class="form-check-label" for="phoneOption">
                     На карту по номеру телефона
                 </label>
@@ -152,13 +151,13 @@
                     <label class="form-label" for="lastNameByCard">
                         Фамилия
                     </label>
-                    <input id="lastNameByCard" class="form-control phone-form" name="lastName">
+                    <input id="lastNameByCard" class="form-control card-form" name="lastName">
                 </div>
                 <div class="col pe-xl-3 mb-3 mb-xl-0">
                     <label class="form-label" for="nameByCard">
                         Имя
                     </label>
-                    <input id="nameByCard" class="form-control phone-form" name="name">
+                    <input id="nameByCard" class="form-control card-form" name="name">
                 </div>
             </div>
 

@@ -10,6 +10,7 @@ import com.quartztop.bonus.servises.MessageService;
 import com.quartztop.bonus.tokens.TokenCrudService;
 import com.quartztop.bonus.tokens.TokenEntity;
 import com.quartztop.bonus.user.UserCrudService;
+import com.quartztop.bonus.user.UserDto;
 import com.quartztop.bonus.user.UserEntity;
 import com.quartztop.bonus.user.roles.Roles;
 import lombok.AllArgsConstructor;
@@ -52,10 +53,11 @@ public class UserWebController {
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
 
             String userEmail = authentication.getName(); // Получаем имя пользователя
-            UserEntity user = userCrudService.findByEmail(userEmail);
+            UserEntity user = userCrudService.findByEmail(userEmail).orElseThrow();
             String username = user.getFio();
             Roles userRole = user.getRoles();
             String welcomeMessage = messageService.getWelcomeMessage();
+            model.addAttribute("user",user);
             model.addAttribute("username", username); // Передаем имя пользователя в модель
             model.addAttribute("userRole", userRole);
             model.addAttribute("nameRole",userRole.getNameRole());
@@ -79,6 +81,7 @@ public class UserWebController {
             }
             if(userRole.getRole().equals("ROLE_MANAGER")) {
 
+                // Получаю ссылку на регистрацию
                 TokenEntity tokenEntity = tokenCrudService.getLastByManager(user);
 
                 if(tokenEntity != null && !tokenEntity.getExpiryDate().isBefore(LocalDateTime.now())) {
@@ -100,6 +103,11 @@ public class UserWebController {
                     model.addAttribute("registeredLink", "ссылка еще не сгенерирована");
                     model.addAttribute("linkExists", false); // Атрибут отсутствует
                 }
+
+                // Получаю список пользователей менеджера
+                List<UserDto> usersList = userCrudService.getAllUsersDtoByManager(user);
+
+                model.addAttribute("usersList", usersList);
                 model.addAttribute("formCreateOrder","/order/create");
             }
 

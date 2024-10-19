@@ -6,10 +6,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity,Integer> {
 
-    UserEntity findByEmail(String email);
+    //UserEntity findByEmail(String email);
+
+    boolean existsByEmail(String email);
+    boolean existsByPhone(String phone);
+
+    Optional<UserEntity> findByEmail (String email);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.createDate IS NOT NULL")
+    List<UserEntity> findAllWithCreateDate();
+
+    @Query("SELECT u FROM UserEntity u WHERE u.createDate IS NOT NULL AND u.manager = ?1")
+    List<UserEntity> findAllWithCreateDateAndManager(UserEntity manager);
 
 
     UserEntity findByFio(String fio);

@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface AgentRepository extends JpaRepository<Agent, Integer> {
 
     Optional<Agent> findByInn(String inn);
+    List<Agent> findAllByInn(String inn);
 
     @Query("SELECT a.Id FROM Agent a WHERE a.fullName = :agentFullName")
     List<Integer> findAgentIdsByFullName(@Param("agentFullName") String agentFullName);

@@ -25,13 +25,13 @@ function clearAllFields() {
     imageBlocks.forEach((block) => {
         block.remove();  // Удаляет элемент из DOM
     });
-    // Делаем поле ввода количества неактивным
-    productQuantity.disabled = true;
-
 }
 
 // Получаем ФИО Физ лица
 function getFullName() {
+    if (!fullNameAgent) {
+        return;
+    }
     let lastNameAgent = document.getElementById("lastNameAgent").value.trim();
     let nameAgent = document.getElementById("nameAgent").value.trim();
     let surNameAgent = document.getElementById("surNameAgent").value.trim();
@@ -75,8 +75,6 @@ function validateInn() {
     let productQuantity = document.getElementById("productQuantity");
     let fieldInvoiceExternalId = document.getElementById("fieldInvoiceExternalId");
     let successOrderMessage = document.getElementById("successOrderCreated");
-    let productError = document.getElementById("productError");
-
 
     if (innNumber) {
         let params = new URLSearchParams({innNumber: innNumber});
@@ -96,8 +94,6 @@ function validateInn() {
                 productQuantity.value = "";
                 fieldInvoiceExternalId = "";
                 innErrorForm.textContent = "";  // Убираем сообщение об ошибке если номер и дата валидны
-                productError.textContent = "";
-                productQuantityError.textContent = "";
             })
             .catch(error => {
                 isInvoiceValid = false; // Сбрасываем флаг валидности
@@ -156,29 +152,7 @@ function validateInvoice() {
 }
 
  function searchProducts() {
-
-        console.log("SEARCH PRODUCT START")
-        let productNameInput = document.getElementById("productName");
         let productName = document.getElementById("productName").value;
-        let suggestions = document.getElementById("productSuggestions");
-        let productQuantity = document.getElementById("productQuantity");
-
-        // Блокируем ввод количество товара
-
-        productQuantity.disabled = true;
-        productQuantity.value = '';
-
-        let productNameRect = productNameInput.getBoundingClientRect(); // Получаем положение инпута
-        let windowHeight = window.innerHeight; // Высота окна браузера
-        let spaceBelow = windowHeight - productNameRect.bottom; // Свободное место под инпутом
-
-        if (spaceBelow < 150) { // Если места под инпутом меньше, чем нужно для списка
-            suggestions.classList.add('above');
-            suggestions.classList.remove('below');
-        } else {
-            suggestions.classList.add('below');
-            suggestions.classList.remove('above');
-        }
 
         if (productName.length >= 4) { // Запуск поиска после ввода 4-го символа
             fetch('/order/search-products?query=' + productName)
@@ -209,7 +183,6 @@ function validateInvoice() {
 
  // Validate product in invoice
  function validateProductInInvoice() {
- console.log("VALIDATE PRODUCT ")
  setTimeout(() => {  // Задержка перед выполнением основного кода
      let productName = document.getElementById("productName").value;
      let productQuantity = document.getElementById("productQuantity");
@@ -227,7 +200,6 @@ function validateInvoice() {
                  productQuantity.value = "";
                  isInvoiceValid = true; // Если все О.К., устанавливаем флаг в true
                  productError.textContent = "";  // Убираем сообщение об ошибке если номер и дата валидны
-                 productQuantity.disabled = false;
              })
              .catch(error => {
                  isInvoiceValid = false; // Сбрасываем флаг валидности
@@ -429,12 +401,10 @@ document.addEventListener('DOMContentLoaded', () => {
      });
  });
 
+
 // JavaScript для управления отображением форм выбора способа оплаты
 document.addEventListener('DOMContentLoaded', function() {
 
-    if(!document.getElementById('phoneOption')) {
-        return;
-    }
     const phoneOption = document.getElementById('phoneOption');
     const bankOption = document.getElementById('bankOption');
     const cardOption = document.getElementById('cardOption');
@@ -502,13 +472,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // JavaScript для управления отображением форм выбора типа Покупателя
 document.addEventListener('DOMContentLoaded', function() {
-
-    const blockByName = document.getElementById('form-by-name');
+    const blockByName = "";
+    if(document.getElementById('form-by-name')) {
+        blockByName = document.getElementById('form-by-name');
+    }
     const blockByInn = document.getElementById('form-by-inn');
 
     const llcOption = document.getElementById('llcOption');
     const individualOption = document.getElementById('individualOption');
-    const fizOption = document.getElementById('fizOption');
+    const fizOption = "";
+    if(document.getElementById('fizOption')) {
+        fizOption = document.getElementById('fizOption');
+    }
 
     const innForm = document.getElementById('innNumber');
 
@@ -596,49 +571,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Функция для получения данных по BIC
-async function fetchBICInfo(bic) {
-    const url = `https://bik-info.ru/api.html?type=json&bik=${bic}`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Ошибка сети');
-        }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Ошибка получения данных:', error);
-        return null;
-    }
-}
 
-// Функция для декодирования HTML-сущностей
-function decodeHtmlEntities(text) {
-    const tempElement = document.createElement('textarea');
-    tempElement.innerHTML = text;
-    return tempElement.value;
-}
 
-// Функция для обновления полей на странице
-function updateFields(data) {
-    document.getElementById('bankname').value = decodeHtmlEntities(data.name || 'Нет данных');
-    document.getElementById('namemini').textContent = decodeHtmlEntities(data.namemini || 'Нет данных');
-    document.getElementById('city').textContent = decodeHtmlEntities(data.city || 'Нет данных');
-    document.getElementById('address').textContent = decodeHtmlEntities(data.address || 'Нет данных');
-}
 
-// Событие при потере фокуса с поля BIC
-// Обработчик события blur
-async function handleBlur() {
-    const bic = document.getElementById('bic').value;
-
-    // Проверяем, что длина введённого значения соответствует требованиям
-    if (bic.length === 9) {
-        const data = await fetchBICInfo(bic);
-        if (data) {
-            updateFields(data);
-        }
-    } else {
-        alert('BIC должен содержать ровно 9 символов!');
-    }
-}

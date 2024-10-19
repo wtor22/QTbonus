@@ -34,7 +34,7 @@ public class OrderController {
     @ResponseBody
     public ResponseEntity<String> validateAgent(@RequestParam("innNumber") String inn) {
 
-        if(agentRepository.findByInn(inn).isPresent())
+        if(!agentRepository.findAllByInn(inn).isEmpty())
             return ResponseEntity.ok("valid");
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Контрагент с учетным номером " + inn
@@ -69,12 +69,9 @@ public class OrderController {
             invoicesList = invoicesRepository.findByNameAndAgentInnAndMomentBetween(invoiceNumber, inn,
                     startDate,endDate);
         } else {
-            log.info("AGENT FULL NAME NOT NULL " + agentFullName);
             List<Integer> agentsId = agentRepository.findAgentIdsByFullName(agentFullName);
             invoicesList = invoicesRepository.findByAgentsIdAndMomentBetween(agentsId,startDate,endDate);
         }
-
-        invoicesList.forEach(o -> log.info(o.getName()));
 
         if (invoicesList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Счет с номером " + invoiceNumber
@@ -91,21 +88,25 @@ public class OrderController {
     @GetMapping("/search-products")
     @ResponseBody
     public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam("query") String query) {
-        List<Product> products = productRepositories.findByDescriptionContainingIgnoreCaseAndTypeProduct(query,"product");
+        log.info("Search by STRING " + query);
+        List<Product> products = productRepositories.searchByDescriptionOrArticleAndType(query,"product");
         List<ProductDto> productDtoList = products.stream()
                 .filter(product -> product.getPathName().startsWith("Кварцевый Агломерат") ||
                         product.getPathName().startsWith("Керамогранит"))
                 .map(product -> new ProductDto(product.getProductId(), product.getExternalId(), product.getName()))
                 .toList();
-        //List<String> productsName = products.stream().map(Product::getName).toList();
+        products.forEach(p->log.info(p.getName()));
         return ResponseEntity.ok(productDtoList);
     }
+
     @GetMapping("/search-products-in-invoice")
     @ResponseBody
     public ResponseEntity<String> searchProductsInInvoice(@RequestParam("productName") String productName,
                                                                     @RequestParam("invoiceExternalId") String invoiceExternalId) {
 
+
         List<InvoicePosition> positions = positionInvoiceRepository.findAllByExternalInvoiceId(invoiceExternalId);
+
 
         if (positions.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Указанный товар в счете не найден");
@@ -141,11 +142,6 @@ public class OrderController {
         List<InvoicePosition> positions = positionInvoiceRepository.findAllByExternalInvoiceId(invoiceExternalId);
 
         Map<String, Double> mapPositions = new HashMap<>();
-
-        // TODO Удалить потом
-        if(positions.stream().anyMatch(p -> p.getExternalProductId().equals(productExternalId))) {
-            log.error("Содержится элемент в счете");
-        }
 
         double sumForProduct = 0;
         double quantityProduct = 0;
@@ -194,8 +190,6 @@ public class OrderController {
         }
 
         String priceToString = String.valueOf(price);
-        log.info("OLD ORDERS QUANTITY   " + quantityFromOldOrders);
-        log.info("PRICE  " + price);
         if(productQuantity <= quantityProduct - quantityFromOldOrders) {
             return ResponseEntity.status(HttpStatus.OK).body(priceToString);
         }

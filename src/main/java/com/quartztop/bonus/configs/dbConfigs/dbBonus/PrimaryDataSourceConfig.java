@@ -16,7 +16,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.HashMap;
 
-
 @EnableJpaRepositories(
         entityManagerFactoryRef = PrimaryDataSourceConfig.ENTITY_MANAGER_FACTORY,
         transactionManagerRef = PrimaryDataSourceConfig.TRANSACTION_MANAGER,
@@ -44,7 +43,6 @@ public class PrimaryDataSourceConfig {
         log.info("Loading Database Properties: {}", databaseProperty);
         return new DatabaseProperty();
     }
-
 
     @Bean(DATA_SOURCE)
     public DataSource appDataSource(
@@ -80,7 +78,6 @@ public class PrimaryDataSourceConfig {
         em.setJpaPropertyMap(properties);
         return em;
     }
-
     @Bean(TRANSACTION_MANAGER)
     @Primary
     public PlatformTransactionManager sqlSessionTemplate(

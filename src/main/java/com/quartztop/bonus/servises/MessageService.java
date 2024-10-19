@@ -24,6 +24,7 @@ public class MessageService {
 
     public String getPointCreateUser() {return messageSource.getMessage("app.pointCreateUser",null,Locale.getDefault());}
 
+    public String getPointResetPassword() {return messageSource.getMessage("app.pointResetPassword",null,Locale.getDefault());}
     public String getPointCreateUserByLinkManager() {return messageSource.getMessage("app.pointCreateUserByLinkManager",null,Locale.getDefault());}
     public String getWelcomeMessage() {
         return messageSource.getMessage("app.welcome-message", null, Locale.getDefault());
@@ -38,6 +39,8 @@ public class MessageService {
     }
 
     public String getTextCreateAccount() {return  messageSource.getMessage("app.email.create-password-message",null,Locale.getDefault());}
+
+    public String getTextResetPassword() {return  messageSource.getMessage("app.email.reset-password-message",null,Locale.getDefault());}
 
     public String getErrorMessageEmail() {return  messageSource.getMessage("app.error.email-exist",null,Locale.getDefault());}
 

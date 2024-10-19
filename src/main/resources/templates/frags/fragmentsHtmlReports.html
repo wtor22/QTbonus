@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>FragmentsHtmlReports</title>
+</head>
+<body>
+<div th:fragment="reportUsers" class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                <th>Телефон</th>
+                <th>Город</th>
+                <th>Название салона</th>
+                <th>Дата регистрации</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${usersList}">
+                <td th:text="${user.fio}"></td>
+                <td th:text="${user.phone}"></td>
+                <td th:text="${user.city}"></td>
+                <td th:text="${user.nameSalon}"></td>
+                <td th:text="${user.createDate}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 
 @Setter
 @Getter
@@ -21,12 +23,16 @@ public class UserEntity {
     @Column(name = "phone", unique = true)
     private String phone;
     private String nameSalon;
+    private String city;
     private String address;
     private String password;
 
     @ManyToOne
     @JoinColumn(name = "manager_id")  // Ссылка на менеджера
     private UserEntity manager;
+
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

@@ -36,7 +36,7 @@ public class RegistrationByLinkManagerController {
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
 
             String userEmail = authentication.getName(); // Получаем имя пользователя
-            UserEntity user = userCrudService.findByEmail(userEmail);
+            UserEntity user = userCrudService.findByEmail(userEmail).orElseThrow();
             String username = user.getFio();
             Roles userRole = user.getRoles();
             String welcomeMessage = messageService.getWelcomeMessage();

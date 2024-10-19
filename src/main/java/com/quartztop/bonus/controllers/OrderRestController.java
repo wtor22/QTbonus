@@ -54,7 +54,7 @@ public class OrderRestController {
     @GetMapping
     public ResponseEntity<List<OrderDto>> getUserOrders(Principal principal) {
         String username = principal.getName();
-        UserEntity user = userCrudService.findByEmail(username);
+        UserEntity user = userCrudService.findByEmail(username).orElseThrow();
 
         List<Order> orders = orderRepository.getOrdersByUserEntity(user);
         List<OrderDto> userOrders = orders.stream().map(OrderDtoService::mapOrderToDto)
@@ -68,7 +68,7 @@ public class OrderRestController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         UserEntity user = userCrudService
-                .findByEmail(authentication.getName()); // authentication.getName() это адрес email
+                .findByEmail(authentication.getName()).orElseThrow(); // authentication.getName() это адрес email
 
         order.setUserEntity(user);
         order.setCreateDate(LocalDateTime.now());

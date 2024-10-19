@@ -14,8 +14,10 @@ public class UserDto {
     String phone;
     String manager;
     String nameSalon;
+    String city;
     String address;
     String token;
+    String createDate;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Позволяет использовать поле только для записи (при десериализации)
     String password;

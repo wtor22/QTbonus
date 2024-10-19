@@ -37,21 +37,43 @@
                         Юридическое лицо
                     </label>
                 </div>
-                <div class="form-check">
+                <div class="form-check me-4">
                     <input class="form-check-input" type="radio" name="innOption" id="individualOption" value="2">
                     <label class="form-check-label" for="individualOption">
                         Индивидуальный предприниматель
                     </label>
                 </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fizOption" id="fizOption" value="3">
+                    <label class="form-check-label" for="fizOption">
+                        Физическое лицо
+                    </label>
+                </div>
             </div>
         </div>
 
-        <div class="col d-flex g-3 mb-xl-3 flex-column flex-xl-row">
-            <div class="col mb-3 mb-xl-0 pe-xl-3 position-relative">
-                <label class="form-label" for="innNumber">ИНН покупателя:&nbsp</label>
+
+        <div class="col d-flex g-3 mb-xl-3 flex-column flex-xl-row flex-wrap">
+            <div id="form-by-inn" class="col mb-3 mb-xl-0 pe-xl-3 position-relative">
+                <label class="form-label" for="innNumber">ИНН покупателя:</label>
                 <input type="text" id="innNumber" class="form-control" name="innNumber"
-                       maxlength="10" minlength="10" onblur="validateInn()" required>
+                       maxlength="10" minlength="10" onblur="validateInn()">
                 <span id="innErrorForm" class="error-message"></span>
+            </div>
+            <div id="form-by-name" class="col-12 mb-3 mb-xl-3 flex-column flex-xl-row position-relative">
+                <div class="col pe-xl-3">
+                    <label class="form-label" for="lastNameAgent">Фамилия</label>
+                    <input type="text" id="lastNameAgent" class="form-control" name="nameAgent" onblur="validateAgentByName()">
+                    <span id="nameAgentErrorForm" class="error-message"></span>
+                </div>
+                <div class="col pe-xl-3">
+                    <label class="form-label" for="nameAgent">Имя</label>
+                    <input type="text" id="nameAgent" class="form-control" name="nameAgent" onblur="validateAgentByName()">
+                </div>
+                <div class="col">
+                    <label class="form-label" for="surNameAgent">Отчество</label>
+                    <input type="text" id="surNameAgent" class="form-control" name="surNameAgent" onblur="validateAgentByName()">
+                </div>
             </div>
 
             <div class="col d-flex mb-3 mb-xl-0 position-relative">
@@ -71,6 +93,9 @@
                        value=""/>
             </div>
         </div>
+
+
+
         <div class="col d-flex g-3 position-relative mb-3 mb-xl-4">
             <div class="col pe-3">
                 <label class="form-label" for="productName">Наименование товара: </label>

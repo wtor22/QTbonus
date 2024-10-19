@@ -282,6 +282,10 @@ button.clear {
 .absolute-input .dropdown-item:hover {
     color: #333;
 }
+.btn.dropdown-item:focus {
+    font-size: 12px;
+    font-weight: 400;
+}
 
 .absolute-input ul li h3 {
     padding: 20px 20px 0;
@@ -493,6 +497,41 @@ border: none;
     padding: 0 20px;
 }
 
+#productSuggestions {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 10px;
+    list-style-position: inside;
+    padding:0;
+}
+
+#productSuggestions.above {
+    bottom: 100%; /* Показывать сверху инпута */
+    top: auto;
+    margin-bottom: -27px;
+}
+
+#productSuggestions.below {
+    top: 100%; /* Показывать снизу инпута */
+    bottom: auto;
+}
+#productSuggestions li {
+    padding: 0 15px;
+}
+#productSuggestions li:hover {
+    background-color: yellow;
+}
+
+#profile.modal label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+    margin-right: 10px;
+}
+#profile.modal input {
+    font-size: 20px;
+    max-width: 70%;
+    letter-spacing: 1px;
+}
 @media (min-width: 1201px) {
     .btn.btn-outline-bonus {
         margin-right:10px

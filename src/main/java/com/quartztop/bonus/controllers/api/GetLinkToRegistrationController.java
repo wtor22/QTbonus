@@ -45,18 +45,17 @@ public class GetLinkToRegistrationController {
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
 
             String userEmail = authentication.getName(); // Получаем имя пользователя
-            UserEntity user = userCrudService.findByEmail(userEmail);
+            UserEntity user = userCrudService.findByEmail(userEmail).orElseThrow();
             Roles userRole = user.getRoles();
 
             if(userRole.getRole().equals("ROLE_MANAGER")) {
 
                 LocalDateTime expiryDate = LocalDate.now().atTime(LocalTime.MAX);
 
-                log.info("EXPIRY DATE " + expiryDate);
-                // Генерация токена для создания пароля
+                // Генерация токена для создания ссылки
                 String token = UUID.randomUUID().toString();
                 tokenCrudService.createTokenToLinkRegistry(token,user, expiryDate);
-                // Формирование ссылки для создания пароля
+                // Формирование ссылки
                 String registeredLink =messageService.getHost()
                         + messageService.getPointCreateUserByLinkManager() + token;
 

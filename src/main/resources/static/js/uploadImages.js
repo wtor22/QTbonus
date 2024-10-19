@@ -94,7 +94,6 @@
                     if (document.querySelectorAll('.image-block').length < maxImages) {
                         createNewImageInput();
                     } else {
-                        console.log("NUMBER CURRENT BLOCK" + currentImageCount);
                         const lastImageBlock = document.querySelectorAll('.image-block')[currentImageCount];
                         lastImageBlock.classList.add('flex-xl-column');
                         lastImageBlock.classList.remove('w-100');
@@ -124,7 +123,6 @@
                 if (response.ok) {
                     const imageUrl = data.imageUrl;
                     // Используйте imageUrl для отображения изображения или других действий
-                    console.log("Uploaded Image URL: ", imageUrl);
                     // Сохраняем путь файла в скрытом поле
                     filePathInput.value = imageUrl;
                 } else {
@@ -197,7 +195,6 @@
             });
             const data = await response.json();
             if (response.ok) {
-                console.log("Файл успешно удалён:", data.message);
 
                 // Удаляем блок с изображением только после успешного удаления на сервере
                 imageBlock.remove();
@@ -289,7 +286,6 @@
             if (response.ok) {
                 const imageUrl = data.imageUrl;
                 // Используйте imageUrl для отображения изображения или других действий
-                console.log("Uploaded Image URL: ", imageUrl);
                 // Сохраняем путь файла в скрытом поле
                 firstFilePathInput.value = imageUrl;
             } else {

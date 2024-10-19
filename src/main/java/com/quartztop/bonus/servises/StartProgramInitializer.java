@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -103,6 +104,10 @@ public class StartProgramInitializer implements CommandLineRunner {
             user.setRoles(adminRole);
             user.setFio("Вторушин");
             user.setPhone("00000000");
+            user.setCreateDate(LocalDateTime.now());
+            user.setCity("Минск");
+            user.setAddress("ул. Я. Колоса д.24");
+            user.setNameSalon("QuartzTop");
             user.setEmail("slavkontrakt@hotmail.com");
 
             //шифрую пароль

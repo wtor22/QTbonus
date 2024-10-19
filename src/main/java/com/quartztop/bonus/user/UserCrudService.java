@@ -1,6 +1,7 @@
 package com.quartztop.bonus.user;
 
 import com.quartztop.bonus.DuplicateResourceException;
+import com.quartztop.bonus.ResourceNotFoundException;
 import com.quartztop.bonus.repositoriesBonus.UserRepository;
 import com.quartztop.bonus.servises.MessageService;
 import com.quartztop.bonus.user.roles.Roles;
@@ -10,8 +11,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Formatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,9 +30,42 @@ public class UserCrudService {
         //mapToDto(userEntity);
     }
 
+    public void updateUser(int userId, UserDto userDto) {
+
+        try {
+
+            UserEntity existingUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+
+            if (!existingUser.getPhone().equals(userDto.getPhone())) {
+                if (userRepository.existsByPhone(userDto.getPhone())) {
+                    throw new DuplicateResourceException(messageService.getErrorMessagePhone());
+                }
+            }
+
+            // Обновляем поля пользователя
+            existingUser.setPhone(userDto.getPhone());
+            existingUser.setFio(userDto.getFio());
+            existingUser.setNameSalon(userDto.getNameSalon());
+            existingUser.setCity(userDto.getCity());
+            existingUser.setAddress(userDto.getAddress());
+
+            userRepository.save(existingUser);
+
+        } catch (DataIntegrityViolationException e) {
+            Throwable cause = e.getMostSpecificCause();
+
+            if (cause.getMessage() != null && cause.getMessage().contains("(e_mail)=")) {
+                throw new DuplicateResourceException(messageService.getErrorMessageEmail());
+            } else if (cause.getMessage() != null && cause.getMessage().contains("(phone)=")) {
+                throw new DuplicateResourceException(messageService.getErrorMessagePhone());
+            } else {
+                throw e;
+            }
+        }
+    }
     @Transactional
     public Optional<UserDto> create(UserDto userDto) {
-
         try {
             // Маппим DTO в сущность
             UserEntity userEntity = mapToEntity(userDto);
@@ -70,11 +107,15 @@ public class UserCrudService {
     }
 
     public List<UserEntity> getAllUsers() {
-
-        List<UserEntity> users = userRepository.findAll();
+        List<UserEntity> users = userRepository.findAllWithCreateDate();
         // Удаляем всех пользователей с ролью ROLE_SUPER_ADMIN
         users.removeIf(user -> user.getRoles().getRole().contains("ROLE_SUPER_ADMIN"));
         return users;
+    }
+    public List<UserDto> getAllUsersDtoByManager(UserEntity manager) {
+        List<UserEntity> users = userRepository.findAllWithCreateDateAndManager(manager);
+
+        return users.stream().map(UserCrudService::mapToDto).toList();
     }
 
     public List<UserEntity> getAllUsers(Roles role) {
@@ -92,10 +133,16 @@ public class UserCrudService {
         return userRepository.findByFio(fio);
     }
 
-    public UserEntity findByEmail(String email) {
+    public Optional<UserEntity> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
+    public UserEntity findUserByEmail(String email) {
+        if(findByEmail(email).isPresent()) {
+            return findByEmail(email).orElseThrow();
+        }
+        return null;
+    }
     public static UserDto mapToDto(UserEntity user) {
 
         UserDto userDto = new UserDto();
@@ -104,9 +151,13 @@ public class UserCrudService {
         userDto.setEmail(user.getEmail());
         userDto.setAddress(user.getAddress());
         userDto.setPhone(user.getPhone());
-        userDto.setManager(user.getManager().getFio());
+        userDto.setCity(user.getCity()); // не у всех есть
         userDto.setNameSalon(user.getNameSalon());
         userDto.setId(user.getId());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        String formateDate = user.getCreateDate().format(formatter);
+        userDto.setCreateDate(formateDate);
 
         return userDto;
     }
@@ -119,7 +170,7 @@ public class UserCrudService {
         userEntity.setEmail(user.getEmail());
         userEntity.setAddress(user.getAddress());
         userEntity.setPhone(user.getPhone());
-        //userEntity.setManager(user.getManager());
+        userEntity.setCity(user.getCity());
         userEntity.setNameSalon(user.getNameSalon());
         userEntity.setPassword(user.getPassword());
 

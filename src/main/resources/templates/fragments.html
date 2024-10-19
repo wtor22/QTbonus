@@ -48,10 +48,12 @@
                             </button>
                         </form>
                     </span>
-                    <a class="dropdown-item" href="#">Редактировать профиль</a>
+                    <button type="button" class="btn btn-link dropdown-item" data-bs-toggle="modal" data-bs-target="#profile">
+                        Редактировать профиль
+                    </button>
                     <span class="headerLine "></span>
                 </li>
-                <li><h3>ГРУППЫ</h3></li>
+                <li><h3></h3></li>
                 <a class="dropdown-item" href="/cabinet">Кабинет дизайнера</a>
             </ul>
         </div>
@@ -59,6 +61,97 @@
     <!-- Сообщение об ошибке -->
     <div th:if="${error}" class="alert alert-danger col-4 m-auto my-5 text-center" role="alert">
         <h3 th:text="${error}"></h3>
+    </div>
+
+    <!-- Modal Profile-->
+    <div class="modal fade" id="profile" tabindex="-1" aria-labelledby="profileLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editForm" action="/api/user/update" method="post" class="mt-3">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="profileLabel">Редактировать профиль</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" th:if="${user != null}">
+                        <div class="mb-3 d-flex">
+                            <label for="emailEditing" class="form-label">Email</label>
+                            <input id="emailEditing" th:value="${user.email}" type="email" class="form-control ms-auto" placeholder="name@example.com"
+                                   disabled>
+                        </div>
+                        <div class="mb-3 d-flex">
+                            <label for="fioEditing" class="form-label">ФИО</label>
+                            <input id="fioEditing" th:value="${user.fio}" type="text" class="form-control ms-auto" name="fieldEditing" required>
+                        </div>
+                        <div class="mb-3 d-flex">
+                            <label for="phoneEditing" class="form-label">Телефон</label>
+                            <input id="phoneEditing" th:value="${user.phone}" type="text" class="form-control ms-auto" name="phone" placeholder="+7 (___) ___-__-__"
+                                   required>
+                        </div>
+                        <div class="mb-3 d-flex">
+                            <label for="salonEditing" class="form-label">Салон</label>
+                            <input id="salonEditing" th:value="${user.nameSalon}" type="text" class="form-control ms-auto" name="fieldEditing" required>
+                        </div>
+
+                        <div class="mb-3 d-flex">
+                            <label for="cityEditing" class="form-label" th:text="#{app.city.salon}"></label>
+                            <input id="cityEditing" th:value="${user.city}" type="text" class="form-control ms-auto" placeholder="г. Москва" required>
+                        </div>
+
+                        <div class="mb-3 d-flex">
+                            <label for="addressEditing" class="form-label" th:text="#{app.address.salon}"></label>
+                            <input id="addressEditing" th:value="${user.address}" type="text" class="form-control ms-auto" placeholder="пр-т Ботаников стр. 1" required>
+                        </div>
+                        <div id="errorEditeMessage" class="alert alert-danger mt-3" role="alert" style="display: none;"
+                             th:text="#{app.registr.un-succes-registr-user}">
+                        </div>
+                        <div id="successEditeMessage" class="alert alert-success" style="display: none;">
+                            Операция успешно произведена
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div th:fragment="passResetForm">
+    <div id="successPasswordResetMessage" style="display: none;">
+        <h1>Пароль успешно изменён!</h1>
+        <a th:href="@{/}" class="btn btn-bonus">
+            На главную
+        </a>
+    </div>
+    <div id="formBlockResetPassword">
+        <h1>Восстановление пароля для <span th:text="${userEmail}"> </span></h1>
+        <form id="passwordResetInputForm" action="#" th:action="@{${formPassResetUrl}}" method="post" class="mt-3">
+            <div class="">
+                <div class="mb-3">
+                    <input id="emailView" class="form-control" th:value="${userEmail}" type="email" name="username"
+                           hidden="">
+                    <input id="resetToken" th:value="${resetToken}" hidden="">
+                </div>
+                <div class="mb-3">
+                    <label for="passReset" class="form-label">Введите новый пароль</label>
+                    <input id="passReset" type="password" class="form-control" name="newPassword" required>
+                </div>
+                <!-- Сообщение об ошибке -->
+                <div id="errorResetPasswordMessage" class="alert alert-danger mt-3" role="alert" style="display: none;"
+                     th:text="#{app.registr.un-succes-registr-user}">
+                </div>
+            </div>
+            <div class="d-flex flex-column">
+                <button type="submit" class="btn btn-bonus mt-3 me-auto">
+                    Отправить
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -81,6 +174,10 @@
                             <label for="passInput" class="form-label">Пароль</label>
                             <input type="password" class="form-control" name="password" id="passInput" required>
                         </div>
+                        <button type="button" class="btn btn-link w-auto" data-bs-toggle="modal" data-bs-target="#resetModal">
+                            Восстановить пароль
+                        </button>
+
                         <!-- Сообщение об ошибке -->
                         <div id="errorInputMessage" class="alert alert-danger mt-3" role="alert" style="display: none;"
                              th:text="#{app.registr.un-succes-registr-user}">
@@ -98,6 +195,38 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Resset Password-->
+    <div id="resetModal" class="modal fade" tabindex="-1" aria-labelledby="resetModalLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="">Восстановление пароля</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="successResMessage" style="display: none;"
+                         th:text="#{app.registr.succes-reset-password}">
+                    </div>
+                    <div id="formBlock">
+                        <h5>Введите адрес электронной почты, на него мы отправим ссылку для восстановления пароля</h5>
+                        <form id="resetPasswordForm" action="/password-reset/get-link"  method="post" class="mt-3">
+                            <div class="mb-3">
+                                <label for="passResetEmailInput" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="passResetEmailInput" name="username"
+                                       placeholder="name@example.com" required>
+                            </div>
+                            <span id="errorResMessage" role="alert" style="display: none; color:red;"></span>
+                            <button type="submit" class="btn btn-bonus mt-3">Отправить</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-bonus" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div th:fragment="registerform">
@@ -110,7 +239,6 @@
             <div id="user-registration">
                 <form id="regForm" action="#" th:action="@{${formUrl}}" method="post" class="mt-3">
                     <div>
-                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         <div class="mb-5 mb-xl-3">
                             <label for="emailReg" class="form-label">Email</label>
                             <input type="email" class="form-control" id="emailReg" placeholder="name@example.com"
@@ -215,18 +343,14 @@
 </div>
 
 <div th:fragment="DashBoard" class="container">
-
-    <!-- DashBoard для супер админа -->
+    <!-- Creator link to registration by manager -->
     <div sec:authorize="hasRole('ROLE_MANAGER')" >
-
         <div class="d-flex">
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-outline-secondary ms-auto" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Ссылка для регистрации
             </button>
         </div>
-
-
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -242,7 +366,6 @@
                                     <p id="textLinkToReg" th:text="${registeredLink}" ></p>
                                     <p id="limitLink" th:text="${limitLink}" style="color:red"></p>
                                 </div>
-
                                 <!-- Кнопка для копирования ссылки -->
                                 <button type="button" id="copyLink" class="btn btn-secondary ml-2">Копировать в буфер</button>
                             </div>
@@ -254,7 +377,30 @@
                 </div>
             </div>
         </div>
-
+        <!-- DashBoard to manager -->
+        <!--        TABS-->
+        <ul class="nav nav-tabs" id="managerTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button"
+                        role="tab" aria-controls="home" aria-selected="true">Дизайнеры
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="mngscnd-tab" data-bs-toggle="tab" data-bs-target="#mngscnd" type="button"
+                        role="tab" aria-controls="order" aria-selected="false">Заявки
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="usersTabContent">
+            <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
+                <h3 class="mt-5">Ваши Дизайнеры</h3>
+                <div th:insert="~{frags/fragmentsHtmlReports :: reportUsers}"></div>
+            </div>
+            <div class="tab-pane fade" id="mngscnd" role="tabpanel" aria-labelledby="mngscnd-tab">
+                <div class="container">
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- DashBoard для супер админа -->

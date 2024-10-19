@@ -100,13 +100,15 @@ public class UserRegistrationController {
 
         UserEntity manager = userCrudService.getUserByFio(userDto.getManager());
 
-        log.info("MANAGER FIO " + manager.getFio());
+        log.info("MANAGER FIO " + manager.getFio() + " CITY " + userDto.getCity());
         //шифрую пароль
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         userEntity.setPassword(encodedPassword);
         userEntity.setManager(manager);
+        userEntity.setCity(userDto.getCity());
         userEntity.setAddress(userDto.getAddress());
         userEntity.setNameSalon(userDto.getNameSalon());
+        userEntity.setCreateDate(LocalDateTime.now());
 
         userCrudService.updateUser(userEntity);
         tokenCrudService.updateStatus(tokenEntity.getToken());
@@ -116,20 +118,16 @@ public class UserRegistrationController {
 
     @GetMapping("/token")
     public String registrationByToken(@RequestParam(name = "token", required = true) String token, Model model){
-        log.info("Start  ");
 
         TokenEntity tokenEntity = tokenCrudService.getByToken(token).orElseThrow();
         UserEntity manager = tokenEntity.getManagerId();
-
-
-        log.info("MANAGER " + manager.getFio());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
 
             String userEmail = authentication.getName(); // Получаем имя пользователя
-            UserEntity user = userCrudService.findByEmail(userEmail);
+            UserEntity user = userCrudService.findByEmail(userEmail).orElseThrow();
             String username = user.getFio();
             Roles userRole = user.getRoles();
 
