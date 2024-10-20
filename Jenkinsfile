@@ -5,7 +5,7 @@ pipeline {
         stage('Clone repository') {
             steps {
                 // Клонируем проект из GitHub
-                git 'https://github.com/wtor22/QTbonus.git'
+                git branch: 'main', url: 'https://github.com/wtor22/QTbonus.git'
             }
         }
 
