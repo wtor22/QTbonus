@@ -11,10 +11,13 @@ pipeline {
 
         stage('Build application') {
             steps {
-                // Используем Maven для сборки проекта
-                maven.build('clean package')
+                script {
+                    // Используем Maven для сборки проекта
+                    sh 'mvn clean package'
+                }
             }
         }
+
 
         stage('Build Docker image') {
             steps {
