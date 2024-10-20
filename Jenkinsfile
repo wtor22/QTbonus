@@ -11,10 +11,8 @@ pipeline {
 
         stage('Build application') {
             steps {
-                script {
-                    // Запуск Maven в отдельном контейнере
-                    sh 'docker run --rm -v $WORKSPACE:/usr/src/mymaven -w /usr/src/mymaven maven:3.9.9-eclipse-temurin-11 mvn clean package'
-                }
+                // Используем Maven для сборки проекта
+                maven.build('clean package')
             }
         }
 
