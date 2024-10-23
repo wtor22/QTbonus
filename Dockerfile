@@ -11,4 +11,4 @@ COPY target/bonus-0.0.1-SNAPSHOT.jar /app/bonus-0.0.1-SNAPSHOT.jar
 EXPOSE 8081
 
 # Запуск jar-файла при старте контейнера
-ENTRYPOINT ["java", "-jar", "/app/bonus-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-Xmx512m", "-Xms256m", "-jar", "/app/bonus-0.0.1-SNAPSHOT.jar"]

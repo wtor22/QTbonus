@@ -109,8 +109,16 @@
     font-weight: 700;
     display: inline-block;
 }
+.form-check .form-check-label {
+    font-weight: 400;
+}
+/* Стиль для активного чекбокса */
+.form-check input[type="radio"]:checked + .form-check-label {
+    font-weight: 700;
+}
 .form-check-label {
     line-height: 25px;
+    transition: color 0.3s ease, font-weight 0.3s ease;
 }
 .check-box .form-check-label {
     line-height: 40px;
@@ -742,7 +750,8 @@ border: none;
         line-height: 18px;
     }
     .text-gigantic {
-        font-size: 32px;
+        font-size: 28px;
+        letter-spacing: -1.0px;
     }
     .welcome-page h1 {
         font-size: 30px;

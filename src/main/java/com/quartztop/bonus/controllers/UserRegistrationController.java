@@ -1,5 +1,6 @@
 package com.quartztop.bonus.controllers;
 
+import com.quartztop.bonus.orders.TypeActivity;
 import com.quartztop.bonus.tokens.TokenCrudService;
 import com.quartztop.bonus.tokens.TokenEntity;
 import com.quartztop.bonus.user.UserCrudService;
@@ -63,8 +64,9 @@ public class UserRegistrationController {
         if(LocalDateTime.now().isAfter(expireDateToken)) {
             return "tokens/token-outdated"; // имя страницы с ошибкой токен просрочен
         }
-
+        // Получаем список всех менеджеров по роли 2
         Roles role = rolesRepository.getReferenceById(2);
+
         List<UserEntity> listManagers = userCrudService.getAllUsers(role);
 
         Map<String, Integer> allUsers = new HashMap<>();
@@ -78,12 +80,15 @@ public class UserRegistrationController {
             allUsers.put(manager.getFio(),manager.getId());
         }
 
-        allUsers.forEach((fio,id)-> log.info(fio + " " + id));
+        TypeActivity typeActivity = userEntity.getTypeActivity();
+        int typeActivityId = typeActivity.getId();
+
 
         model.addAttribute("selectedManager",allUsers.keySet());
         model.addAttribute("formUrl","/registration/complete");
         model.addAttribute("token",token);
         model.addAttribute("userEmail", email);
+        model.addAttribute("typeActivity", typeActivityId);
 
         return "complete-registration";
     }
@@ -91,7 +96,7 @@ public class UserRegistrationController {
     @PostMapping("/complete")
     public ResponseEntity<?> competeRegistration(@RequestBody UserDto userDto,  Model model) {
 
-        log.info("USERDTO GET MANAGER " + userDto.getManager());
+        //log.info("USERDTO GET MANAGER " + userDto.getManager());
         TokenEntity tokenEntity = tokenCrudService.getByToken(userDto.getToken())
                 .orElseThrow(() -> new NoSuchElementException("токен не найден"));
 
@@ -100,11 +105,11 @@ public class UserRegistrationController {
 
         UserEntity manager = userCrudService.getUserByFio(userDto.getManager());
 
-        log.info("MANAGER FIO " + manager.getFio() + " CITY " + userDto.getCity());
         //шифрую пароль
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         userEntity.setPassword(encodedPassword);
         userEntity.setManager(manager);
+        userEntity.setInnCompany(userDto.getInnCompany());
         userEntity.setCity(userDto.getCity());
         userEntity.setAddress(userDto.getAddress());
         userEntity.setNameSalon(userDto.getNameSalon());

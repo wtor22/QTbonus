@@ -18,6 +18,8 @@ public class UserDto {
     String address;
     String token;
     String createDate;
+    int typeActivity;
+    String innCompany;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Позволяет использовать поле только для записи (при десериализации)
     String password;

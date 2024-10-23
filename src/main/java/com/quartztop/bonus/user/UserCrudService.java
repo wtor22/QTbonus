@@ -2,6 +2,8 @@ package com.quartztop.bonus.user;
 
 import com.quartztop.bonus.DuplicateResourceException;
 import com.quartztop.bonus.ResourceNotFoundException;
+import com.quartztop.bonus.orders.TypeActivity;
+import com.quartztop.bonus.repositoriesBonus.TypeActivityRepositories;
 import com.quartztop.bonus.repositoriesBonus.UserRepository;
 import com.quartztop.bonus.servises.MessageService;
 import com.quartztop.bonus.user.roles.Roles;
@@ -24,6 +26,7 @@ public class UserCrudService {
     private final UserRepository userRepository;
     private final MessageService messageService;
     private final RolesRepository rolesRepository;
+    private final TypeActivityRepositories typeActivityRepositories;
 
     public void updateUser(UserEntity userEntity) {
         userRepository.save(userEntity);
@@ -49,6 +52,7 @@ public class UserCrudService {
             existingUser.setNameSalon(userDto.getNameSalon());
             existingUser.setCity(userDto.getCity());
             existingUser.setAddress(userDto.getAddress());
+            existingUser.setInnCompany(userDto.getInnCompany());
 
             userRepository.save(existingUser);
 
@@ -70,6 +74,12 @@ public class UserCrudService {
             // Маппим DTO в сущность
             UserEntity userEntity = mapToEntity(userDto);
 
+            Optional<TypeActivity> typeActivityOptional = typeActivityRepositories.findById(userDto.getTypeActivity());
+
+            if (typeActivityOptional.isPresent()) {
+                TypeActivity typeActivity = typeActivityOptional.get();
+                userEntity.setTypeActivity(typeActivity);
+            }
             // Ищем роль ROLE_USER перед сохранением пользователя
             Roles userRole = rolesRepository.findByRole("ROLE_USER");
 
@@ -153,6 +163,7 @@ public class UserCrudService {
         userDto.setPhone(user.getPhone());
         userDto.setCity(user.getCity()); // не у всех есть
         userDto.setNameSalon(user.getNameSalon());
+        userDto.setInnCompany(user.getInnCompany());
         userDto.setId(user.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
@@ -172,7 +183,9 @@ public class UserCrudService {
         userEntity.setPhone(user.getPhone());
         userEntity.setCity(user.getCity());
         userEntity.setNameSalon(user.getNameSalon());
+        userEntity.setInnCompany(user.getInnCompany());
         userEntity.setPassword(user.getPassword());
+
 
         return userEntity;
     }

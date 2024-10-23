@@ -88,14 +88,14 @@ public class OrderController {
     @GetMapping("/search-products")
     @ResponseBody
     public ResponseEntity<List<ProductDto>> searchProducts(@RequestParam("query") String query) {
-        log.info("Search by STRING " + query);
+        //log.info("Search by STRING " + query);
         List<Product> products = productRepositories.searchByDescriptionOrArticleAndType(query,"product");
         List<ProductDto> productDtoList = products.stream()
                 .filter(product -> product.getPathName().startsWith("Кварцевый Агломерат") ||
                         product.getPathName().startsWith("Керамогранит"))
                 .map(product -> new ProductDto(product.getProductId(), product.getExternalId(), product.getName()))
                 .toList();
-        products.forEach(p->log.info(p.getName()));
+        //products.forEach(p->log.info(p.getName()));
         return ResponseEntity.ok(productDtoList);
     }
 

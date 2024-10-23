@@ -2,11 +2,9 @@ package com.quartztop.bonus.servises;
 
 import com.quartztop.bonus.orders.PaymentType;
 import com.quartztop.bonus.orders.StatusOrders;
-import com.quartztop.bonus.repositoriesBonus.PaymentTypeRepository;
-import com.quartztop.bonus.repositoriesBonus.RolesRepository;
-import com.quartztop.bonus.repositoriesBonus.StatusRepository;
+import com.quartztop.bonus.orders.TypeActivity;
+import com.quartztop.bonus.repositoriesBonus.*;
 import com.quartztop.bonus.user.UserEntity;
-import com.quartztop.bonus.repositoriesBonus.UserRepository;
 import com.quartztop.bonus.user.roles.Roles;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +25,7 @@ import java.util.stream.Collectors;
 public class StartProgramInitializer implements CommandLineRunner {
 
     private RolesRepository rolesRepository;
+    private TypeActivityRepositories typeActivityRepositories;
     private UserRepository userRepository;
     private StatusRepository statusRepository;
     private PaymentTypeRepository paymentTypeRepository;
@@ -61,6 +60,15 @@ public class StartProgramInitializer implements CommandLineRunner {
         // Сохраняю новые статусы в бд
         statusRepository.saveAll(newStatusOrdersList);
 
+        // Проверяем существует ли виды деятельности
+        if(typeActivityRepositories.findByName("Дизайнер") == null) {
+            TypeActivity typeActivity = new TypeActivity(1,"Дизайнер");
+            typeActivityRepositories.save(typeActivity);
+        }
+        if(typeActivityRepositories.findByName("Обработчик") == null) {
+            TypeActivity typeActivity = new TypeActivity(2,"Обработчик");
+            typeActivityRepositories.save(typeActivity);
+        }
 
         // Проверяем, существует ли роль "ROLE_USER"
         if (rolesRepository.findByRole("ROLE_USER") == null) {

@@ -2,6 +2,9 @@ package com.quartztop.bonus.controllers;
 
 import com.quartztop.bonus.DuplicateResourceException;
 import com.quartztop.bonus.ResourceNotFoundException;
+import com.quartztop.bonus.orders.TypeActivity;
+import com.quartztop.bonus.repositoriesBonus.TypeActivityRepositories;
+import com.quartztop.bonus.repositoriesCrm.AgentRepository;
 import com.quartztop.bonus.servises.EmailService;
 import com.quartztop.bonus.servises.MessageService;
 import com.quartztop.bonus.tokens.TokenCrudService;
@@ -13,9 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -34,6 +34,8 @@ public class UserRestController {
     private EmailService emailService;
     private TokenCrudService tokenCrudService;
     private MessageService messageService;
+    private TypeActivityRepositories typeActivityRepositories;
+    private AgentRepository agentRepository;
 
     @PostMapping("/update")
     public ResponseEntity<?> update(Principal principal, @RequestBody UserDto userDto) {
@@ -42,17 +44,19 @@ public class UserRestController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
 
+        // Проверка существует ли контрагент с таким ИНН
+        if(agentRepository.findAllByInn(userDto.getInnCompany()).isEmpty()) {
+            String response = "Контрагент с ИНН " + userDto.getInnCompany() + " не найден!";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message",response));
+        }
+
         // Получаем email пользователя из Principal
         String email = principal.getName();
-
-        // Логируем email
-        log.info("USER EMAIL: " + email);
 
         // Получаем сущность UserEntity из базы по email
         UserEntity user = userCrudService.findUserByEmail(email);
 
         try {
-
             // Обновляем данные пользователя
             userCrudService.updateUser(user.getId(), userDto);
 
@@ -73,14 +77,22 @@ public class UserRestController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserDto userDto) throws MessagingException {
 
+        log.info("USER INN COMPANY ");
+        log.info("USER INN COMPANY " + userDto.getInnCompany());
         String userEmail = userDto.getEmail();
         UserEntity existingUser = userCrudService.findUserByEmail(userEmail);
 
         if (existingUser !=null && existingUser.getPassword() == null) {
-
+            log.info("TYPE ACTIVITY " + userDto.getTypeActivity());
         // Если пароля нет, обновляем существующую запись
             existingUser.setPhone(userDto.getPhone());
             existingUser.setFio(userDto.getFio());
+            Optional<TypeActivity> typeActivityOptional = typeActivityRepositories.findById(userDto.getTypeActivity());
+            if(typeActivityOptional.isPresent()) {
+                TypeActivity typeActivity = typeActivityOptional.get();
+                existingUser.setTypeActivity(typeActivity);
+            }
+
             // обновляю пользователя
             userCrudService.updateUser(existingUser);
             userDto.setId(existingUser.getId());

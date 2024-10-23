@@ -1,5 +1,6 @@
 package com.quartztop.bonus.user;
 
+import com.quartztop.bonus.orders.TypeActivity;
 import com.quartztop.bonus.user.roles.Roles;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class UserEntity {
     @Column(name = "phone", unique = true)
     private String phone;
     private String nameSalon;
+    private String innCompany;
     private String city;
     private String address;
     private String password;
@@ -33,6 +35,10 @@ public class UserEntity {
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
+
+    @ManyToOne
+    @JoinColumn(name = "type_activity")
+    private TypeActivity typeActivity;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

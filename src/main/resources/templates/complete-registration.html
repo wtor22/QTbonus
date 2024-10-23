@@ -22,11 +22,17 @@
         <div id="usregistr" class="col col-xl-6">
             <h2>Завершение регистрации</h2>
             <form id="regForm" action="#" th:action="@{${formUrl}}" method="post" class="mt-3">
-
-                <div class="">
+                <div >
+                    <div class="mb-3 position-relative" th:if="${typeActivity == 2}">
+                        <label for="innCompanyInput" class="form-label" th:text="#{app.inn.salon}"></label>
+                        <input id="innCompanyInput" type="text" class="form-control" onblur="validateInnCompany()" required>
+                        <span id="errorInnMessage" class="error-message"></span>
+                    </div>
                     <input type="hidden" th:value="${token}" name="token" id="token"/>
                     <div class="mb-3">
-                        <label for="saloonInput" class="form-label" th:text="#{app.name.salon}"></label>
+                        <label for="saloonInput" class="form-label" th:if="${typeActivity == 2}">Ваш шоурум</label>
+                        <label for="saloonInput" class="form-label" th:if="${typeActivity != 2}" th:text="#{app.name.salon}"></label>
+<!--                        <label for="saloonInput" class="form-label"  th:text="#{app.name.salon}"></label>-->
                         <input type="text" class="form-control" id="saloonInput" required>
                     </div>
                     <div class="mb-3">

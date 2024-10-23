@@ -59,6 +59,23 @@
                 <div>
                     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     <input type="hidden" id="manager" th:value="${manager}"/>
+                    <div>
+                        <h3 class="mb-2">Ваш вид деятельности</h3>
+                    </div>
+                    <div id="type-activity" class="d-flex flex-wrap my-xl-3 mb-3 form-check">
+                        <div class="form-check me-4">
+                            <input id="isDesigner" class="form-check-input" name="check" type="radio" value="1">
+                            <label class="form-check-label" for="isDesigner">
+                                Вы дизайнер
+                            </label>
+                        </div>
+                        <div class="form-check me-4">
+                            <input id="isStoneProcessor" class="form-check-input" name="check" type="radio" value="2">
+                            <label class="form-check-label" for="isStoneProcessor">
+                                Вы представитель обработчика
+                            </label>
+                        </div>
+                    </div>
                     <div class="mb-5 mb-xl-3">
                         <label for="emailReg" class="form-label">Email</label>
                         <input type="email" class="form-control" id="emailReg" placeholder="name@example.com"

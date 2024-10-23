@@ -95,7 +95,7 @@ $(document).ready(function () {
     });
 });
 
-     //Форма восстановления пароля
+//Форма восстановления пароля
 $(document).ready(function () {
 
     const successMessage = $('#successPasswordResetMessage');
@@ -260,7 +260,6 @@ $(document).ready(function () {
 // Форма регистрации общая
 $(document).ready(function () {
 
-
     // Маска для телефона, только если элемент существует
     if ($('input[name="phone"]').length) {
         $('input[name="phone"]').inputmask("+7 (999) 999-99-99");
@@ -279,15 +278,33 @@ $(document).ready(function () {
     const submitButton = form.find('button[type="submit"]'); // Кнопка отправки
     const originalButtonText = submitButton.html(); // Сохраняем оригинальный текст кнопки
 
+
+    let typeActivity = null; // Значение по умолчанию, если ничего не выбрано
+
+    const radioButtons = document.querySelectorAll('input[name="check"]');
+    if (radioButtons.length > 0) {
+        radioButtons.forEach(radio => {
+          radio.addEventListener('change', function() {
+            // Проверяем, какое радио выбрано
+            if (this.checked) {
+            typeActivity = this.value;
+            }
+          });
+        });
+    }
     // Скрываем предыдущие сообщения
     successMessage.hide();
     errorMessage.hide();
 
     $('#regForm').on('submit', function (event) {
+
+        if ($('#innCompanyInput').val()) console.log("INN IS " + $('#innCompanyInput').val());
+
         // Предотвращаем отправку формы
         event.preventDefault();
         // Собираем данные формы
         const formData = {
+            test: $('#token').val(),
             token: $('#token').val(),
             email: $('#emailReg').val(),
             fio: $('#fioInput').val(),
@@ -296,8 +313,14 @@ $(document).ready(function () {
             city: $('#cityInput').val(),
             address: $('#addressInput').val(),
             manager: $('#manager').val(),
-            password: $('#password').val()
+            password: $('#password').val(),
+            typeActivity: typeActivity
         };
+
+        // Проверяю существует ли поле для ввода ИНН
+        if(document.getElementById("innCompanyInput")) {
+            formData.innCompany = document.getElementById("innCompanyInput").value;
+        }
 
         // Меняем текст кнопки на спиннер и блокируем её
         submitButton.html(`
@@ -328,10 +351,12 @@ $(document).ready(function () {
                     buttonSuccessHide.hide(); // Скрываем кнопку регистрации
                     blockSuccessFade.fadeIn();
                 }
-             // Закрываем Offcanvas
-             var offcanvasElement = document.getElementById('offcanvasRegistry');
-             var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
-             bsOffcanvas.hide();
+                // Закрываем Offcanvas
+                if(document.getElementById('offcanvasRegistry')) {
+                    var offcanvasElement = document.getElementById('offcanvasRegistry');
+                    var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                    bsOffcanvas.hide();
+                }
             },
             error: function (xhr) {
                 let errorText = 'Произошла ошибка при отправке формы.';
@@ -357,6 +382,32 @@ $(document).ready(function () {
         });
     });
 });
+
+// Проверка ИНН
+function validateInnCompany() {
+    let innNumber = document.getElementById("innCompanyInput").value;
+    let errorInnMessage = document.getElementById("errorInnMessage");
+
+    if (innNumber) {
+        let params = new URLSearchParams({innNumber: innNumber});
+        errorInnMessage.style.display = "none";
+
+        fetch('/order/validate-agent?' + params.toString())
+            .then(response => {
+                if (!response.ok) {
+                    isInvoiceValid = false; // Сбрасываем флаг валидности
+                    return response.text().then(text => { throw new Error(text) });
+                }
+                isInvoiceValid = true; // Если инн существует, устанавливаем флаг в true
+                errorInnMessage.value = "";
+            })
+            .catch(error => {
+                isInvoiceValid = false; // Сбрасываем флаг валидности
+                errorInnMessage.style.display = "block";
+                errorInnMessage.textContent = error.message;  // Выводим сообщение об ошибке
+            });
+    }
+}
 
 
 
