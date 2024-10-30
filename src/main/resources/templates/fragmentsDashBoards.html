@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>DashBoards</title>
+</head>
+<body>
+
+<!-- DashBoard для пользователя -->
+<div th:fragment="UserDashBoard" class="container">
+    <div sec:authorize="hasRole('ROLE_USER')" th:fragment="DashBoard" class="container">
+        <h2>Личный кабинет</h2>
+
+        <ul class="nav nav-tabs mb-3" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                        role="tab" aria-controls="home" aria-selected="true">Заявки на бонусы
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="action-tab" data-bs-toggle="tab" data-bs-target="#action" type="button"
+                        role="tab" aria-controls="action" aria-selected="false">Участие в акциях
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="container">
+                    <h3>Заявки на бонусы</h3>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="ordersTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="action" role="tabpanel" aria-labelledby="action-tab">
+                <div class="container">
+                    <h3>Участия в акциях</h3>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Статус</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="actionsTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Модальное окно -->
+        <div class="modal fade" id="viewDetails" tabindex="-1" aria-labelledby="viewDetailsLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewDetailsLabel">Детали</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Загружаю...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

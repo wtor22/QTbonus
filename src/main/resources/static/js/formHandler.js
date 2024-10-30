@@ -277,28 +277,27 @@ $(document).ready(function () {
     const errorMessage = $('#errorMessage');
     const submitButton = form.find('button[type="submit"]'); // Кнопка отправки
     const originalButtonText = submitButton.html(); // Сохраняем оригинальный текст кнопки
-
-
     let typeActivity = null; // Значение по умолчанию, если ничего не выбрано
 
-    const radioButtons = document.querySelectorAll('input[name="check"]');
-    if (radioButtons.length > 0) {
-        radioButtons.forEach(radio => {
-          radio.addEventListener('change', function() {
-            // Проверяем, какое радио выбрано
-            if (this.checked) {
-            typeActivity = this.value;
-            }
-          });
-        });
-    }
+    // Добавляем обработчик для выбора радио-кнопок
+    $('input[name="check"]').on('change', function() {
+        typeActivity = $(this).val();
+        errorMessage.fadeOut(); // Скрываем сообщение об ошибке при выборе
+    });
+
     // Скрываем предыдущие сообщения
     successMessage.hide();
     errorMessage.hide();
 
     $('#regForm').on('submit', function (event) {
 
-        if ($('#innCompanyInput').val()) console.log("INN IS " + $('#innCompanyInput').val());
+        // Проверка на выбор активности
+        if ($('#type-activity').length && !typeActivity) {
+            event.preventDefault();
+            // Показываем сообщение об ошибке
+            errorMessage.text("Пожалуйста, укажите Ваш вид деятельности!").fadeIn();
+            return;  // Прерываем выполнение, если радио-кнопка не выбрана
+        }
 
         // Предотвращаем отправку формы
         event.preventDefault();

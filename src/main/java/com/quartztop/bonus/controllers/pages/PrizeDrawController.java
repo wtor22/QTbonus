@@ -32,6 +32,7 @@ public class PrizeDrawController {
             UserEntity user = userCrudService.findByEmail(userEmail).orElseThrow();
             String username = user.getFio();
             Roles userRole = user.getRoles();
+            model.addAttribute("user",user);
             model.addAttribute("username", username); // Передаем имя пользователя в модель
             model.addAttribute("userRole", userRole);
             model.addAttribute("nameRole", userRole.getNameRole());

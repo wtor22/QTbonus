@@ -540,6 +540,11 @@ border: none;
     max-width: 70%;
     letter-spacing: 1px;
 }
+.tab-content {
+    max-width: 800px;
+}
+
+
 @media (min-width: 1201px) {
     .btn.btn-outline-bonus {
         margin-right:10px

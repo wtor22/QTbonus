@@ -58,7 +58,7 @@ public class UserWebController {
             Roles userRole = user.getRoles();
             String welcomeMessage = messageService.getWelcomeMessage();
             model.addAttribute("user",user);
-            model.addAttribute("username", username); // Передаем имя пользователя в модель
+            model.addAttribute("username", username);
             model.addAttribute("userRole", userRole);
             model.addAttribute("nameRole",userRole.getNameRole());
             model.addAttribute("welcome",welcomeMessage);

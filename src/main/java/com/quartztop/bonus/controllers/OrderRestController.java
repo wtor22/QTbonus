@@ -37,6 +37,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -52,12 +53,55 @@ public class OrderRestController {
     private final FileService fileService;
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> getUserOrders(Principal principal) {
+    public ResponseEntity<List<OrderDto>> getAllUserOrders(Principal principal) {
         String username = principal.getName();
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
 
         List<Order> orders = orderRepository.getOrdersByUserEntity(user);
         List<OrderDto> userOrders = orders.stream().map(OrderDtoService::mapOrderToDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userOrders);
+    }
+
+    // Получить ордер по id
+    @GetMapping("/get-order")
+    public ResponseEntity<?> getUserOrderById(@RequestParam("id") int orderId, Principal principal) {
+
+        String username = principal.getName();
+        UserEntity user = userCrudService.findByEmail(username).orElseThrow();
+
+        Order order = orderRepository.getOrderByUserEntityAndId(user,orderId);
+        if(order == null) {
+            String message = "Ордер не найден";
+            Map<String, String> response = Map.of("message", message);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        OrderDto orderDto = OrderDtoService.mapOrderToDto(order);
+        return ResponseEntity.ok(orderDto);
+    }
+
+    // Получить список акций
+    @GetMapping("/get-orders")
+    public ResponseEntity<List<OrderDto>> getUserOrders(Principal principal) {
+
+        String username = principal.getName();
+        UserEntity user = userCrudService.findByEmail(username).orElseThrow();
+
+        List<Order> orders = orderRepository.getOrdersByUserEntityAndType(user, "bonus");
+        List<OrderDto> userOrders = orders.stream().map(OrderDtoService::mapOrderToDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userOrders);
+    }
+
+    // Получить список акций Пользователя
+    @GetMapping("/get-actions")
+    public ResponseEntity<List<OrderDto>> getUserActions(Principal principal) {
+
+        String username = principal.getName();
+        UserEntity user = userCrudService.findByEmail(username).orElseThrow();
+
+        List<Order> actions = orderRepository.getOrdersByUserEntityAndType(user, "action");
+        List<OrderDto> userOrders = actions.stream().map(OrderDtoService::mapOrderToDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userOrders);
     }

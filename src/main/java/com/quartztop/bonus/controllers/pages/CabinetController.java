@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/cabinet")
 @RequiredArgsConstructor
-public class DashBoardController {
+public class CabinetController {
 
     private final UserCrudService userCrudService;
 
@@ -32,6 +32,7 @@ public class DashBoardController {
             UserEntity user = userCrudService.findByEmail(userEmail).orElseThrow();
             String username = user.getFio();
             Roles userRole = user.getRoles();
+            model.addAttribute("user",user);
             model.addAttribute("username", username); // Передаем имя пользователя в модель
             model.addAttribute("userRole", userRole);
             model.addAttribute("nameRole", userRole.getNameRole());
