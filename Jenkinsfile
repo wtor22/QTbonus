@@ -41,7 +41,9 @@ pipeline {
                     // Останавливаем старый контейнер (если он есть) и запускаем новый
                     sh 'docker stop myapp || true'
                     sh 'docker rm myapp || true'
-                    sh 'docker run -d -p 8081:8081 --name myapp myapp:latest'
+                    sh 'docker run -d -p 8081:8081 --name myapp myapp:latest || { echo "Failed to run container"; exit 1; }'
+                    sh 'docker ps -a' // Добавляем вывод всех контейнеров
+                    sh 'docker images' // Добавляем вывод всех образов
                 }
             }
         }
