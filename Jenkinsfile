@@ -14,6 +14,7 @@ pipeline {
                 script {
                     // Используем Maven для сборки проекта
                     sh 'mvn clean package'
+                    sh 'ls -l target' // Выводим содержимое директории target
                 }
             }
         }
@@ -23,7 +24,13 @@ pipeline {
             steps {
                 script {
                     // Сборка Docker-образа на основе Dockerfile
-                    sh 'docker build -t myapp:latest .'
+                    try {
+                        sh 'docker build -t myapp:latest .'
+                    } catch (Exception e) {
+                        echo "Docker build failed: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        error("Build failed") // Завершаем сборку с ошибкой
+                    }
                 }
             }
         }
