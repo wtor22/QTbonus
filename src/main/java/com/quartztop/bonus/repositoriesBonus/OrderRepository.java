@@ -14,5 +14,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> getOrdersByUserEntityAndType(UserEntity userEntity, String type);
 
+    List<Order> getOrdersByUserEntityInAndType(List<UserEntity> userEntities, String type);
+
+
     List<Order> getOrdersByInvoiceExternalId(String invoiceExternalId);
 }

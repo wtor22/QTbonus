@@ -76,11 +76,38 @@ public class OrderRestController {
             Map<String, String> response = Map.of("message", message);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+
         OrderDto orderDto = OrderDtoService.mapOrderToDto(order);
         return ResponseEntity.ok(orderDto);
     }
 
-    // Получить список акций
+    // Получить ордер Для Менеджера по id
+    @GetMapping("/get-order-by-manager")
+    public ResponseEntity<?> getOrderForManagerById(@RequestParam("id") int orderId, Principal principal) {
+
+        log.error("RUN CONTROLLER - ID = " + orderId);
+        String username = principal.getName();
+        UserEntity manager = userCrudService.findByEmail(username).orElseThrow();
+
+        Order order = orderRepository.findById(orderId).orElseThrow();
+        UserEntity userEntity = order.getUserEntity();
+        if(userEntity.getManager().getId() != manager.getId()) {
+            String message = "НЕ ТВОЙ ЮЗЕР БЛЯ...";
+            Map<String, String> response = Map.of("message", message);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        if(order == null ) {
+            String message = "Ордер не найден";
+            Map<String, String> response = Map.of("message", message);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        OrderDto orderDto = OrderDtoService.mapOrderToDto(order);
+        log.error("ORDERDTO ID = " + orderDto.getId());
+        return ResponseEntity.ok(orderDto);
+    }
+
+    // Получить список заказов бонусов
     @GetMapping("/get-orders")
     public ResponseEntity<List<OrderDto>> getUserOrders(Principal principal) {
 
@@ -88,6 +115,23 @@ public class OrderRestController {
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
 
         List<Order> orders = orderRepository.getOrdersByUserEntityAndType(user, "bonus");
+        List<OrderDto> userOrders = orders.stream().map(OrderDtoService::mapOrderToDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userOrders);
+    }
+    // Получить список заказов бонусов по партнерам менеджера
+    @GetMapping("/get-orders-by-manager")
+    public ResponseEntity<List<OrderDto>> getManagerOrders(Principal principal) {
+
+        log.error("START CONTROLLER");
+
+        String username = principal.getName();
+        UserEntity user = userCrudService.findByEmail(username).orElseThrow();
+
+
+
+        List<UserEntity> usersByManagerList = userCrudService.getAllUsersEntityByManager(user);
+        List<Order> orders = orderRepository.getOrdersByUserEntityInAndType(usersByManagerList,"bonus");
         List<OrderDto> userOrders = orders.stream().map(OrderDtoService::mapOrderToDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userOrders);

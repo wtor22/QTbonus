@@ -104,9 +104,7 @@ public class OrderController {
     public ResponseEntity<String> searchProductsInInvoice(@RequestParam("productName") String productName,
                                                                     @RequestParam("invoiceExternalId") String invoiceExternalId) {
 
-
         List<InvoicePosition> positions = positionInvoiceRepository.findAllByExternalInvoiceId(invoiceExternalId);
-
 
         if (positions.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Указанный товар в счете не найден");
@@ -180,7 +178,6 @@ public class OrderController {
         if(!orders.isEmpty()) {
             quantityFromOldOrders = quantityFromOldOrders + orders.stream().mapToDouble(Order::getProductQuantity).sum();
         }
-
 
         // Стоимость товара по средней цене за товар
         int price = 0;

@@ -15,6 +15,7 @@
     <script th:if="${#authorization.expression('isAuthenticated() and hasRole(''ROLE_USER'')')}" th:src="@{/js/orderCreateForm.js}"></script>
     <script th:if="${#authorization.expression('isAuthenticated()')}" th:src="@{/js/updater.js}"></script>
     <script th:if="${#authorization.expression('isAuthenticated() and hasRole(''ROLE_MANAGER'')')}" th:src="@{/js/managerHandler.js}"></script>
+    <script th:if="${#authorization.expression('isAuthenticated() and hasRole(''ROLE_MANAGER'')')}" th:src="@{/js/getOrdersForManager.js}"></script>
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <meta name="_csrf" data-th-content="${_csrf.token}"/>
     <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
@@ -26,8 +27,11 @@
 <div th:insert="~{fragments :: registerform}"></div>
 <div th:insert="~{fragments :: WelcomePage}"></div>
 <div th:insert="~{fragments :: WelcomePageUnregistered}"></div>
-<div sec:authorize="hasRole('ROLE_SUPER_ADMIN') or hasRole('ROLE_MANAGER')" class="top d-flex flex-column justify-content-between">
-    <div th:insert="~{fragments :: DashBoard}"></div>
+<div sec:authorize="hasRole('ROLE_SUPER_ADMIN')" class="top d-flex flex-column justify-content-between">
+    <div th:insert="~{fragments :: DashBoard}" ></div>
+</div>
+<div sec:authorize="hasRole('ROLE_MANAGER')" class="top d-flex flex-column justify-content-between">
+    <div th:insert="~{fragmentsDashBoards :: ManagerDashBoard}"></div>
 </div>
 <div th:insert="~{fragments :: Messages}"></div>
 </body>

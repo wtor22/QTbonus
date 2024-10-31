@@ -1,15 +1,15 @@
 // AJAX обновления списка ордеров
 document.addEventListener('DOMContentLoaded', function() {
         function loadOrders() {
-                let ordersTable = document.getElementById('ordersTable');
-                if (!ordersTable) {+
+                let ordersTable = document.getElementById('managerOrdersTable');
+                if (!ordersTable) {
                     console.warn("Элемент 'ordersTable' не найден!");
                     return;
                 }
-            fetch('/order/get-orders')
+            fetch('/order/get-orders-by-manager')
                 .then(response => response.json())
                 .then(data => {
-                    let ordersTable = document.getElementById('ordersTable');
+                    let ordersTable = document.getElementById('managerOrdersTable');
 
                     ordersTable.innerHTML = ''; // Очистка таблицы перед добавлением новых данных
 
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <td>${order.createDate}</td>
                                 <td>${order.sum}</td>
                                 <td>${statusSpan}</td>
-                                <td><a href="#" data-bs-toggle="modal" data-order-id=${order.id} data-bs-target="#viewDetails">Детали</a></td>
+                                <td><a href="#" data-bs-toggle="modal" data-order-id=${order.id} data-bs-target="#viewUsersOrdersDetails">Детали</a></td>
                             `;
                             ordersTable.appendChild(row);
                         });
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
        function loadActions() {
-            let actionsTable = document.getElementById('actionsTable');
+            let actionsTable = document.getElementById('managerActionsTable');
             if (!actionsTable) {
                 console.warn("Элемент 'actionsTable' не найден!");
                 return;
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <!--- <td>Счёт №${order.invoiceNumber} от ${order.invoiceDate}</td>
                                 <td>${order.productName}</td>
                                 <td>${order.productQuantity}</td> --->
-                                <td><a href="#" data-bs-toggle="modal" data-order-id=${order.id} data-bs-target="#viewDetails">Детали</a></td>
+                                <td><a href="#" data-bs-toggle="modal" data-order-id=${order.id} data-bs-target="#viewUsersOrdersDetails">Детали</a></td>
                             `;
                             actionsTable.appendChild(row);
                         });
@@ -69,20 +69,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => console.error('Ошибка при загрузке заказов:', error));
        }
 
-       // Get Actions Data
+       // Get ORDER DATA BY ID
        function loadOrderById() {
 
            if (event.target.tagName === 'A' && event.target.hasAttribute('data-order-id')) {
                let orderId = event.target.getAttribute('data-order-id');
 
-                const request = "/order/get-order?id=" + orderId;
+                const request = "/order/get-order-by-manager?id=" + orderId;
 
                fetch(request)
                    .then(response => response.json())
                    .then(order => {
 
                    // Находим контейнер внутри модального окна, куда будем вставлять данные
-                    let modalBody = document.querySelector('#viewDetails .modal-body');
+                    let modalBody = document.querySelector('#viewUsersOrdersDetails .modal-body');
 
                     // Очищаем старые данные
                     modalBody.innerHTML = '';
@@ -113,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                })
                 .catch(error => console.error('Ошибка при загрузке заказов:', error));
-
            }
        }
 
@@ -122,20 +121,17 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(loadActions, 200); // 100 миллисекунд
 
         // Также загружаем заказы при клике на вкладку "Home"
-        const homeTab = document.getElementById('home-tab');
+        const homeTab = document.getElementById('mng-users-tab');
         homeTab.addEventListener('click', loadOrders);
 
-        const actionsTab = document.getElementById('action-tab');
+        const actionsTab = document.getElementById('mng-action-tab');
         actionsTab.addEventListener('click', loadActions);
 
         // Загрузка ордера по клику подробнее
-        const actionsTable = document.getElementById('actionsTable');
+        const actionsTable = document.getElementById('managerActionsTable');
         actionsTable.addEventListener('click', loadOrderById );
 
-        const ordersTable = document.getElementById('ordersTable');
+        const ordersTable = document.getElementById('managerOrdersTable');
         ordersTable.addEventListener('click', loadOrderById );
 
 });
-
-
-

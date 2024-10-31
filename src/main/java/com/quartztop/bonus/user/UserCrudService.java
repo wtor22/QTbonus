@@ -127,6 +127,9 @@ public class UserCrudService {
 
         return users.stream().map(UserCrudService::mapToDto).toList();
     }
+    public List<UserEntity> getAllUsersEntityByManager(UserEntity manager) {
+        return userRepository.findAllWithCreateDateAndManager(manager);
+    }
 
     public List<UserEntity> getAllUsers(Roles role) {
         List<UserEntity> users = userRepository.findByRoles(role);
@@ -165,6 +168,7 @@ public class UserCrudService {
         userDto.setNameSalon(user.getNameSalon());
         userDto.setInnCompany(user.getInnCompany());
         userDto.setId(user.getId());
+        userDto.setTypeActivity(user.getTypeActivity().getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
         String formateDate = user.getCreateDate().format(formatter);
