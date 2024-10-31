@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+        maven 'Mvn' // Указываем имя, которое ты задал для установки Maven
+    }
 
     stages {
         stage('Clone repository') {
@@ -11,14 +14,10 @@ pipeline {
 
         stage('Build application') {
             steps {
-                script {
-                    // Используем Maven для сборки проекта
-                    sh 'mvn clean package'
-                    sh 'ls -l target' // Выводим содержимое директории target
-                }
+                sh 'mvn clean package'
+                sh 'ls -l target'
             }
         }
-
 
         stage('Build Docker image') {
             steps {
