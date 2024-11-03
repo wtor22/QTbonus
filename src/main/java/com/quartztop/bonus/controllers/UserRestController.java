@@ -130,6 +130,8 @@ public class UserRestController {
         // Отправка письма пользователю
         String to = userDto.getEmail();
         String text = messageService.getTextCreateAccount() + " " + passwordResetLink;
-        emailService.sendEmail(to, text);
+        String htmlText = "<p>" + messageService.getTextCreateAccount() + "</p>" +
+                "<a href=\"" + passwordResetLink + "\">" + passwordResetLink + "</a>";
+        emailService.sendEmail(to, text,htmlText);
     }
 }

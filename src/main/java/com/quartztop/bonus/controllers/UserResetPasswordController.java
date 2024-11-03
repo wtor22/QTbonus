@@ -120,7 +120,12 @@ public class UserResetPasswordController {
                 + messageService.getPointResetPassword() + "?token=" + token;
         // Отправка письма пользователю
         String to = userDto.getEmail();
+
+
         String text = messageService.getTextResetPassword() + " " + passwordResetLink;
-        emailService.sendEmail(to, text);
+        String htmlText = "<p>" + messageService.getTextResetPassword() + "</p>" +
+                "<a href=\"" + passwordResetLink + "\">" + passwordResetLink + "</a>";
+
+        emailService.sendEmail(to, text,htmlText);
     }
 }

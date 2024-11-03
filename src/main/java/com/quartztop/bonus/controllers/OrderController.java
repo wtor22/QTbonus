@@ -151,9 +151,11 @@ public class OrderController {
                 quantityProduct = quantityProduct + position.getQuantity();
                 // Стоимость товара
                 if(position.getDiscount() > 0) {
-                    sumForProduct = sumForProduct + position.getPrice() * ( 1 -  position.getDiscount() / 100);
+                    sumForProduct = (sumForProduct + position.getPrice() * ( 1 -  position.getDiscount() / 100))
+                            * position.getQuantity();
                 } else {
-                    sumForProduct = sumForProduct + position.getPrice();
+                    sumForProduct = (sumForProduct + position.getPrice())
+                            * position.getQuantity();
                 }
             } else if (position.getProductType().equals("bundle")) {
 
@@ -164,9 +166,11 @@ public class OrderController {
                     quantityProduct = quantityProduct + bundle.getQuantity() * position.getQuantity();
                     // Стоимость товара
                     if(position.getDiscount() > 0) {
-                        sumForProduct = sumForProduct + position.getPrice() * ( 1 -  position.getDiscount() / 100);
+                        sumForProduct = (sumForProduct + position.getPrice() * ( 1 -  position.getDiscount() / 100))
+                                * position.getQuantity();
                     } else {
-                        sumForProduct = sumForProduct + position.getPrice();
+                        sumForProduct = (sumForProduct + position.getPrice())
+                                * position.getQuantity();
                     }
                 }
             }
@@ -183,6 +187,7 @@ public class OrderController {
         int price = 0;
         double bonus = 3.00; // 3% Бонус
         if(quantityProduct - quantityFromOldOrders > 0) {
+
             price = (int) (sumForProduct / quantityProduct / 100 * productQuantity * bonus / 100);
         }
 

@@ -18,14 +18,17 @@ public class EmailService {
     private MessageService messageService;
 
 
-    public void sendEmail(String to, String text) throws MessagingException {
+    public void sendEmail(String to, String plainText, String htmlText) throws MessagingException {
 
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8"); // Устанавливаем кодировку UTF-8
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); // Устанавливаем кодировку UTF-8
 
         helper.setTo(to);
         helper.setSubject(messageService.getEmailSubject());
-        helper.setText(text, true); // Если текст письма в формате HTML, передай true
+
+        // Указываем текстовую и HTML-версию письма одновременно
+        helper.setText(plainText, htmlText); // Первый параметр — текстовая версия, второй — HTML-версия
+
         helper.setFrom(messageService.getEmailFrom());
         mailSender.send(message);
     }
