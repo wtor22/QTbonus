@@ -75,6 +75,16 @@
 	font-style: normal;
 }
 
+.custom-popover {
+  --bs-popover-max-width: 200px;
+  --bs-popover-border-color: #8b5cf6;
+  --bs-popover-header-bg: #8b5cf6;
+  --bs-popover-header-color: var(--bs-white);
+  --bs-popover-body-padding-x: 1rem;
+  --bs-popover-body-padding-y: .5rem;
+}
+
+
 .alert.alert-danger {
     border-radius: 0;
     background: transparent;

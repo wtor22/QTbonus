@@ -138,6 +138,10 @@ public class StartProgramInitializer implements CommandLineRunner {
             PaymentType paymentType = new PaymentType(2,"На Банковский Счёт");
             listNewPaymentType.add(paymentType);
         }
+        if(paymentTypeRepository.findByName("По номеру карты") == null) {
+            PaymentType paymentType = new PaymentType(3,"По Номеру Карты");
+            listNewPaymentType.add(paymentType);
+        }
         paymentTypeRepository.saveAll(listNewPaymentType);
     }
 }

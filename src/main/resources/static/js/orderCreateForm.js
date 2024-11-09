@@ -13,7 +13,7 @@ function clearAllFields() {
     const orderForm = document.getElementById('orderForm');
 
     // Находим все элементы input внутри этой формы
-    const inputs = orderForm.querySelectorAll('input');
+    const inputs = orderForm.querySelectorAll('input:not([type="radio"])');
 
     // Перебираем все найденные input и очищаем
     inputs.forEach((input) => {
@@ -65,6 +65,39 @@ function validateAgentByName() {
             });
     }
 }
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  try {
+    // Находим все элементы с классом popover-input
+    const inputs = document.querySelectorAll('.popover-input');
+
+    // Проходимся по каждому input и инициализируем popover
+      inputs.forEach(input => {
+        const popover = new bootstrap.Popover(input, {
+          trigger: 'manual',
+          placement: 'top',
+          content: input.getAttribute('data-bs-content')
+        });
+
+        // Событие focus для показа popover
+        input.addEventListener('focus', () => {
+          popover.show();
+        });
+
+        // Событие blur для скрытия popover
+        input.addEventListener('blur', () => {
+          popover.hide();
+        });
+      });
+
+  } catch (error) {
+    console.error("Ошибка инициализации popover:", error);
+  }
+});
+
 // Проверка ИНН
 function validateInn() {
     let innNumber = document.getElementById("innNumber").value;
@@ -209,7 +242,6 @@ function validateInvoice() {
 
  // Validate product in invoice
  function validateProductInInvoice() {
- console.log("VALIDATE PRODUCT ")
  setTimeout(() => {  // Задержка перед выполнением основного кода
      let productName = document.getElementById("productName").value;
      let productQuantity = document.getElementById("productQuantity");

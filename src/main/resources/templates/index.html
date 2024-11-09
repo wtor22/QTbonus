@@ -30,6 +30,9 @@
 <div sec:authorize="hasRole('ROLE_SUPER_ADMIN')" class="top d-flex flex-column justify-content-between">
     <div th:insert="~{fragments :: DashBoard}" ></div>
 </div>
+<div sec:authorize="hasRole('ROLE_ADMIN')" class="top d-flex flex-column justify-content-between">
+    <div th:insert="~{fragmentsDashBoards :: AdminDashBoard}"></div>
+</div>
 <div sec:authorize="hasRole('ROLE_MANAGER')" class="top d-flex flex-column justify-content-between">
     <div th:insert="~{fragmentsDashBoards :: ManagerDashBoard}"></div>
 </div>

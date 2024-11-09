@@ -63,7 +63,7 @@ public class UserWebController {
             model.addAttribute("nameRole",userRole.getNameRole());
             model.addAttribute("welcome",welcomeMessage);
 
-            if(userRole.getRole().equals("ROLE_SUPER_ADMIN")) {
+            if(userRole.getRole().equals("ROLE_ADMIN")) {
                 model.addAttribute("listUsers", userCrudService.getAllUsers());
                 model.addAttribute("listRoles", rolesRepository.findAllExceptRole("ROLE_SUPER_ADMIN"));
 

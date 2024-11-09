@@ -320,49 +320,6 @@
     </div>
 </div>
 
-<!-- DashBoard для пользователя -->
-<div th:fragment="UserDashBoard" class="container">
-    <div sec:authorize="hasRole('ROLE_USER')" th:fragment="DashBoard" class="container">
-        <h2>Личный кабинет</h2>
-
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-                        role="tab" aria-controls="home" aria-selected="true">Заявки на бонусы
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="order-tab" data-bs-toggle="tab" data-bs-target="#order" type="button"
-                        role="tab" aria-controls="order" aria-selected="false">Участие в акциях
-                </button>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <h3>Ваши заказы</h3>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Дата</th>
-                        <th>Сумма</th>
-                        <th>Статус</th>
-                        <th>Счет</th>
-                        <th>Название товара</th>
-                        <th>Количество товара</th>
-                    </tr>
-                    </thead>
-                    <tbody id="ordersTable">
-                    </tbody>
-                </table>
-            </div>
-            <div class="tab-pane fade" id="order" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="container">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div th:fragment="DashBoard" class="container">
     <!-- Creator link to registration by manager -->
     <div sec:authorize="hasRole('ROLE_MANAGER')" >

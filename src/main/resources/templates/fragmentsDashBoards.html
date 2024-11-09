@@ -6,8 +6,162 @@
 </head>
 <body>
 
-<div th:fragment="ManagerDashBoard" class="container">
+<!-- DashBoard для админа -->
+<div th:fragment="AdminDashBoard" class="container">
+    <h2>Кабинет администратора</h2>
 
+    <ul class="nav nav-tabs" id="adminTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button id="admin-users-tab" class="nav-link active" data-bs-toggle="tab" data-bs-target="#admin-users" type="button"
+                    role="tab" aria-controls="admin-users" aria-selected="true">Партнёры
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button id="admin-order-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-order" type="button"
+                    role="tab" aria-controls="admin-order" aria-selected="false">Заявки на Бонусы
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button id="admin-action-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-action" type="button"
+                    role="tab" aria-controls="admin-action" aria-selected="false">Участия в акциях
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button id="admin-check-invoice-tab" class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-check-invoice" type="button"
+                    role="tab" aria-controls="admin-check-invoice" aria-selected="false">Проверка счёта
+            </button>
+        </li>
+    </ul>
+
+
+
+    <div class="tab-content" id="adminTabContent">
+
+
+        <div id="admin-users" class="tab-pane fade show active" role="tabpanel" aria-labelledby="admin-users-tab">
+            <div class="container">
+                <h3 class="mt-5">Список партнеров</h3>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Телефон</th>
+                        <th>Менеджер</th>
+                        <th>Роль</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${listUsers}">
+                        <td th:text="${user.fio}">1</td>
+                        <td th:text="${user.phone}">Product Name</td>
+                        <td th:text="${user.manager}">Value</td>
+                        <!-- Ссылка на модальное окно -->
+                        <td th:switch="${user.roles.role}">
+                            <a href="#"
+                               th:case="'ROLE_SUPER_ADMIN'"
+                               th:attr="data-userid=${user.id}"
+                               data-bs-toggle="modal"
+                               data-bs-target="#editRoleModal">
+                                <span class="badge bg-info" th:text="${user.roles.nameRole}"> </span>
+                            </a>
+                            <a href="#"
+                               th:case="'ROLE_USER'"
+                               th:attr="data-userid=${user.id}"
+                               data-bs-toggle="modal"
+                               data-bs-target="#editRoleModal">
+                                <span class="badge bg-warning" th:text="${user.roles.nameRole}"> </span>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Модальное окно -->
+        <div class="modal fade" id="editRoleModal" tabindex="-1" aria-labelledby="editRoleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editRoleModalLabel">Установить Пользователю роль</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editRoleForm" method="post" action="/changeRole">
+                            <input type="hidden" id="userIdInput" name="userId" value=""/>
+                            <div class="mb-3">
+                                <label for="roleSelect" class="form-label">Роль</label>
+                                <select class="form-select" id="roleSelect" name="role">
+                                    <option th:each="role : ${listRoles}" th:value="${role.id}"
+                                            th:text="${role.nameRole}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="admin-order" class="tab-pane fade" role="tabpanel" aria-labelledby="admin-order-tab">
+            <div class="container">
+                <h3 class="mt-5">Список заявок</h3>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID ордера</th>
+                        <th>дата ордера</th>
+                        <th>Клиент</th>
+                        <th>сумма</th>
+                        <th>Статус ордера</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${ordersList}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${order.createDate}"></td>
+                        <td th:text="${order.userEntity.fio}"></td>
+                        <td th:text="${order.sum}"></td>
+                        <td th:text="${order.status.name}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="admin-action" class="tab-pane fade" role="tabpanel" aria-labelledby="admin-action-tab">
+            <div class="container">
+                <h3 class="mt-5">Список акций</h3>
+            </div>
+        </div>
+        <div id="admin-check-invoice" class="tab-pane fade" role="tabpanel" aria-labelledby="admin-check-invoice-tab">
+            <div class="container">
+                <h3 class="mt-5">Проверка счёта</h3>
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>№ инвойса</th>-->
+<!--                        <th>дата инвойса</th>-->
+<!--                        <th>сумма</th>-->
+<!--                        <th>Внешний id контракта</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="invoice : ${invoicesList}">-->
+<!--                        <td th:text="${invoice.id}">1</td>-->
+<!--                        <td th:text="${invoice.id}">Product Name</td>-->
+<!--                        <td th:text="${invoice.sum}">Value</td>-->
+<!--                        <td th:text="${invoice.id}">Value</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- DashBoard для менеджера -->
+<div th:fragment="ManagerDashBoard" class="container">
     <h2>Кабинет менеджера</h2>
     <!-- Creator link to registration by manager -->
     <div sec:authorize="hasRole('ROLE_MANAGER')" >
@@ -62,7 +216,7 @@
                 </button>
             </li>
         </ul>
-        <div class="tab-content" id="usersTabContent">
+        <div class="tab-content" id="managerTabContent">
             <div id="mng-users" class="tab-pane fade show active" role="tabpanel" aria-labelledby="mng-users-tab">
                 <div class="container">
                     <h3 class="mt-5">Ваши партнеры</h3>

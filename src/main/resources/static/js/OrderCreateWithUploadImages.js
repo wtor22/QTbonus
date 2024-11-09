@@ -65,6 +65,35 @@ function validateAgentByName() {
             });
     }
 }
+// Обработка popovers
+document.addEventListener("DOMContentLoaded", function() {
+  try {
+    // Находим все элементы с классом popover-input
+    const inputs = document.querySelectorAll('.popover-input');
+
+    // Проходимся по каждому input и инициализируем popover
+      inputs.forEach(input => {
+        const popover = new bootstrap.Popover(input, {
+          trigger: 'manual',
+          placement: 'top',
+          content: input.getAttribute('data-bs-content')
+        });
+
+        // Событие focus для показа popover
+        input.addEventListener('focus', () => {
+          popover.show();
+        });
+
+        // Событие blur для скрытия popover
+        input.addEventListener('blur', () => {
+          popover.hide();
+        });
+      });
+
+  } catch (error) {
+    console.error("Ошибка инициализации popover:", error);
+  }
+});
 // Проверка ИНН
 function validateInn() {
     let innNumber = document.getElementById("innNumber").value;

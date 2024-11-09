@@ -55,8 +55,13 @@
         <div class="col d-flex g-3 mb-xl-3 flex-column flex-xl-row flex-wrap">
             <div id="form-by-inn" class="col mb-3 mb-xl-0 pe-xl-3 position-relative">
                 <label class="form-label" for="innNumber">ИНН покупателя:</label>
-                <input type="text" id="innNumber" class="form-control" name="innNumber"
-                       maxlength="10" minlength="10" onblur="validateInn()">
+                <input type="text" id="innNumber" class="form-control popover-input" name="innNumber"
+                       maxlength="10" minlength="10" onblur="validateInn()"
+                       data-bs-custom-class="custom-popover"
+                       data-bs-toggle="popover"
+                       data-bs-trigger="manual"
+                       data-bs-title="ИНН ПОКУПАТЕЛЯ"
+                       th:data-bs-content="#{app.popover.input-inn}">
                 <span id="innErrorForm" class="error-message"></span>
             </div>
             <div id="form-by-name" class="col-12 mb-3 mb-xl-3 flex-column flex-xl-row position-relative">
@@ -78,8 +83,13 @@
             <div class="col d-flex mb-3 mb-xl-0 position-relative">
                 <div class="col pe-3">
                     <label class="form-label" for="invoiceNumber">Номер счета:&nbsp</label>
-                    <input id="invoiceNumber" class="form-control" name="invoiceNumber"
-                           onblur="validateInvoice()" required pattern="\d*" inputmode="numeric">
+                    <input id="invoiceNumber" class="form-control popover-input" name="invoiceNumber"
+                           onblur="validateInvoice()" required pattern="\d*" inputmode="numeric"
+                           data-bs-custom-class="custom-popover"
+                           data-bs-toggle="popover"
+                           data-bs-trigger="manual"
+                           data-bs-title="НОМЕР СЧЁТА"
+                           th:data-bs-content="#{app.popover.input-invoice}">
                     <span id="invoiceErrorForm" class="error-message"></span>
                     <span id="invoiceError" class="error-message"></span>
                 </div>
@@ -95,8 +105,13 @@
         <div class="col d-flex g-3 position-relative mb-3 mb-xl-4">
             <div class="col pe-3">
                 <label class="form-label" for="productName">Наименование товара: </label>
-                <input type="text" id="productName" class="form-control" name="productName" autocomplete="off" onkeyup="searchProducts()"
-                       onblur="validateProductInInvoice()" required>
+                <input type="text" id="productName" class="form-control popover-input" name="productName" autocomplete="off" onkeyup="searchProducts()"
+                       onblur="validateProductInInvoice()" required
+                       data-bs-custom-class="custom-popover"
+                       data-bs-toggle="popover"
+                       data-bs-trigger="manual"
+                       data-bs-title="НАИМЕНОВАНИЕ ТОВАРА"
+                       th:data-bs-content="#{app.popover.input-product}">
                 <ul id="productSuggestions"
                     style="border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none;
                                         position: absolute; background: white; z-index: 1;"></ul>
@@ -122,13 +137,13 @@
                 </label>
             </div>
             <div class="form-check me-4">
-                <input class="form-check-input" type="radio" name="paymentOption" id="cardOption" value="2">
+                <input class="form-check-input" type="radio" name="paymentOption" id="cardOption" value="3">
                 <label class="form-check-label" for="cardOption">
                     На карту по номеру карты
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="paymentOption" id="bankOption" value="3" >
+                <input class="form-check-input" type="radio" name="paymentOption" id="bankOption" value="2" >
                 <label class="form-check-label" for="bankOption">
                     На банковский счёт
                 </label>

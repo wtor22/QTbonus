@@ -18,4 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
 
     List<Order> getOrdersByInvoiceExternalId(String invoiceExternalId);
+
+    List<Order> getOrdersByInvoiceExternalIdAndProductExternalId(String invoiceExternalId, String productExternalId);
 }
