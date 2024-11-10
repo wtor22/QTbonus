@@ -5,7 +5,7 @@ pipeline {
     }
 
     environment {
-        APP_NETWORK = 'app-network'  // Название сети, указанное в docker-compose.yml
+        APP_NETWORK = 'jenkins_app-network'  // Название сети, указанное в docker-compose.yml
         APP_NAME = 'myapp'
     }
 
