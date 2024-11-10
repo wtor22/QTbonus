@@ -41,7 +41,7 @@ spring:
   messages:
     encoding: UTF-8
     basename: messages
-  locale: ru
+  locale: ru_Ru
   mail:
     host: smtp.yandex.ru
     port: 465
