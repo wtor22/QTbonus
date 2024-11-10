@@ -20,7 +20,7 @@ spring:
       max-request-size: 10MB
   datasource:
     primary:
-      url: jdbc:postgresql://localhost:5432/bonus_qt
+      url: jdbc:postgresql://db:5432/bonus_qt
       username: admin_bonus
       password: T-6917111t
       driver-class-name: org.postgresql.Driver
