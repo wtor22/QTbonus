@@ -7,6 +7,7 @@ pipeline {
     environment {
         APP_NETWORK = 'jenkins_app-network'  // Название сети, указанное в docker-compose.yml
         APP_NAME = 'myapp'
+        DATABASE_HOST = 'db'                  // Хост базы данных
     }
 
     stages {
@@ -49,7 +50,9 @@ pipeline {
                     // Запускаем новый контейнер с указанием сети и проверкой успешности
                     sh """
                         docker run -d -p 8081:8081 --network ${env.APP_NETWORK} \
-                        --name ${env.APP_NAME} ${env.APP_NAME}:latest || { echo "Failed to run container"; exit 1; }
+                        --name ${env.APP_NAME} \
+                        -e DATABASE_HOST=${env.DATABASE_HOST} \
+                        ${env.APP_NAME}:latest || { echo "Failed to run container"; exit 1; }
                     """
 
                     // Выводим информацию о контейнерах и образах для проверки

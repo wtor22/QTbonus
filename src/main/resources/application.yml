@@ -20,12 +20,12 @@ spring:
       max-request-size: 10MB
   datasource:
     primary:
-      url: jdbc:postgresql://db:5432/bonus_qt
+      url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:bonus_qt}
       username: admin_bonus
       password: T-6917111t
       driver-class-name: org.postgresql.Driver
     crm:
-      url: jdbc:postgresql://db:5432/db_qt_crm
+      url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:db_qt_crm}
       username: qt_user
       password: qt_user
       driver-class-name: org.postgresql.Driver
