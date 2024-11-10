@@ -4,6 +4,11 @@ pipeline {
         maven 'Mvn' // Указываем имя, которое ты задал для установки Maven
     }
 
+    environment {
+        APP_NETWORK = 'app-network'  // Название сети, указанное в docker-compose.yml
+        APP_NAME = 'myapp'
+    }
+
     stages {
         stage('Clone repository') {
             steps {
@@ -24,7 +29,7 @@ pipeline {
                 script {
                     // Сборка Docker-образа на основе Dockerfile
                     try {
-                        sh 'docker build -t myapp:latest .'
+                        sh "docker build -t ${env.APP_NAME}:latest ."
                     } catch (Exception e) {
                         echo "Docker build failed: ${e}"
                         currentBuild.result = 'FAILURE'
@@ -37,12 +42,19 @@ pipeline {
         stage('Deploy application') {
             steps {
                 script {
-                    // Останавливаем старый контейнер (если он есть) и запускаем новый
-                    sh 'docker stop myapp || true'
-                    sh 'docker rm myapp || true'
-                    sh 'docker run -d -p 8081:8081 --name myapp myapp:latest || { echo "Failed to run container"; exit 1; }'
-                    sh 'docker ps -a' // Добавляем вывод всех контейнеров
-                    sh 'docker images' // Добавляем вывод всех образов
+                    // Останавливаем и удаляем старый контейнер, если он существует
+                    sh "docker stop ${env.APP_NAME} || true"
+                    sh "docker rm ${env.APP_NAME} || true"
+
+                    // Запускаем новый контейнер с указанием сети и проверкой успешности
+                    sh """
+                        docker run -d -p 8081:8081 --network ${env.APP_NETWORK} \
+                        --name ${env.APP_NAME} ${env.APP_NAME}:latest || { echo "Failed to run container"; exit 1; }
+                    """
+
+                    // Выводим информацию о контейнерах и образах для проверки
+                    sh 'docker ps -a'
+                    sh 'docker images'
                 }
             }
         }

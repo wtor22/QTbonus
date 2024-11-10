@@ -69,6 +69,10 @@ public class StartProgramInitializer implements CommandLineRunner {
             TypeActivity typeActivity = new TypeActivity(2,"Обработчик");
             typeActivityRepositories.save(typeActivity);
         }
+        if(typeActivityRepositories.findByName("Сотрудник") == null) {
+            TypeActivity typeActivity = new TypeActivity(3,"Сотрудник");
+            typeActivityRepositories.save(typeActivity);
+        }
 
         // Проверяем, существует ли роль "ROLE_USER"
         if (rolesRepository.findByRole("ROLE_USER") == null) {
