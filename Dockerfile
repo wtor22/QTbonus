@@ -10,3 +10,5 @@ COPY target/bonus-0.0.1-SNAPSHOT.jar /app/bonus-0.0.1-SNAPSHOT.jar
 # Открываем порт, если приложение слушает определенный порт (например, 8080)
 EXPOSE 8081
 
+# Запуск jar-файла при старте контейнера
+ENTRYPOINT ["java", "-Xmx512m", "-Xms256m", "-jar", "/app/bonus-0.0.1-SNAPSHOT.jar"]
