@@ -164,6 +164,7 @@ function validateInvoice() {
     let invoiceDate = document.getElementById("invoiceDate").value;
     let innNumber = document.getElementById("innNumber").value;
 
+
     if (invoiceNumber.length > 0 && invoiceDate.length > 0) {
 
         let fullNameAgent = getFullName();
@@ -174,7 +175,7 @@ function validateInvoice() {
         }
 
         let invoiceError = document.getElementById("invoiceError");
-        let invoiceExternalId = document.getElementById("fieldInvoiceExternalId");
+        let fieldInvoiceExternalId = document.getElementById("fieldInvoiceExternalId");
         let productName = document.getElementById("productName");
 
         let params = new URLSearchParams({ agentInn: innNumber,
@@ -202,23 +203,21 @@ function validateInvoice() {
                    }
                    productNameInput.disabled = false;
                    if(productName) {
-                   console.log("SEND PRODUCT TO CHECK")
                         // Отправлю на проверку товар если есть
                         validateProductInInvoice();
                    }
+
                    externalInvoiceId = text;
                    return text; // Возвращаем текст ответа
                });
             })
                 .then(invoiceExternalId => {
                     fieldInvoiceExternalId.value = invoiceExternalId;
-                    // Здесь можно использовать invoiceExternalId для дальнейшей обработки
                     invoiceError.textContent = ""; // очищаю текст в сообщение об ошибке
-
                 })
             .catch(error => {
                 isInvoiceValid = false; // Сбрасываем флаг валидности
-                externalInvoiceId = "";
+                fieldInvoiceExternalId.value = "";
                 invoiceError.textContent = error.message;  // Выводим сообщение об ошибке
             });
     }
