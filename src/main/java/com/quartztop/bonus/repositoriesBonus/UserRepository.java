@@ -20,6 +20,9 @@ public interface UserRepository extends JpaRepository<UserEntity,Integer> {
     @Query("SELECT u FROM UserEntity u WHERE u.createDate IS NOT NULL")
     List<UserEntity> findAllWithCreateDate();
 
+    @Query("SELECT u FROM UserEntity u WHERE u.roles =?1 AND u.createDate IS NOT NULL")
+    List<UserEntity> findAllWithRolesAndCreateDate(Roles roles);
+
     @Query("SELECT u FROM UserEntity u WHERE u.createDate IS NOT NULL AND u.manager = ?1")
     List<UserEntity> findAllWithCreateDateAndManager(UserEntity manager);
 

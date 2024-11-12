@@ -122,6 +122,11 @@ public class UserCrudService {
         users.removeIf(user -> user.getRoles().getRole().contains("ROLE_SUPER_ADMIN"));
         return users;
     }
+    public List<UserEntity> getAllUserByRole(Roles roles) {
+        List<UserEntity> users = userRepository.findAllWithRolesAndCreateDate(roles);
+
+        return users;
+    }
     public List<UserDto> getAllUsersDtoByManager(UserEntity manager) {
         List<UserEntity> users = userRepository.findAllWithCreateDateAndManager(manager);
 

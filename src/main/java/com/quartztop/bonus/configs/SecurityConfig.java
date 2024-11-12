@@ -39,9 +39,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        //.loginPage("/login")
                         .loginProcessingUrl("/login")
-                        //.defaultSuccessUrl("/")
                         .failureHandler(new CustomAuthenticationFailureHandler())
                         .permitAll()
                         .successHandler(customAuthenticationSuccessHandler)

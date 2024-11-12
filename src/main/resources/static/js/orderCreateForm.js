@@ -25,8 +25,14 @@ function clearAllFields() {
     imageBlocks.forEach((block) => {
         block.remove();  // Удаляет элемент из DOM
     });
-    // Делаем поле ввода количества неактивным
+
+    // Блокирую поле ввода товара
+    let productNameInput = document.getElementById("productName");
+    productNameInput.disabled = true;
+    productNameInput.value = "";
+    // Блокируем ввод количество товара
     productQuantity.disabled = true;
+    productQuantity.value = '';
 
 }
 
@@ -67,8 +73,6 @@ function validateAgentByName() {
 }
 
 
-
-
 document.addEventListener("DOMContentLoaded", function() {
   try {
     // Находим все элементы с классом popover-input
@@ -100,7 +104,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Проверка ИНН
 function validateInn() {
+
+    const input = document.getElementById("innNumber");
+    const minLength = input.getAttribute("minlength");
     let innNumber = document.getElementById("innNumber").value;
+
+    //Если символов недостаточно не делать проверку
+    if(innNumber.length < minLength) return;
+
     let invoiceNumber = document.getElementById("invoiceNumber");
     let invoiceDate = document.getElementById("invoiceDate");
     let productName = document.getElementById("productName");
@@ -109,7 +120,6 @@ function validateInn() {
     let fieldInvoiceExternalId = document.getElementById("fieldInvoiceExternalId");
     let successOrderMessage = document.getElementById("successOrderCreated");
     let productError = document.getElementById("productError");
-
 
     if (innNumber) {
         let params = new URLSearchParams({innNumber: innNumber});
@@ -131,6 +141,13 @@ function validateInn() {
                 innErrorForm.textContent = "";  // Убираем сообщение об ошибке если номер и дата валидны
                 productError.textContent = "";
                 productQuantityError.textContent = "";
+
+                // Блокирую поле ввода товара
+                productName.disabled = true;
+                productName.value = "";
+                // Блокируем ввод количество товара
+                productQuantity.disabled = true;
+                productQuantity.value = '';
             })
             .catch(error => {
                 isInvoiceValid = false; // Сбрасываем флаг валидности
@@ -143,31 +160,48 @@ function validateInvoice() {
 
     let invoiceNumber = document.getElementById("invoiceNumber").value;
     let invoiceDate = document.getElementById("invoiceDate").value;
-    let invoiceError = document.getElementById("invoiceError");
-    let invoiceExternalId = document.getElementById("fieldInvoiceExternalId");
     let innNumber = document.getElementById("innNumber").value;
 
-    let fullNameAgent = getFullName();
-    if (fullNameAgent) {
-        innNumber = null;
-    } else {
-        fullNameAgent = null;
-    }
+    if (invoiceNumber.length > 0 && invoiceDate.length > 0) {
 
-    if (invoiceNumber && invoiceDate) {
+        let fullNameAgent = getFullName();
+        if (fullNameAgent) {
+            innNumber = null;
+        } else {
+            fullNameAgent = null;
+        }
+
+        let invoiceError = document.getElementById("invoiceError");
+        let invoiceExternalId = document.getElementById("fieldInvoiceExternalId");
+        let productName = document.getElementById("productName");
+
         let params = new URLSearchParams({ agentInn: innNumber,
                                             agentFullName: fullNameAgent,
                                             invoiceNumber: invoiceNumber,
                                             invoiceDate: invoiceDate });
-        let productName = document.getElementById("productName").value;
+
+
+        let productNameInput = document.getElementById("productName");
+        let productQuantity = document.getElementById("productQuantity");
+
         fetch('/order/validate-invoice?' + params.toString())
             .then(response => {
                return response.text().then(text => {
                    if (!response.ok) {
                       externalInvoiceId = "";
+                      // Блокирую поле ввода товара
+                      productNameInput.disabled = true;
+                      productNameInput.value = "";
+                      // Блокируем ввод количество товара
+                      productQuantity.disabled = true;
+                      productQuantity.value = '';
+
                       throw new Error(text); // Бросаем ошибку с текстом ответа
                    }
+                   productNameInput.disabled = false;
                    if(productName) {
+                   console.log("SEND PRODUCT TO CHECK")
+                        // Отправлю на проверку товар если есть
                         validateProductInInvoice();
                    }
                    externalInvoiceId = text;
@@ -446,6 +480,11 @@ document.addEventListener('DOMContentLoaded', () => {
                      if (responseJson.message) {
                          errorText = responseJson.message;
                      }
+
+                     // Проверка на наличие details с uri=/403
+                     if (responseJson && responseJson.details && responseJson.details.includes("uri=/403")) {
+                         window.location.href = "/403"; // Перенаправление на страницу 403
+                     }
                  } catch (e) {
                      console.error('Ошибка при парсинге JSON:', e);
                  }
@@ -566,7 +605,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     function updateInnMaxLength() {
+
+        clearAllFields();
+
         if (llcOption.checked) {
+
             innForm.setAttribute('maxlength', '10');
             innForm.setAttribute('minlength', '10');
             blockByInn.style.display = 'block';
@@ -576,6 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
             removeAllInputsToRequired(blockByName);
             setAllInputsToRequired(blockByInn);
         } else {
+
             innForm.setAttribute('maxlength', '12');
             innForm.setAttribute('minlength', '12');
             blockByInn.style.display = 'block';
@@ -591,6 +635,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function visibleBlock() {
         if(fizOption.checked) {
+
             blockByInn.style.display = 'none';
             blockByName.style.display = 'block';
             llcOption.checked = false;

@@ -57,7 +57,7 @@
             <div id="form-by-inn" class="col mb-3 mb-xl-0 pe-xl-3 position-relative">
                 <label class="form-label" for="innNumber">ИНН покупателя:</label>
                 <input type="text" id="innNumber" class="form-control popover-input" name="innNumber"
-                       maxlength="10" minlength="10" onblur="validateInn()"
+                       maxlength="10" minlength="10" oninput="validateInn()"
                        data-bs-custom-class="custom-popover"
                        data-bs-toggle="popover"
                        data-bs-trigger="manual"
@@ -85,7 +85,7 @@
                 <div class="col pe-3">
                     <label class="form-label" for="invoiceNumber">Номер счета:&nbsp</label>
                     <input id="invoiceNumber" class="form-control  popover-input" name="invoiceNumber"
-                           onblur="validateInvoice()" required pattern="\d*" inputmode="numeric"
+                           oninput="validateInvoice()" required pattern="\d*" inputmode="numeric"
                            data-bs-custom-class="custom-popover"
                            data-bs-toggle="popover"
                            data-bs-trigger="manual"
@@ -147,7 +147,7 @@
                 <input type="hidden" id="filePath1" name="filePath[]" value="" />
             </div>
         </div>
-        <div class="mb-5 mb-xl-3 form-check check-box">
+        <div class="mb-5 mb-xl-3 form-check check-box d-flex align-items-center">
             <input type="checkbox" class="form-check-input" id="dataConsent" name="dataConsent"
                    required>
             <label class="form-check-label" for="dataConsent">Я ознакомлен с условиями проведения акции</label>

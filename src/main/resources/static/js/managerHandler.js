@@ -41,8 +41,6 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => console.error('Error:', error));
     });
 
-
-
     document.getElementById("copyLink").addEventListener("click", function() {
         // Находим элемент с текстом
         var copyText = document.getElementById("textLinkToReg").textContent;

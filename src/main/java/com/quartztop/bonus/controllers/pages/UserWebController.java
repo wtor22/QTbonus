@@ -64,7 +64,9 @@ public class UserWebController {
             model.addAttribute("welcome",welcomeMessage);
 
             if(userRole.getRole().equals("ROLE_ADMIN")) {
-                model.addAttribute("listUsers", userCrudService.getAllUsers());
+                //model.addAttribute("listUsers", userCrudService.getAllUsers());
+                Roles roles = rolesRepository.findById(1).orElseThrow();
+                model.addAttribute("listUsers", userCrudService.getAllUserByRole(roles));
                 model.addAttribute("listRoles", rolesRepository.findAllExceptRole("ROLE_SUPER_ADMIN"));
 
                 List<Invoices> invoicesList = invoicesRepository.findAll();
@@ -103,18 +105,14 @@ public class UserWebController {
                     model.addAttribute("registeredLink", "ссылка еще не сгенерирована");
                     model.addAttribute("linkExists", false); // Атрибут отсутствует
                 }
-
                 // Получаю список пользователей менеджера
                 List<UserDto> usersList = userCrudService.getAllUsersDtoByManager(user);
-
                 model.addAttribute("usersList", usersList);
                 model.addAttribute("formCreateOrder","/order/create");
             }
-
         } else {
             model.addAttribute("username", "Guest"); // Передаем имя пользователя в модель
         }
-
         model.addAttribute("formUrl","/api/user");
         model.addAttribute("formInputUrl","/login");
         return "index";

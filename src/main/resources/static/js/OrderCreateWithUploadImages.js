@@ -97,7 +97,13 @@ document.addEventListener("DOMContentLoaded", function() {
 // Проверка ИНН
 function validateInn() {
     let innNumber = document.getElementById("innNumber").value;
+    сщтые minLength = document.getElementById("innNumber").getAttribute("minlength");
     let invoiceNumber = document.getElementById("invoiceNumber");
+
+    //Если символов недостаточно не делать проверку
+    if(innNumber.length < minLength) return;
+
+
     let invoiceDate = document.getElementById("invoiceDate");
     let productName = document.getElementById("productName");
     let productExternalId = document.getElementById("productExternalId");

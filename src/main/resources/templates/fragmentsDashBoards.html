@@ -33,11 +33,7 @@
         </li>
     </ul>
 
-
-
     <div class="tab-content" id="adminTabContent">
-
-
         <div id="admin-users" class="tab-pane fade show active" role="tabpanel" aria-labelledby="admin-users-tab">
             <div class="container">
                 <h3 class="mt-5">Список партнеров</h3>
@@ -54,7 +50,7 @@
                     <tr th:each="user : ${listUsers}">
                         <td th:text="${user.fio}">1</td>
                         <td th:text="${user.phone}">Product Name</td>
-                        <td th:text="${user.manager}">Value</td>
+                        <td th:text="${user.manager.fio}">Value</td>
                         <!-- Ссылка на модальное окно -->
                         <td th:switch="${user.roles.role}">
                             <a href="#"
