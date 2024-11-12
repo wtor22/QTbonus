@@ -114,6 +114,7 @@ function validateInn() {
 
     let invoiceNumber = document.getElementById("invoiceNumber");
     let invoiceDate = document.getElementById("invoiceDate");
+    let invoiceError = document.getElementById("invoiceError");
     let productName = document.getElementById("productName");
     let productExternalId = document.getElementById("productExternalId");
     let productQuantity = document.getElementById("productQuantity");
@@ -141,6 +142,7 @@ function validateInn() {
                 innErrorForm.textContent = "";  // Убираем сообщение об ошибке если номер и дата валидны
                 productError.textContent = "";
                 productQuantityError.textContent = "";
+                invoiceError.textContent = "";
 
                 // Блокирую поле ввода товара
                 productName.disabled = true;
