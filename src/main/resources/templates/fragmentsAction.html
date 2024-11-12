@@ -57,7 +57,7 @@
             <div id="form-by-inn" class="col mb-3 mb-xl-0 pe-xl-3 position-relative">
                 <label class="form-label" for="innNumber">ИНН покупателя:</label>
                 <input type="text" id="innNumber" class="form-control popover-input" name="innNumber"
-                       maxlength="10" minlength="10" oninput="validateInn()"
+                       maxlength="10" minlength="10" required pattern="\d*" inputmode="numeric" oninput="validateInn()"
                        data-bs-custom-class="custom-popover"
                        data-bs-toggle="popover"
                        data-bs-trigger="manual"
@@ -103,9 +103,6 @@
                        value=""/>
             </div>
         </div>
-
-
-
         <div class="col d-flex g-3 position-relative mb-3 mb-xl-4">
             <div class="col pe-3">
                 <label class="form-label" for="productName">Наименование товара: </label>
