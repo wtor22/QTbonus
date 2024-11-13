@@ -137,71 +137,62 @@ public class OrderController {
                                                           @RequestParam("productQuantity") Double productQuantity,
                                                           @RequestParam("invoiceExternalId") String invoiceExternalId) {
 
-        log.info("PRODUCT EXTERNAL ID " + productExternalId);
-        log.info("PRODUCT QUANTITY " + productQuantity);
-        log.info("INVOICE EXTERNAL ID " + invoiceExternalId);
 
         List<InvoicePosition> positions = positionInvoiceRepository.findAllByExternalInvoiceId(invoiceExternalId);
 
-        double sumForProduct = 0;
-        double quantityProduct = 0;
-
+        double summByAllPositions = 0;
+        double quantityProductByAllPositions = 0;
         for (InvoicePosition position : positions) {
-
+            
             if (!position.getExternalProductId().equals(productExternalId) && position.getProductType().equals("product")) continue;
 
+            // Скидка в позиции счета
+            double discountByPosition = position.getDiscount();
+
+            // Цена товара в позиции счёта
+            if(discountByPosition <= 0) {
+                summByAllPositions = summByAllPositions + position.getPrice();
+            } else {
+                double sumDiscount = position.getPrice() * discountByPosition / 100;
+                summByAllPositions = summByAllPositions + position.getPrice() - sumDiscount;
+            }
+            
+            // Считаем количество товара в инвойсе
             if (position.getProductType().equals("product")) {
                 // Количество товара
-                quantityProduct = quantityProduct + position.getQuantity();
-                // Стоимость товара
-                if (position.getDiscount() > 0) {
-                    sumForProduct = (sumForProduct + position.getPrice() * (1 - position.getDiscount() / 100))
-                            * position.getQuantity();
-                } else {
-                    sumForProduct = (sumForProduct + position.getPrice())
-                            * position.getQuantity();
-                }
+                quantityProductByAllPositions = quantityProductByAllPositions + position.getQuantity();
+
             } else if (position.getProductType().equals("bundle")) {
 
                 Bundle bundle = bundleRepository.findByExternalId(position.getExternalProductId());
-                Product product = bundle.getProductParent();
-                if (!product.getExternalId().equals(productExternalId)) continue;
+                Product productFromPosition = bundle.getProductParent();
 
+                if (!productFromPosition.getExternalId().equals(productExternalId)) continue;
 
-                // Количество товара
-                quantityProduct = quantityProduct + bundle.getQuantity() * position.getQuantity();
-                // Стоимость товара
-                if (position.getDiscount() > 0) {
-                    sumForProduct = (sumForProduct + position.getPrice() * (1 - position.getDiscount() / 100))
-                            * position.getQuantity();
-                } else {
-                    sumForProduct = (sumForProduct + position.getPrice())
-                            * position.getQuantity();
-                }
+                quantityProductByAllPositions = quantityProductByAllPositions + bundle.getQuantity() * position.getQuantity();
             }
-
-            // Количество товара в предыдущих ордерах
-            List<Order> orders = orderRepository.getOrdersByInvoiceExternalIdAndProductExternalId(invoiceExternalId, productExternalId);
-            double quantityFromOldOrders = 0;
-            if (!orders.isEmpty()) {
-                quantityFromOldOrders = quantityFromOldOrders + orders.stream().mapToDouble(Order::getProductQuantity).sum();
-            }
-
-            // Стоимость товара по средней цене за товар
-            int price = 0;
-            double bonus = 3.00; // 3% Бонус
-            if (quantityProduct - quantityFromOldOrders > 0) {
-
-                price = (int) (sumForProduct / quantityProduct / 100 * productQuantity * bonus / 100);
-            }
-
-            String priceToString = String.valueOf(price);
-            if (productQuantity <= quantityProduct - quantityFromOldOrders) {
-                return ResponseEntity.status(HttpStatus.OK).body(priceToString);
-            }
-
         }
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Товары в счете не найдены");
+        // Количество товара в предыдущих ордерах
+        List<Order> orders = orderRepository.getOrdersByInvoiceExternalIdAndProductExternalId(invoiceExternalId, productExternalId);
+        double quantityFromOldOrders = 0;
+        if (!orders.isEmpty()) {
+            quantityFromOldOrders = quantityFromOldOrders + orders.stream().mapToDouble(Order::getProductQuantity).sum();
+        }
+        // Отправляю сумму в деньгах по позиции
+        if (productQuantity <= quantityProductByAllPositions - quantityFromOldOrders) {
+
+            // Цена усредненная по счету
+            double middlePriceByInvoice = summByAllPositions / quantityProductByAllPositions;
+            // Сумма за заявленный товар в Ордере
+            double sumByOrder = Math.floor(middlePriceByInvoice * productQuantity / 100);
+
+            String sumByOrderToString = String.valueOf(sumByOrder);
+
+            return ResponseEntity.status(HttpStatus.OK).body(sumByOrderToString);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Товары в счете не найдены");
     }
+
 }

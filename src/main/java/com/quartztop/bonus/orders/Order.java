@@ -33,8 +33,15 @@ public class Order {
     private StatusOrders status;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "bonus_value_id")
+    BonusValue bonusValue;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "payment_type_id")
     private PaymentType paymentType;
+
+    @Column(name="sum_by_product")
+    private double sumByProduct;
 
     private double sum; // Сумма выплаты
 

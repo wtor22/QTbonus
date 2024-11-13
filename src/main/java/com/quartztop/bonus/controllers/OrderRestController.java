@@ -1,14 +1,14 @@
 package com.quartztop.bonus.controllers;
 
 import com.quartztop.bonus.crm.Invoices;
-import com.quartztop.bonus.orders.Order;
-import com.quartztop.bonus.orders.OrderDto;
-import com.quartztop.bonus.orders.StatusOrders;
-import com.quartztop.bonus.orders.UploadedImages;
+import com.quartztop.bonus.crm.Product;
+import com.quartztop.bonus.orders.*;
+import com.quartztop.bonus.repositoriesBonus.BonusValueRepositories;
 import com.quartztop.bonus.repositoriesBonus.OrderRepository;
 import com.quartztop.bonus.repositoriesBonus.StatusRepository;
 import com.quartztop.bonus.repositoriesBonus.UploadedImagesRepository;
 import com.quartztop.bonus.repositoriesCrm.InvoicesRepository;
+import com.quartztop.bonus.repositoriesCrm.ProductRepositories;
 import com.quartztop.bonus.servises.FileService;
 import com.quartztop.bonus.servises.orderService.OrderDtoService;
 import com.quartztop.bonus.user.UserCrudService;
@@ -47,10 +47,12 @@ import java.util.stream.Collectors;
 public class OrderRestController {
 
     private final OrderRepository orderRepository;
+    private final ProductRepositories productRepositories;
     private final UploadedImagesRepository uploadedImagesRepository;
     private final UserCrudService userCrudService;
     private final StatusRepository statusRepository;
     private final FileService fileService;
+    private final BonusValueRepositories bonusValueRepositories;
 
     @GetMapping
     public ResponseEntity<List<OrderDto>> getAllUserOrders(Principal principal) {
@@ -158,6 +160,21 @@ public class OrderRestController {
         UserEntity user = userCrudService
                 .findByEmail(authentication.getName()).orElseThrow(); // authentication.getName() это адрес email
 
+        Product product = productRepositories.findByExternalId(order.getProductExternalId());
+
+        LocalDate dateInvoice = order.getInvoiceDate();
+
+        BonusValue bonusValue = getDiscount(product, user, dateInvoice);
+
+        double discount = bonusValue.getValue();
+
+        double summByProduct = order.getSumByProduct();
+
+        int sumBonus = (int) (summByProduct * discount / 100);
+
+        order.setSum(sumBonus);
+        order.setBonusValue(bonusValue);
+
         order.setUserEntity(user);
         order.setCreateDate(LocalDateTime.now());
 
@@ -169,7 +186,6 @@ public class OrderRestController {
         HttpSession session = request.getSession();
 
         List<String> tempFilePaths = (List<String>) session.getAttribute("uploadedFiles");
-
 
         // Проверяем, есть ли в сессии временные файлы
         if (tempFilePaths != null && !tempFilePaths.isEmpty()) {
@@ -190,5 +206,25 @@ public class OrderRestController {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body("ok");
+    }
+
+    public BonusValue getDiscount(Product product, UserEntity user, LocalDate dateInvoice) {
+
+        LocalDate startDate = LocalDate.of(2024,11,1);
+        LocalDate endDate = LocalDate.of(2024,12,31);
+
+        // Если в промежутке дат - то устанавливаем скидки
+        if((dateInvoice.isEqual(startDate) || dateInvoice.isAfter(startDate)) &&
+        (dateInvoice.isEqual(endDate) || dateInvoice.isBefore(endDate))) {
+
+            if(product.getCategory().getName().equals("Stratos")) {
+                return bonusValueRepositories.findById(3).orElseThrow();
+            }
+            if(user.getManager().getEmail().equals("p.zakam@quartztop.ru") && product.getCategory().getName().equals("Belenco")){
+                return bonusValueRepositories.findById(2).orElseThrow();
+            }
+        }
+        // Возвращаем стандартный бонус
+        return bonusValueRepositories.findById(1).orElseThrow();
     }
 }

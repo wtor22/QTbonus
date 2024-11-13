@@ -1,5 +1,6 @@
 package com.quartztop.bonus.servises;
 
+import com.quartztop.bonus.orders.BonusValue;
 import com.quartztop.bonus.orders.PaymentType;
 import com.quartztop.bonus.orders.StatusOrders;
 import com.quartztop.bonus.orders.TypeActivity;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +31,7 @@ public class StartProgramInitializer implements CommandLineRunner {
     private UserRepository userRepository;
     private StatusRepository statusRepository;
     private PaymentTypeRepository paymentTypeRepository;
+    private BonusValueRepositories bonusValueRepositories;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Override
@@ -73,6 +76,42 @@ public class StartProgramInitializer implements CommandLineRunner {
             TypeActivity typeActivity = new TypeActivity(3,"Сотрудник");
             typeActivityRepositories.save(typeActivity);
         }
+
+        // Проверяем Существуют ли бонусы
+        if (bonusValueRepositories.findByName("стандартный 3%") == null) {
+
+            BonusValue bonusValue = new BonusValue(
+                    1,
+                    "стандартный 3%",
+                    "",
+                    3.0,
+                    LocalDate.of(2023,1,1),
+                    LocalDate.of(2025,12,31));
+            bonusValueRepositories.save(bonusValue);
+        }
+        if (bonusValueRepositories.findByName("5% на Belenco") == null) {
+
+            BonusValue bonusValue = new BonusValue(
+                    2,
+                    "5% на Belenco",
+                    "Только для Закамской",
+                    5.0,
+                    LocalDate.of(2024,11,1),
+                    LocalDate.of(2024,12,31));
+            bonusValueRepositories.save(bonusValue);
+        }
+        if (bonusValueRepositories.findByName("8% на Stratos") == null) {
+
+            BonusValue bonusValue = new BonusValue(
+                    3,
+                    "8% на Stratos",
+                    "для всех до нового года",
+                    8.0,
+                    LocalDate.of(2024,11,1),
+                    LocalDate.of(2024,12,31));
+            bonusValueRepositories.save(bonusValue);
+        }
+
 
         // Проверяем, существует ли роль "ROLE_USER"
         if (rolesRepository.findByRole("ROLE_USER") == null) {

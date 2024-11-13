@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Table(name = "status_orders")
 public class StatusOrders {
-
     @Id
     private int id;
     String color;

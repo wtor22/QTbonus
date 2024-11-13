@@ -341,7 +341,7 @@ function validateInvoice() {
                 .then(text => {
                   // Преобразуем текст в число, если это цена
                   price = parseFloat(text);
-
+                  console.log("PRINT SUMM FROM RESPONSE " + price);
                   isInvoiceValid = true; // Если количество существует, устанавливаем флаг в true
                   productQuantityError.textContent = "";
                   productError.textContent = ""; // Убираем сообщение об ошибке если номер и дата валидны
@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
              productExternalId: $('#productExternalId').val(),
              productName: $('#productName').val(),
              productQuantity: $('#productQuantity').val(),
-             sum: price,
+             sumByProduct: price,
              dataPayment: dataPayment,
              type: typeOrder,
              paymentType: {
