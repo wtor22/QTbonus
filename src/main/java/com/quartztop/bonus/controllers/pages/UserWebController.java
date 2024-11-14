@@ -75,7 +75,7 @@ public class UserWebController {
 
                 model.addAttribute("ordersList", ordersList);
                 model.addAttribute("invoicesList", invoicesList);
-                model.addAttribute("statusList",statusOrdersList);
+                model.addAttribute("listOfStatus",statusOrdersList);
             }
             if(userRole.getRole().equals("ROLE_USER")) {
 

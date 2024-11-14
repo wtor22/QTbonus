@@ -4,6 +4,7 @@ import com.quartztop.bonus.crm.*;
 import com.quartztop.bonus.orders.Order;
 import com.quartztop.bonus.repositoriesBonus.OrderRepository;
 import com.quartztop.bonus.repositoriesCrm.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -146,18 +147,21 @@ public class OrderController {
             
             if (!position.getExternalProductId().equals(productExternalId) && position.getProductType().equals("product")) continue;
 
+            // Цена в позиции счёта
+            double priceByPositions = 0;
+
             // Скидка в позиции счета
             double discountByPosition = position.getDiscount();
 
             // Цена товара в позиции счёта
             if(discountByPosition <= 0) {
-                summByAllPositions = summByAllPositions + position.getPrice();
+                priceByPositions = position.getPrice();
             } else {
                 double sumDiscount = position.getPrice() * discountByPosition / 100;
-                summByAllPositions = summByAllPositions + position.getPrice() - sumDiscount;
+                priceByPositions = position.getPrice() - sumDiscount;
             }
             
-            // Считаем количество товара в инвойсе
+            // Считаем количество и стоимость товара в инвойсе
             if (position.getProductType().equals("product")) {
                 // Количество товара
                 quantityProductByAllPositions = quantityProductByAllPositions + position.getQuantity();
@@ -171,6 +175,9 @@ public class OrderController {
 
                 quantityProductByAllPositions = quantityProductByAllPositions + bundle.getQuantity() * position.getQuantity();
             }
+
+            // Стоимость товара
+            summByAllPositions = summByAllPositions + priceByPositions * position.getQuantity();
         }
 
         // Количество товара в предыдущих ордерах
@@ -185,6 +192,9 @@ public class OrderController {
             // Цена усредненная по счету
             double middlePriceByInvoice = summByAllPositions / quantityProductByAllPositions;
             // Сумма за заявленный товар в Ордере
+
+            log.info("PRODUCT QUANTITY " + productQuantity);
+            log.info("MIDLE PRICE " + middlePriceByInvoice);
             double sumByOrder = Math.floor(middlePriceByInvoice * productQuantity / 100);
 
             String sumByOrderToString = String.valueOf(sumByOrder);
@@ -194,5 +204,7 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Товары в счете не найдены");
     }
+
+
 
 }

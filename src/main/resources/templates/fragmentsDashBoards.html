@@ -52,20 +52,15 @@
                         <td th:text="${user.phone}">Product Name</td>
                         <td th:text="${user.manager.fio}">Value</td>
                         <!-- Ссылка на модальное окно -->
-                        <td th:switch="${user.roles.role}">
+                        <td>
                             <a href="#"
-                               th:case="'ROLE_SUPER_ADMIN'"
                                th:attr="data-userid=${user.id}"
                                data-bs-toggle="modal"
                                data-bs-target="#editRoleModal">
-                                <span class="badge bg-info" th:text="${user.roles.nameRole}"> </span>
-                            </a>
-                            <a href="#"
-                               th:case="'ROLE_USER'"
-                               th:attr="data-userid=${user.id}"
-                               data-bs-toggle="modal"
-                               data-bs-target="#editRoleModal">
-                                <span class="badge bg-warning" th:text="${user.roles.nameRole}"> </span>
+                                <span class="badge"
+                                      th:classappend="${user.roles.role == 'ROLE_SUPER_ADMIN'} ? 'bg-info' : 'bg-warning'"
+                                      th:text="${user.roles.nameRole}">
+                                </span>
                             </a>
                         </td>
                     </tr>
@@ -79,7 +74,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editRoleModalLabel">Установить Пользователю роль</h5>
+                        <h5 class="modal-title" id="editRoleModalLabel">Установить роль пользователя</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -117,12 +112,50 @@
                         <td th:text="${order.createDate}"></td>
                         <td th:text="${order.userEntity.fio}"></td>
                         <td th:text="${order.sum}"></td>
-                        <td th:text="${order.status.name}"></td>
+                        <td>
+                            <a href="#"
+                               th:attr="data-order-id=${order.id}"
+                               data-bs-toggle="modal"
+                               data-bs-target="#setStatusModal">
+                                <span class="badge"
+                                      th:classappend="${order.status.color}"
+                                      th:text="${order.status.name}">
+                                </span>
+                            </a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- Модальное окно -->
+        <div class="modal fade" id="setStatusModal" tabindex="-1" aria-labelledby="setStatusModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="setStatusModalLabel">Установить роль пользователя</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="setStatusModalForm" method="post" action="order/set-status">
+                            <input type="hidden" id="statusIdInput" name="order-id" value=""/>
+                            <div class="mb-3">
+                                <label for="statusSelect" class="form-label">Роль</label>
+                                <select class="form-select" id="statusSelect" name="status">
+                                    <option th:each="status : ${listOfStatus}" th:value="${status.id}"
+                                            th:text="${status.name}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div id="admin-action" class="tab-pane fade" role="tabpanel" aria-labelledby="admin-action-tab">
             <div class="container">
                 <h3 class="mt-5">Список акций</h3>

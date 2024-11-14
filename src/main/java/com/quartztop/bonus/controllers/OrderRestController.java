@@ -152,6 +152,13 @@ public class OrderRestController {
         return ResponseEntity.ok(userOrders);
     }
 
+    @PostMapping("/set-status")
+    public ResponseEntity<String> setStatusOrder(HttpServletRequest request, @RequestBody Order order) {
+
+        Order orderExisting = orderRepository.findById(order.getId()).orElseThrow();
+        orderExisting.setStatus(order.getStatus());
+        return ResponseEntity.status(HttpStatus.CREATED).body("ok");
+    }
     @PostMapping("/create")
     public ResponseEntity<String> createOrder(HttpServletRequest request, @RequestBody Order order) {
 
