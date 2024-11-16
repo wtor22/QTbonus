@@ -29,9 +29,6 @@ function clearAllFields() {
 
 // Получаем ФИО Физ лица
 function getFullName() {
-    if (!fullNameAgent) {
-        return;
-    }
     let lastNameAgent = document.getElementById("lastNameAgent").value.trim();
     let nameAgent = document.getElementById("nameAgent").value.trim();
     let surNameAgent = document.getElementById("surNameAgent").value.trim();
@@ -97,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // Проверка ИНН
 function validateInn() {
     let innNumber = document.getElementById("innNumber").value;
-    сщтые minLength = document.getElementById("innNumber").getAttribute("minlength");
+    minLength = document.getElementById("innNumber").getAttribute("minlength");
     let invoiceNumber = document.getElementById("invoiceNumber");
 
     //Если символов недостаточно не делать проверку
@@ -436,88 +433,15 @@ document.addEventListener('DOMContentLoaded', () => {
  });
 
 
-// JavaScript для управления отображением форм выбора способа оплаты
-document.addEventListener('DOMContentLoaded', function() {
-
-    const phoneOption = document.getElementById('phoneOption');
-    const bankOption = document.getElementById('bankOption');
-    const cardOption = document.getElementById('cardOption');
-    const phoneForm = document.getElementById('phoneForm');
-    const bankForm = document.getElementById('bankForm');
-    const cardForm = document.getElementById('cardForm');
-    const inputsPhone = document.querySelectorAll('.phone-form');
-    const inputsBank = document.querySelectorAll('#bankForm .form-control');
-    const inputsCard = document.querySelectorAll('#cardForm .form-control');
-
-    function updateFormVisibility() {
-        if (phoneOption.checked) {
-            // Применяем атрибут required ко всем найденным inputsPhone
-            inputsPhone.forEach(input => {
-                input.setAttribute('required', '');
-            });
-            inputsBank.forEach(input => {
-                input.removeAttribute('required');
-            });
-            inputsCard.forEach(input => {
-                input.removeAttribute('required');
-            });
-            phoneForm.style.display = 'block';
-            bankForm.style.display = 'none';
-            cardForm.style.display = 'none';
-        }
-        if (cardOption.checked) {
-            inputsCard.forEach(input => {
-                input.setAttribute('required', '');
-            });
-           inputsPhone.forEach(input => {
-                input.removeAttribute('required');
-            });
-            inputsBank.forEach(input => {
-                input.removeAttribute('required', '');
-            });
-            bankForm.style.display = 'none';
-            phoneForm.style.display = 'none';
-            cardForm.style.display = 'block';
-        }
-        if (bankOption.checked){
-            inputsBank.forEach(input => {
-                input.setAttribute('required', '');
-            });
-            inputsPhone.forEach(input => {
-                input.removeAttribute('required');
-            });
-            inputsCard.forEach(input => {
-                input.removeAttribute('required');
-            });
-            bankForm.style.display = 'block';
-            phoneForm.style.display = 'none';
-            cardForm.style.display = 'none';
-        }
-    }
-
-    // Обработчики событий для переключения радио кнопок
-    phoneOption.addEventListener('change', updateFormVisibility);
-    bankOption.addEventListener('change', updateFormVisibility);
-    cardOption.addEventListener('change', updateFormVisibility);
-
-    // Изначально обновляем видимость форм в зависимости от выбранного варианта
-    updateFormVisibility();
-});
-
 // JavaScript для управления отображением форм выбора типа Покупателя
 document.addEventListener('DOMContentLoaded', function() {
-    const blockByName = "";
-    if(document.getElementById('form-by-name')) {
-        blockByName = document.getElementById('form-by-name');
-    }
+    const blockByName = document.getElementById('form-by-name');
+
     const blockByInn = document.getElementById('form-by-inn');
 
     const llcOption = document.getElementById('llcOption');
     const individualOption = document.getElementById('individualOption');
-    const fizOption = "";
-    if(document.getElementById('fizOption')) {
-        fizOption = document.getElementById('fizOption');
-    }
+    const fizOption = document.getElementById('fizOption');
 
     const innForm = document.getElementById('innNumber');
 
@@ -540,7 +464,6 @@ document.addEventListener('DOMContentLoaded', function() {
             input.removeAttribute('required');
         });
     }
-
 
     function updateInnMaxLength() {
         if (llcOption.checked) {

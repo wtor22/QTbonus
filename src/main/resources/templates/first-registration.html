@@ -13,23 +13,29 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
     <script th:if="${#authorization.expression('isAnonymous()')}" th:src="@{/js/formHandler.js}"></script>
-    <script th:if="${#authorization.expression('isAuthenticated()')}" th:src="@{/js/orderCreateForm.js}"></script>
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <meta name="_csrf" data-th-content="${_csrf.token}"/>
     <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
 <div class="d-flex flex-column justify-content-between top-panel">
     <div class="logo" style="width: 45%;margin-top: 10%;">
             <img th:src="@{/images/logo.svg}" alt="Company Logo">
     </div>
-    <div>
 
-        <h1>Регистрация нового партнера</h1>
+    <div th:if="${#authorization.expression('isAuthenticated()')}">
+        <div class="mt-5">
+            <h1><strong th:text="${username}"></strong>, Вы уже зарегистрированы</h1>
+        </div>
+        <a th:href="@{/}" class="btn btn-bonus mt-5">
+            На главную
+        </a>
     </div>
-    <div>
+
+
+    <div th:if="${#authorization.expression('isAnonymous()')}">
+
         <button id="button-success-hide" class="btn btn-lg btn-bonus" type="button" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasRegistry"
                 aria-controls="offcanvasRight">Регистрация
@@ -48,8 +54,8 @@
     <h3 th:text="${error}"></h3>
 </div>
 
-<div class="offcanvas offcanvas-top offcanvas-custom-width" tabindex="-1" id="offcanvasRegistry"
-     aria-labelledby="offcanvasRightLabel">
+<div th:if="${#authorization.expression('isAnonymous()')}" class="offcanvas offcanvas-top offcanvas-custom-width" tabindex="-1" id="offcanvasRegistry"
+     aria-labelledby="offcanvasRightLabel" >
     <div class="offcanvas-header">
         <button type="button" class="btn-close text-reset d-none d-xl-block" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>

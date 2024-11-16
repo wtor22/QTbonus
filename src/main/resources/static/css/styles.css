@@ -226,6 +226,7 @@ button.clear {
     color: green;
     position: absolute;
     top: -30px;
+    left: 40px;
 }
 .text-gigantic {
     font-size: 70px;

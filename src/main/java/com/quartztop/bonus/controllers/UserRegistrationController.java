@@ -21,10 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -124,7 +121,15 @@ public class UserRegistrationController {
     @GetMapping("/token")
     public String registrationByToken(@RequestParam(name = "token", required = true) String token, Model model){
 
-        TokenEntity tokenEntity = tokenCrudService.getByToken(token).orElseThrow();
+        Optional<TokenEntity> optionalTokenEntity = tokenCrudService.getByToken(token);
+        if(optionalTokenEntity.isEmpty()) {
+            return "tokens/token-not-found";
+        }
+
+        TokenEntity tokenEntity =optionalTokenEntity.get();
+        if(LocalDateTime.now().isAfter(tokenEntity.getExpiryDate())) {
+            return "tokens/token-manager-outdated";
+        }
         UserEntity manager = tokenEntity.getManagerId();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -141,10 +146,6 @@ public class UserRegistrationController {
             model.addAttribute("nameRole",userRole.getNameRole());
             model.addAttribute("welcome","Вы уже зарегистрированы");
 
-            if(userRole.getRole().equals("ROLE_USER")) {
-
-                model.addAttribute("formCreateOrder","/order/create");
-            }
         } else {
             model.addAttribute("username", "Guest"); // Передаем имя пользователя в модель
             model.addAttribute("manager", manager.getFio());
@@ -154,6 +155,4 @@ public class UserRegistrationController {
 
         return "first-registration";
     }
-
-
 }
