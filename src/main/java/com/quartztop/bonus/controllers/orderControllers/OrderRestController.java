@@ -1,43 +1,36 @@
-package com.quartztop.bonus.controllers;
+package com.quartztop.bonus.controllers.orderControllers;
 
-import com.quartztop.bonus.crm.Invoices;
 import com.quartztop.bonus.crm.Product;
 import com.quartztop.bonus.orders.*;
 import com.quartztop.bonus.repositoriesBonus.BonusValueRepositories;
 import com.quartztop.bonus.repositoriesBonus.OrderRepository;
 import com.quartztop.bonus.repositoriesBonus.StatusRepository;
 import com.quartztop.bonus.repositoriesBonus.UploadedImagesRepository;
-import com.quartztop.bonus.repositoriesCrm.InvoicesRepository;
 import com.quartztop.bonus.repositoriesCrm.ProductRepositories;
 import com.quartztop.bonus.servises.FileService;
 import com.quartztop.bonus.servises.orderService.OrderDtoService;
 import com.quartztop.bonus.user.UserCrudService;
+import com.quartztop.bonus.user.UserDto;
 import com.quartztop.bonus.user.UserEntity;
+import com.quartztop.bonus.user.roles.Roles;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -71,6 +64,24 @@ public class OrderRestController {
 
         String username = principal.getName();
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
+
+        Roles roles = user.getRoles();
+        if(roles.getRole().equals("ROLE_ADMIN") || roles.getRole().equals("ROLE_SUPER_ADMIN") ) {
+
+            Optional<Order> optionalOrder = orderRepository.findById(orderId);
+            if(optionalOrder.isEmpty()) {
+                String message = "Ордер не найден";
+                Map<String, String> response = Map.of("message", message);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            Order order = optionalOrder.get();
+            OrderDto orderDto = OrderDtoService.mapOrderToDto(order);
+
+            UserDto client = userCrudService.getUser(order.getUserEntity().getId());
+            orderDto.setUserDto(client);
+            return ResponseEntity.ok(orderDto);
+        }
 
         Order order = orderRepository.getOrderByUserEntityAndId(user,orderId);
         if(order == null) {
@@ -153,11 +164,16 @@ public class OrderRestController {
     }
 
     @PostMapping("/set-status")
-    public ResponseEntity<String> setStatusOrder(HttpServletRequest request, @RequestBody Order order) {
+    public ResponseEntity<OrderDto> setStatusOrder(HttpServletRequest request, @RequestBody Order order) {
 
-        Order orderExisting = orderRepository.findById(order.getId()).orElseThrow();
-        orderExisting.setStatus(order.getStatus());
-        return ResponseEntity.status(HttpStatus.CREATED).body("ok");
+        Order orderExisting = orderRepository.findById(order.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+        StatusOrders statusOrders =statusRepository.findById(order.getStatus().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Status not found"));
+        orderExisting.setStatus(statusOrders);
+        Order updateOrder = orderRepository.save(orderExisting);
+
+        OrderDto updateOrderDto = OrderDtoService.mapOrderToDto(updateOrder);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(updateOrderDto);
     }
     @PostMapping("/create")
     public ResponseEntity<String> createOrder(HttpServletRequest request, @RequestBody Order order) {
@@ -175,7 +191,7 @@ public class OrderRestController {
 
         double discount = bonusValue.getValue();
 
-        double summByProduct = order.getSumByProduct();
+        double summByProduct = order.getSumByInvoice();
 
         int sumBonus = (int) (summByProduct * discount / 100);
 

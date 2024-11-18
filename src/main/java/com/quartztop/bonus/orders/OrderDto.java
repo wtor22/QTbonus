@@ -1,13 +1,15 @@
 package com.quartztop.bonus.orders;
 
+import com.quartztop.bonus.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Setter
 @Getter
 public class OrderDto {
@@ -24,4 +26,8 @@ public class OrderDto {
     private String productExternalId;
     private String productName;
     private double productQuantity;
+    private double sumByInvoice;
+    private StatusOrdersDto statusOrdersDto;
+    private UserDto userDto;
+    private BonusValueDto bonusValueDto;
 }

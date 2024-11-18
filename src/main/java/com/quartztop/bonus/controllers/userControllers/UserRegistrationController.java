@@ -1,4 +1,4 @@
-package com.quartztop.bonus.controllers;
+package com.quartztop.bonus.controllers.userControllers;
 
 import com.quartztop.bonus.orders.TypeActivity;
 import com.quartztop.bonus.tokens.TokenCrudService;

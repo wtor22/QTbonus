@@ -1,15 +1,14 @@
 package com.quartztop.bonus.orders;
 
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
+@AllArgsConstructor
 @Setter
 @Getter
-@Table(name = "status_orders")
-public class StatusOrders {
-    @Id
+public class StatusOrdersDto {
+
     private int id;
     private String color;
     private String name;

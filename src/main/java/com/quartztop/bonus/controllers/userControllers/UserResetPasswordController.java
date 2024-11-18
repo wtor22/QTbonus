@@ -1,4 +1,4 @@
-package com.quartztop.bonus.controllers;
+package com.quartztop.bonus.controllers.userControllers;
 
 import com.quartztop.bonus.servises.EmailService;
 import com.quartztop.bonus.servises.MessageService;

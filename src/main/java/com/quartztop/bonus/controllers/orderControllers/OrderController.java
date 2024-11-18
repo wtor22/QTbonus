@@ -1,4 +1,4 @@
-package com.quartztop.bonus.controllers;
+package com.quartztop.bonus.controllers.orderControllers;
 
 import com.quartztop.bonus.crm.*;
 import com.quartztop.bonus.orders.Order;

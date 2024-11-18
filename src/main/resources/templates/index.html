@@ -16,6 +16,7 @@
     <script th:if="${#authorization.expression('isAuthenticated()')}" th:src="@{/js/updater.js}"></script>
     <script th:if="${#authorization.expression('isAuthenticated() and hasRole(''ROLE_MANAGER'')')}" th:src="@{/js/managerHandler.js}"></script>
     <script th:if="${#authorization.expression('isAuthenticated() and hasRole(''ROLE_MANAGER'')')}" th:src="@{/js/getOrdersForManager.js}"></script>
+    <script th:if="${#authorization.expression('isAuthenticated() and hasRole(''ROLE_ADMIN'')')}" th:src="@{/js/adminHandler.js}"></script>
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <meta name="_csrf" data-th-content="${_csrf.token}"/>
     <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>

@@ -1,4 +1,4 @@
-package com.quartztop.bonus.controllers;
+package com.quartztop.bonus.controllers.userControllers;
 
 import com.quartztop.bonus.DuplicateResourceException;
 import com.quartztop.bonus.ResourceNotFoundException;
@@ -114,8 +114,8 @@ public class UserRestController {
     }
 
     @GetMapping
-    public ResponseEntity<Optional<UserDto>> getUser(@RequestParam Integer id) {
-        Optional<UserDto> user = userCrudService.getUser(id);
+    public ResponseEntity<UserDto> getUser(@RequestParam Integer id) {
+        UserDto user = userCrudService.getUser(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 

@@ -21,6 +21,7 @@ public class UserDto {
     int typeActivity;
     String innCompany;
     String nameTypeActivity;
+    UserDto managerDto;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Позволяет использовать поле только для записи (при десериализации)
     String password;

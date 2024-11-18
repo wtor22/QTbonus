@@ -30,7 +30,6 @@ public class UserCrudService {
 
     public void updateUser(UserEntity userEntity) {
         userRepository.save(userEntity);
-        //mapToDto(userEntity);
     }
 
     public void updateUser(int userId, UserDto userDto) {
@@ -111,9 +110,20 @@ public class UserCrudService {
         }
     }
 
-    public Optional<UserDto> getUser(int id) {
+    public UserDto getUser(int id) {
         Optional<UserEntity> userEntityOpt = userRepository.findById(id);
-        return userEntityOpt.map(UserCrudService::mapToDto);
+        if(userEntityOpt.isEmpty()) {
+            return null;
+        }
+        UserEntity userEntity = userEntityOpt.get();
+        UserEntity managerEntity = userEntity.getManager();
+
+        UserDto userDto = UserCrudService.mapToDto(userEntity);
+        if(managerEntity != null) {
+            UserDto managerDto = UserCrudService.mapToDto(managerEntity);
+            userDto.setManagerDto(managerDto);
+        }
+        return userDto;
     }
 
     public List<UserEntity> getAllUsers() {

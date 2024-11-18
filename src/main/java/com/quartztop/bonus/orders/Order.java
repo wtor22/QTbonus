@@ -41,7 +41,7 @@ public class Order {
     private PaymentType paymentType;
 
     @Column(name="sum_by_product")
-    private double sumByProduct;
+    private double sumByInvoice;
 
     private double sum; // Сумма выплаты
 
