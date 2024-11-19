@@ -195,6 +195,8 @@ public class OrderRestController {
 
         int sumBonus = (int) (summByProduct * discount / 100);
 
+
+
         order.setSum(sumBonus);
         order.setBonusValue(bonusValue);
 

@@ -436,23 +436,24 @@ document.addEventListener('DOMContentLoaded', () => {
              productExternalId: $('#productExternalId').val(),
              productName: $('#productName').val(),
              productQuantity: $('#productQuantity').val(),
-             sumByProduct: price,
+             sumByInvoice: price,
              dataPayment: dataPayment,
              type: typeOrder,
              paymentType: {
                 id: paymentOption
              }
          };
-                 // Скрываем предыдущие сообщения
-                 successMessage.hide();
-                 errorMessage.hide();
 
-                 // Меняем текст кнопки на спиннер и блокируем её
-                 submitButton.html(`
-                     <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-                     Отправка...
-                 `);
-                 submitButton.prop('disabled', true);
+         // Скрываем предыдущие сообщения
+         successMessage.hide();
+         errorMessage.hide();
+
+         // Меняем текст кнопки на спиннер и блокируем её
+         submitButton.html(`
+             <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+             Отправка...
+         `);
+         submitButton.prop('disabled', true);
 
          // Отправляем данные через AJAX
          $.ajax({
