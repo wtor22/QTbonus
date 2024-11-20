@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html" lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>DashBoards</title>
@@ -104,13 +104,12 @@
                         <th data-sort="user" class="sortable">Партнер</th>
                         <th data-sort="sum" class="sortable">Сумма</th>
                         <th data-sort="status" class="sortable">Статус</th>
+                        <th data-sort="manager" class="sortable">Менеджер</th>
                     </tr>
                     </thead>
                     <tbody id="adminOrdersTable">
                     </tbody>
                 </table>
-
-                <button id="loadMore" data-page="0">Загрузить больше</button>
             </div>
         </div>
 
@@ -139,20 +138,19 @@
                                 <button id="cancelEditStatus" type="button" class="btn btn-sm m-3 btn-secondary">Отменить</button>
                             </div>
                         </form>
-                        <form id="setStatusModalForm" method="post" action="order/set-status">
-                            <input id="orderInputId" type="hidden" />
-                            <div class="mb-3">
-                                <p>Партнер: <strong id="orderClient"></strong></p>
-                                <p>Менеджер: <strong id="managerClient"></strong></p>
-                                <p>Счёт №  <strong id="invoice-number"></strong> от  <strong id="invoice-date"></strong></p>
-                                <p>Материал: <strong id="invoice-name-material"></strong> количество: <strong id="invoice-quantity-material"></strong></p>
-                                <p>На сумму: <strong id="invoice-sum"></strong></p>
-                                <p>Бонус: <strong id="bonus-bid"></strong> <b>%</b> Размер бонуса <strong id="bonus-value"></strong></p>
-<!--                                <label for="orderClient" class="form-label">Партнер</label>-->
-<!--                                <input type="text" id="orderClient" name="client" class="form-control" readonly>-->
-                            </div>
+                        <div class="mb-3">
+                            <p>Партнер: <strong id="orderClient"></strong></p>
+                            <p>Менеджер: <strong id="managerClient"></strong></p>
+                            <p>Счёт №  <strong id="invoice-number"></strong> от  <strong id="invoice-date"></strong></p>
+                            <p>Материал: <strong id="invoice-name-material"></strong> количество: <strong id="invoice-quantity-material"></strong></p>
+                            <p>На сумму: <strong id="invoice-sum"></strong></p>
+                            <p>Бонус: <strong id="bonus-bid"></strong> <b>%</b> Размер бонуса <strong id="bonus-value"></strong></p>
+                        </div>
 
-                            <div class="mb-3">
+                        <form id="setStatusModalForm" method="post" action="order/set-status" style="display:none">
+                            <input id="orderInputId" type="hidden" />
+
+                            <div class="mb-3" >
                                 <label for="orderSum" class="form-label">Сумма бонуса</label>
                                 <input id="orderSum" class="form-control popover-input" name="editOrder"
                                        required pattern="\d*" inputmode="numeric"
@@ -168,8 +166,6 @@
                 </div>
             </div>
         </div>
-
-
         <div id="admin-action" class="tab-pane fade" role="tabpanel" aria-labelledby="admin-action-tab">
             <div class="container">
                 <h3 class="mt-5">Список акций</h3>
@@ -178,24 +174,6 @@
         <div id="admin-check-invoice" class="tab-pane fade" role="tabpanel" aria-labelledby="admin-check-invoice-tab">
             <div class="container">
                 <h3 class="mt-5">Проверка счёта</h3>
-<!--                <table class="table">-->
-<!--                    <thead>-->
-<!--                    <tr>-->
-<!--                        <th>№ инвойса</th>-->
-<!--                        <th>дата инвойса</th>-->
-<!--                        <th>сумма</th>-->
-<!--                        <th>Внешний id контракта</th>-->
-<!--                    </tr>-->
-<!--                    </thead>-->
-<!--                    <tbody>-->
-<!--                    <tr th:each="invoice : ${invoicesList}">-->
-<!--                        <td th:text="${invoice.id}">1</td>-->
-<!--                        <td th:text="${invoice.id}">Product Name</td>-->
-<!--                        <td th:text="${invoice.sum}">Value</td>-->
-<!--                        <td th:text="${invoice.id}">Value</td>-->
-<!--                    </tr>-->
-<!--                    </tbody>-->
-<!--                </table>-->
             </div>
         </div>
     </div>

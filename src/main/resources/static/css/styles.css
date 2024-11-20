@@ -570,7 +570,9 @@ border: none;
 .tab-content {
     max-width: 800px;
 }
-
+#adminTabContent.tab-content {
+    max-width: 960px;
+}
 
 @media (min-width: 1201px) {
     .btn.btn-outline-bonus {

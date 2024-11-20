@@ -1,4 +1,3 @@
-// Получение ордера
 document.addEventListener('DOMContentLoaded', () => {
     const editOrderModal = document.getElementById('editOrderModal');
     const orderIdInput = document.getElementById('orderInputId');
@@ -59,95 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 });
-// Событие на кнопке изменить статус (Открытие формы для установки статуса)
-document.addEventListener('DOMContentLoaded', () => {
-//    const blockStatusInfo = document.getElementById('block-status-info');
-//    const editButton = document.getElementById('editStatusButton');
-//    const cancelButton = document.getElementById('cancelEditStatus');
-//    const form = document.getElementById('setStatus');
-//
-//    // Получаем CSRF токен из meta-тегов
-//    const csrfToken = $('meta[name="_csrf"]').attr('content');
-//    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
-//
-//
-//    editButton.addEventListener('click', () => {
-//    console.log("STERT SET STATUSES")
-//   // Получаем список статусов
-//    fetch('/order/statuses')
-//        .then(response => response.json())
-//        .then(statuses => {
-//            const statusSelect = document.getElementById('orderStatus');
-//            statuses.forEach(status => {
-//                const option = document.createElement('option');
-//                option.value = status.id;
-//                option.textContent = status.name;
-//                statusSelect.appendChild(option);
-//            });
-//        })
-//        .catch(error => console.error('Ошибка при загрузке статусов:', error));
-//
-//
-//        // Показываем форму
-//        form.style.display = form.style.display === 'none' ? 'block' : 'none';
-//
-//        // Прячем кнопку, если форма видна
-//        blockStatusInfo.style.display = form.style.display === 'none' ? 'inline' : 'none';
-//    });
-//
-//    cancelButton.addEventListener('click', () => {
-//        form.style.display = 'none';
-//        blockStatusInfo.style.display = 'block';
-//    });
-//
-//    // Обработка отправки формы
-//    form.addEventListener('submit', () => {
-//
-//        // Предотвращаем стандартное поведение (перезагрузку страницы)
-//        event.preventDefault();
-//
-//        const orderIdMod = document.getElementById('order-id').textContent;
-//        const statusId = document.getElementById('orderStatus').value;
-//
-//        // Собираю Order
-//        const order = {
-//            id: orderIdMod,
-//            status: {
-//                id: statusId
-//            }
-//        };
-//
-//        // Отправка данных через fetch (AJAX)
-//        fetch(form.action, {
-//            method: 'POST',
-//            headers: {
-//                'Content-Type': 'application/json',
-//                [csrfHeader]: csrfToken // Добавляем CSRF-токен в заголовки
-//            },
-//            body: JSON.stringify(order)
-//        })
-//        .then(response => {
-//            if (response.ok) {
-//                return response.json();
-//            }
-//            throw new Error('Ошибка при отправке данных');
-//        })
-//        .then(data => {
-//            // Обновляем интерфейс
-//            document.getElementById('order-status').textContent = data.statusOrdersDto.name;
-//            document.getElementById('order-status').className = `badge ${data.statusOrdersDto.color}`;
-//            form.style.display = 'none';
-//            blockStatusInfo.style.display = 'block';
-//            loadOrders();
-//        })
-//        .catch(error => {
-//            console.error('Ошибка:', error);
-//            alert('Не удалось обновить статус.');
-//        });
-//    });
-});
 
-// AJAX обновления списка ордеров
+
+// AJAX список ордеров
 document.addEventListener('DOMContentLoaded', function() {
 
     // Получаем CSRF токен из meta-тегов
@@ -187,201 +100,143 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Функция загрузки данных с сортировкой
-        function loadOrders(sortField = '', ascending = false, page = 0, size = 30) {
-            const queryParams = new URLSearchParams({
-                sortBy: sortField,
-                ascending: ascending,
-                type: 'bonus',
-                page: page,
-                size: size
+    function loadOrders(sortField = '', ascending = false) {
+        const queryParams = new URLSearchParams({
+            sortBy: sortField,
+            ascending: ascending,
+            type: 'bonus'
+        });
+
+        fetch(`/order/orders?${queryParams.toString()}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                updateOrdersTable(data);
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Не удалось загрузить заказы.');
             });
-
-            fetch(`/order/orders?${queryParams.toString()}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    updateOrdersTable(data.orders);
-                    toggleLoadMoreButton(data.hasMore); // Проверяем, есть ли ещё данные
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    alert('Не удалось загрузить заказы.');
-                });
-        }
-
-        // Функция для обновления таблицы
-        function updateOrdersTable(orders) {
-            const tableBody = document.getElementById('adminOrdersTable');
-            //tableBody.innerHTML = ''; // Очищаем таблицу
-
-            orders.forEach(order => {
-                const row = document.createElement('tr');
-                // Добавляем атрибуты для модального окна
-                row.setAttribute('data-order-id', order.id);
-                row.setAttribute('data-bs-toggle', 'modal');
-                row.setAttribute('data-bs-target', '#editOrderModal');
-                const statusSpan = `<span class="badge ${order.statusOrdersDto.color}">${order.statusOrdersDto.name}</span>`;
-                row.innerHTML = `
-                    <td>${order.id}</td>
-                    <td>${order.createDate}</td>
-                    <td>${order.userDto.fio}</td>
-                    <td>${order.sum}</td>
-                    <td>${statusSpan}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-    const loadMoreButton = document.getElementById('loadMore');
-    let currentPage = 0;
-
-    loadMoreButton.addEventListener('click', () => {
-        currentPage += 1; // Увеличиваем номер страницы
-        loadOrders('', false, currentPage, 30); // Загружаем следующую страницу
-    });
-
-    function toggleLoadMoreButton(hasMore) {
-        loadMoreButton.style.display = hasMore ? 'block' : 'none'; // Показываем или скрываем кнопку
     }
 
+    // Функция для обновления таблицы
+    function updateOrdersTable(orders) {
+        const tableBody = document.getElementById('adminOrdersTable');
+        tableBody.innerHTML = ''; // Очищаем таблицу
 
-
+        orders.forEach(order => {
+            const row = document.createElement('tr');
+            // Добавляем атрибуты для модального окна
+            row.setAttribute('data-order-id', order.id);
+            row.setAttribute('data-bs-toggle', 'modal');
+            row.setAttribute('data-bs-target', '#editOrderModal');
+            const statusSpan = `<span class="badge ${order.statusOrdersDto.color}">${order.statusOrdersDto.name}</span>`;
+            const managerFio = order.userDto.managerDto ? order.userDto.managerDto.fio : "---";
+            row.innerHTML = `
+                <td>${order.id}</td>
+                <td>${order.createDate}</td>
+                <td>${order.userDto.fio}</td>
+                <td>${order.sum}</td>
+                <td>${statusSpan}</td>
+                <td>${managerFio}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
 
     editButton.addEventListener('click', () => {
-   // Получаем список статусов
-    fetch('/order/statuses')
-        .then(response => response.json())
-        .then(statuses => {
-            const statusSelect = document.getElementById('orderStatus');
-            // Очищаем существующие OPTION
-            statusSelect.innerHTML = '';
+        // Получаем список статусов
+        fetch('/order/statuses')
+            .then(response => response.json())
+            .then(statuses => {
+                const statusSelect = document.getElementById('orderStatus');
+                // Очищаем существующие OPTION
+                statusSelect.innerHTML = '';
 
-            statuses.forEach(status => {
-                const option = document.createElement('option');
-                option.value = status.id;
-                option.textContent = status.name;
-                statusSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Ошибка при загрузке статусов:', error));
+                statuses.forEach(status => {
+                    const option = document.createElement('option');
+                    option.value = status.id;
+                    option.textContent = status.name;
+                    statusSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Ошибка при загрузке статусов:', error));
 
-        // Показываем форму
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            // Показываем форму
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
 
-        // Прячем кнопку, если форма видна
-        blockStatusInfo.style.display = form.style.display === 'none' ? 'inline' : 'none';
-    });
+            // Прячем кнопку, если форма видна
+            blockStatusInfo.style.display = form.style.display === 'none' ? 'inline' : 'none';
+        });
 
-    cancelButton.addEventListener('click', () => {
-        form.style.display = 'none';
-        blockStatusInfo.style.display = 'block';
-    });
-
-    // Обработка отправки формы
-    form.addEventListener('submit', () => {
-
-        // Предотвращаем стандартное поведение (перезагрузку страницы)
-        event.preventDefault();
-
-        const orderIdMod = document.getElementById('order-id').textContent;
-        const statusId = document.getElementById('orderStatus').value;
-
-        // Собираю Order
-        const order = {
-            id: orderIdMod,
-            status: {
-                id: statusId
-            }
-        };
-
-        // Отправка данных через fetch (AJAX)
-        fetch(form.action, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                [csrfHeader]: csrfToken // Добавляем CSRF-токен в заголовки
-            },
-            body: JSON.stringify(order)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error('Ошибка при отправке данных');
-        })
-        .then(data => {
-            // Обновляем интерфейс
-            document.getElementById('order-status').textContent = data.statusOrdersDto.name;
-            document.getElementById('order-status').className = `badge ${data.statusOrdersDto.color}`;
+        cancelButton.addEventListener('click', () => {
             form.style.display = 'none';
             blockStatusInfo.style.display = 'block';
-
-            // Обновляю статус в списке
-            const row = document.querySelector(`tr[data-order-id="${orderIdMod}"]`);
-            if (row) {
-                const statusSpan = `<span class="badge ${data.statusOrdersDto.color}">${data.statusOrdersDto.name}</span>`;
-                row.innerHTML = `
-                    <td>${data.id}</td>
-                    <td>${data.createDate}</td>
-                    <td>${data.userDto.fio}</td>
-                    <td>${data.sum}</td>
-                    <td>${statusSpan}</td>
-                `;
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
-            alert('Не удалось обновить статус.');
         });
-    });
 
+        // Обработка отправки формы на изменение статуса
+        form.addEventListener('submit', () => {
 
-//        function loadOrders() {
-//                let ordersTable = document.getElementById('adminOrdersTable');
-//
-//            fetch('/order/orders')
-//                .then(response => response.json())
-//                .then(data => {
-//                    let ordersTable = document.getElementById('adminOrdersTable');
-//                    ordersTable.innerHTML = ''; // Очистка таблицы перед добавлением новых данных
-//
-//                    if (data.length > 0) {
-//                        data.forEach(order => {
-//                            let row = document.createElement('tr');
-//                            // Добавляем атрибуты для модального окна
-//                            row.setAttribute('data-order-id', order.id);
-//                            row.setAttribute('data-bs-toggle', 'modal');
-//                            row.setAttribute('data-bs-target', '#editOrderModal');
-//
-//                            // Создание элемента <span> с классом из order.status.color
-//                            let statusSpan = `<span class="badge ${order.statusColor}">${order.statusName}</span>`;
-//
-//                            row.innerHTML = `
-//                                <td>${order.id}</td>
-//                                <td>${order.createDate}</td>
-//                                <td>${order.userDto.fio}</td>
-//                                <td>${order.sum}</td>
-//                                <td>${statusSpan}</td>
-//                            `;
-//                            ordersTable.appendChild(row);
-//
-//                            // Событие клика по строке
-//                            row.addEventListener('click', () => {
-//                                console.log(`Кликнули по ордеру с ID: ${order.id}`);
-//                                // Здесь можно передать данные в модальное окно
-//                                loadOrderDetails(order.id);
-//                            });
-//                        });
-//                    } else {
-//                        ordersTable.innerHTML = '<tr><td colspan="3">Нет заказов для отображения.</td></tr>';
-//                    }
-//                })
-//                .catch(error => console.error('Ошибка при загрузке заказов:', error));
-//        }
+            // Предотвращаем стандартное поведение (перезагрузку страницы)
+            event.preventDefault();
+
+            const orderIdMod = document.getElementById('order-id').textContent;
+            const statusId = document.getElementById('orderStatus').value;
+
+            // Собираю Order
+            const order = {
+                id: orderIdMod,
+                status: {
+                    id: statusId
+                }
+            };
+
+            // Отправка данных через fetch (AJAX)
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken // Добавляем CSRF-токен в заголовки
+                },
+                body: JSON.stringify(order)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Ошибка при отправке данных');
+            })
+            .then(data => {
+                // Обновляем интерфейс
+                document.getElementById('order-status').textContent = data.statusOrdersDto.name;
+                document.getElementById('order-status').className = `badge ${data.statusOrdersDto.color}`;
+                form.style.display = 'none';
+                blockStatusInfo.style.display = 'block';
+
+                // Обновляю ряд со статусом в списке
+                const row = document.querySelector(`tr[data-order-id="${orderIdMod}"]`);
+                if (row) {
+                    const statusSpan = `<span class="badge ${data.statusOrdersDto.color}">${data.statusOrdersDto.name}</span>`;
+                    const managerFio = data.userDto.managerDto ? data.userDto.managerDto.fio : "---";
+                    row.innerHTML = `
+                        <td>${data.id}</td>
+                        <td>${data.createDate}</td>
+                        <td>${data.userDto.fio}</td>
+                        <td>${data.sum}</td>
+                        <td>${statusSpan}</td>
+                        <td>${managerFio}</td>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Не удалось обновить статус.');
+            });
+        });
 
         function loadOrderDetails(orderId) {
             fetch(`/order/get-order?id=${orderId}`) // URL для получения деталей ордера

@@ -129,26 +129,22 @@ public class OrderRestController {
     public ResponseEntity<?> getOrders(Principal principal,
             @RequestParam(defaultValue = "bonus") String type,
             @RequestParam(defaultValue = "createDate") String sortBy,
-            @RequestParam(defaultValue = "false") boolean ascending,
-            @RequestParam(defaultValue = "0") int page, // Номер страницы (по умолчанию 0)
-            @RequestParam(defaultValue = "30") int size // Размер страницы (по умолчанию 20)
+            @RequestParam(defaultValue = "false") boolean ascending
     ) {
         String username = principal.getName();
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
 
-        // Используем Pageable для пагинации
-        Pageable pageable = PageRequest.of(page, size, Sort.by(ascending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
-        Page<Order> ordersPage = orderService.getOrdersByTypeWithSortAndPagination(type, pageable);
+        if(sortBy.equals("user")) sortBy = "userEntity.fio";
+        if(sortBy.equals("manager")) sortBy = "userEntity.manager.fio";
 
-        List<OrderDto> userOrders = ordersPage.stream()
+        List<Order> orders = orderService.getOrdersByTypeWithSort(type,sortBy,ascending);
+
+
+        List<OrderDto> userOrders = orders.stream()
                 .map(OrderService::mapOrderToDto)
                 .collect(Collectors.toList());
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("orders", userOrders);
-        response.put("hasMore", ordersPage.hasNext());
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userOrders);
     }
 
     // Получить список заказов бонусов
@@ -157,6 +153,7 @@ public class OrderRestController {
 
         String username = principal.getName();
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
+
 
         List<Order> orders = orderRepository.getOrdersByUserEntityAndType(user, "bonus");
         List<OrderDto> userOrders = orders.stream().map(OrderService::mapOrderToDto)
