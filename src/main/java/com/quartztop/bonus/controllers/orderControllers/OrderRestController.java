@@ -8,7 +8,7 @@ import com.quartztop.bonus.repositoriesBonus.StatusRepository;
 import com.quartztop.bonus.repositoriesBonus.UploadedImagesRepository;
 import com.quartztop.bonus.repositoriesCrm.ProductRepositories;
 import com.quartztop.bonus.servises.FileService;
-import com.quartztop.bonus.servises.orderService.OrderDtoService;
+import com.quartztop.bonus.servises.orderService.OrderService;
 import com.quartztop.bonus.user.UserCrudService;
 import com.quartztop.bonus.user.UserDto;
 import com.quartztop.bonus.user.UserEntity;
@@ -17,6 +17,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,6 +32,7 @@ import java.io.File;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,6 +45,7 @@ import java.util.stream.Collectors;
 public class OrderRestController {
 
     private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final ProductRepositories productRepositories;
     private final UploadedImagesRepository uploadedImagesRepository;
     private final UserCrudService userCrudService;
@@ -47,13 +53,14 @@ public class OrderRestController {
     private final FileService fileService;
     private final BonusValueRepositories bonusValueRepositories;
 
+
     @GetMapping
     public ResponseEntity<List<OrderDto>> getAllUserOrders(Principal principal) {
         String username = principal.getName();
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
 
         List<Order> orders = orderRepository.getOrdersByUserEntity(user);
-        List<OrderDto> userOrders = orders.stream().map(OrderDtoService::mapOrderToDto)
+        List<OrderDto> userOrders = orders.stream().map(OrderService::mapOrderToDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userOrders);
     }
@@ -76,7 +83,7 @@ public class OrderRestController {
             }
 
             Order order = optionalOrder.get();
-            OrderDto orderDto = OrderDtoService.mapOrderToDto(order);
+            OrderDto orderDto = OrderService.mapOrderToDto(order);
 
             UserDto client = userCrudService.getUser(order.getUserEntity().getId());
             orderDto.setUserDto(client);
@@ -90,7 +97,7 @@ public class OrderRestController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
-        OrderDto orderDto = OrderDtoService.mapOrderToDto(order);
+        OrderDto orderDto = OrderService.mapOrderToDto(order);
         return ResponseEntity.ok(orderDto);
     }
 
@@ -98,7 +105,6 @@ public class OrderRestController {
     @GetMapping("/get-order-by-manager")
     public ResponseEntity<?> getOrderForManagerById(@RequestParam("id") int orderId, Principal principal) {
 
-        log.error("RUN CONTROLLER - ID = " + orderId);
         String username = principal.getName();
         UserEntity manager = userCrudService.findByEmail(username).orElseThrow();
 
@@ -115,9 +121,34 @@ public class OrderRestController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
-        OrderDto orderDto = OrderDtoService.mapOrderToDto(order);
-        log.error("ORDERDTO ID = " + orderDto.getId());
+        OrderDto orderDto = OrderService.mapOrderToDto(order);
         return ResponseEntity.ok(orderDto);
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<?> getOrders(Principal principal,
+            @RequestParam(defaultValue = "bonus") String type,
+            @RequestParam(defaultValue = "createDate") String sortBy,
+            @RequestParam(defaultValue = "false") boolean ascending,
+            @RequestParam(defaultValue = "0") int page, // Номер страницы (по умолчанию 0)
+            @RequestParam(defaultValue = "30") int size // Размер страницы (по умолчанию 20)
+    ) {
+        String username = principal.getName();
+        UserEntity user = userCrudService.findByEmail(username).orElseThrow();
+
+        // Используем Pageable для пагинации
+        Pageable pageable = PageRequest.of(page, size, Sort.by(ascending ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        Page<Order> ordersPage = orderService.getOrdersByTypeWithSortAndPagination(type, pageable);
+
+        List<OrderDto> userOrders = ordersPage.stream()
+                .map(OrderService::mapOrderToDto)
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("orders", userOrders);
+        response.put("hasMore", ordersPage.hasNext());
+
+        return ResponseEntity.ok(response);
     }
 
     // Получить список заказов бонусов
@@ -128,7 +159,7 @@ public class OrderRestController {
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
 
         List<Order> orders = orderRepository.getOrdersByUserEntityAndType(user, "bonus");
-        List<OrderDto> userOrders = orders.stream().map(OrderDtoService::mapOrderToDto)
+        List<OrderDto> userOrders = orders.stream().map(OrderService::mapOrderToDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userOrders);
     }
@@ -136,18 +167,29 @@ public class OrderRestController {
     @GetMapping("/get-orders-by-manager")
     public ResponseEntity<List<OrderDto>> getManagerOrders(Principal principal) {
 
-        log.error("START CONTROLLER");
-
         String username = principal.getName();
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
 
-
-
         List<UserEntity> usersByManagerList = userCrudService.getAllUsersEntityByManager(user);
         List<Order> orders = orderRepository.getOrdersByUserEntityInAndType(usersByManagerList,"bonus");
-        List<OrderDto> userOrders = orders.stream().map(OrderDtoService::mapOrderToDto)
+        List<OrderDto> userOrders = orders.stream().map(OrderService::mapOrderToDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userOrders);
+    }
+
+    @GetMapping("/get-all-orders")
+    public ResponseEntity<List<OrderDto>> getAllOrders(Principal principal) {
+
+        String username = principal.getName();
+        UserEntity user = userCrudService.findByEmail(username).orElseThrow();
+        if(!user.getRoles().getRole().equals("ROLE_ADMIN")) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        List<Order> orders = orderRepository.getOrdersByType("bonus");
+        List<OrderDto> ordersList = orders.stream().map(OrderService::mapOrderToDto)
+                .toList();
+        return ResponseEntity.ok(ordersList);
     }
 
     // Получить список акций Пользователя
@@ -158,9 +200,14 @@ public class OrderRestController {
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
 
         List<Order> actions = orderRepository.getOrdersByUserEntityAndType(user, "action");
-        List<OrderDto> userOrders = actions.stream().map(OrderDtoService::mapOrderToDto)
+        List<OrderDto> userOrders = actions.stream().map(OrderService::mapOrderToDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userOrders);
+    }
+
+    @GetMapping("/statuses")
+    public ResponseEntity<List<StatusOrders>> getAllStatus() {
+        return ResponseEntity.ok(statusRepository.findAll());
     }
 
     @PostMapping("/set-status")
@@ -171,7 +218,7 @@ public class OrderRestController {
         orderExisting.setStatus(statusOrders);
         Order updateOrder = orderRepository.save(orderExisting);
 
-        OrderDto updateOrderDto = OrderDtoService.mapOrderToDto(updateOrder);
+        OrderDto updateOrderDto = OrderService.mapOrderToDto(updateOrder);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(updateOrderDto);
     }

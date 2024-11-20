@@ -1,19 +1,31 @@
 package com.quartztop.bonus.servises.orderService;
 
 import com.quartztop.bonus.orders.*;
+import com.quartztop.bonus.repositoriesBonus.OrderRepository;
 import com.quartztop.bonus.user.UserCrudService;
 import com.quartztop.bonus.user.UserDto;
 import com.quartztop.bonus.user.UserEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderDtoService {
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+
+    public List<Order> getOrdersByTypeWithSort(String type, String sortBy, boolean ascending) {
+        Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        return orderRepository.findByType(type, sort);
+    }
 
     public static OrderDto mapOrderToDto(Order order) {
 
@@ -69,5 +81,9 @@ public class OrderDtoService {
         orderDto.setSumByInvoice(order.getSumByInvoice());
 
         return orderDto;
+    }
+
+    public Page<Order> getOrdersByTypeWithSortAndPagination(String type, Pageable pageable) {
+        return orderRepository.findByType(type, pageable);
     }
 }

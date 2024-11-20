@@ -60,6 +60,27 @@ public class StartProgramInitializer implements CommandLineRunner {
             statusOrders.setColor("bg-primary");
             newStatusOrdersList.add(statusOrders);
         }
+        if (!namesSet.contains("Проверен")) {
+            StatusOrders statusOrders = new StatusOrders();
+            statusOrders.setId(3);
+            statusOrders.setName("Проверен");
+            statusOrders.setColor("bg-warning");
+            newStatusOrdersList.add(statusOrders);
+        }
+        if (!namesSet.contains("Выплачен")) {
+            StatusOrders statusOrders = new StatusOrders();
+            statusOrders.setId(4);
+            statusOrders.setName("Выплачен");
+            statusOrders.setColor("bg-success");
+            newStatusOrdersList.add(statusOrders);
+        }
+        if (!namesSet.contains("Отклонён")) {
+            StatusOrders statusOrders = new StatusOrders();
+            statusOrders.setId(5);
+            statusOrders.setName("Отклонён");
+            statusOrders.setColor("bg-danger");
+            newStatusOrdersList.add(statusOrders);
+        }
         // Сохраняю новые статусы в бд
         statusRepository.saveAll(newStatusOrdersList);
 

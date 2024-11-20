@@ -1,8 +1,4 @@
 
-
-
-
-
 @font-face {
 	font-family: 'FuturaDemiC';
 	src: local('../fonts/Futura Demi Cyrillic'), local('../fonts/FuturaDemiC'),
@@ -84,6 +80,26 @@
   --bs-popover-body-padding-y: .5rem;
 }
 
+.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 20px;
+}
+
+.sortable::after {
+    content: ' ';
+    position: absolute;
+    right: 5px;
+    border: 5px solid transparent;
+}
+
+.sortable.asc::after {
+    border-bottom-color: black;
+}
+
+.sortable.desc::after {
+    border-top-color: black;
+}
 
 .alert.alert-danger {
     border-radius: 0;

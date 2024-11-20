@@ -99,31 +99,18 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>ID ордера</th>
-                        <th>дата ордера</th>
-                        <th>Клиент</th>
-                        <th>сумма</th>
-                        <th>Статус ордера</th>
+                        <th data-sort="id" class="sortable">ID</th>
+                        <th data-sort="createDate" class="sortable">Дата</th>
+                        <th data-sort="user" class="sortable">Партнер</th>
+                        <th data-sort="sum" class="sortable">Сумма</th>
+                        <th data-sort="status" class="sortable">Статус</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr th:each="order : ${ordersList}"
-                        th:attr="data-order-id=${order.id}"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editOrderModal">
-                        <td th:text="${order.id}"></td>
-                        <td th:text="${order.createDate}"></td>
-                        <td th:text="${order.userEntity.fio}"></td>
-                        <td th:text="${order.sum}"></td>
-                        <td>
-                                <span class="badge"
-                                      th:classappend="${order.status.color}"
-                                      th:text="${order.status.name}">
-                                </span>
-                        </td>
-                    </tr>
+                    <tbody id="adminOrdersTable">
                     </tbody>
                 </table>
+
+                <button id="loadMore" data-page="0">Загрузить больше</button>
             </div>
         </div>
 
@@ -138,7 +125,7 @@
                     </div>
                     <div class="modal-body">
                         <div id="block-status-info" class="mb-3">
-                            <p style="display:inline-block;">Статус: <span id="order-status" class="badge"></span></p>
+                            <p style="display:inline-block;">Статус:   <span id="order-status" class="badge"></span></p>
                             <button id="editStatusButton" class="btn btn-link btn-sm" style="font-weight: normal;">Изменить</button>
                         </div>
                         <form id="setStatus" method="post" action="order/set-status" style="display:none">
@@ -148,8 +135,8 @@
                                     <option th:each="status : ${listOfStatus}" th:value="${status.id}"
                                             th:text="${status.name}"></option>
                                 </select>
-                                <button type="submit" class="btn btn-sm m-3 btn-outline-primary">Сохранить</button>
-                                <button type="button" id="cancelEditStatus" class="btn btn-sm m-3 btn-secondary">Отменить</button>
+                                <button id="submitStatus" type="submit" class="btn btn-sm m-3 btn-outline-primary">Сохранить</button>
+                                <button id="cancelEditStatus" type="button" class="btn btn-sm m-3 btn-secondary">Отменить</button>
                             </div>
                         </form>
                         <form id="setStatusModalForm" method="post" action="order/set-status">
