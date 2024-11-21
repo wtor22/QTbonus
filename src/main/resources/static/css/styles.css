@@ -99,6 +99,7 @@
 
 .sortable.desc::after {
     border-top-color: black;
+    top: 15px;
 }
 
 .alert.alert-danger {
