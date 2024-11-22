@@ -34,6 +34,8 @@
     </ul>
 
     <div class="tab-content" id="adminTabContent">
+
+
         <div id="admin-users" class="tab-pane fade show active" role="tabpanel" aria-labelledby="admin-users-tab">
             <div class="container">
                 <h3 class="mt-5">Список партнеров</h3>
@@ -95,6 +97,27 @@
         </div>
         <div id="admin-order" class="tab-pane fade" role="tabpanel" aria-labelledby="admin-order-tab">
             <div class="container">
+                <div>
+                    <form id="filterOrderForm" class="mt-2">
+                        <input type="hidden" name="type" value="bonus"/>
+                        <div class="d-flex">
+                            <div class="m-1 col-auto" >
+                                <label for="filterFio" class="form-label">Партнёр</label>
+                                <input id="filterFio" class="form-control">
+                            </div>
+                            <div class="m-1 col-auto" >
+                                <label for="filterManager" class="form-label">Менеджер</label>
+                                <input id="filterManager" class="form-control">
+                            </div>
+                            <div class="m-1 col-auto" >
+                                <label for="filterInvoice" class="form-label">Счет №</label>
+                                <input id="filterInvoice" class="form-control">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary m-1">Применить фильтр</button>
+                    </form>
+                </div>
+
                 <h3 class="mt-5">Список заявок</h3>
                 <table class="table">
                     <thead>
@@ -178,8 +201,6 @@
         </div>
     </div>
 </div>
-
-
 
 <!-- DashBoard для менеджера -->
 <div th:fragment="ManagerDashBoard" class="container">
@@ -364,6 +385,5 @@
         </div>
     </div>
 </div>
-
 </body>
 </html>

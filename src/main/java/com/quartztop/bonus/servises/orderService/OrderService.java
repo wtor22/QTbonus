@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,10 +22,18 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    public List<Order> getOrdersByTypeWithSort(String type, String sortBy, boolean ascending) {
+
+    public List<Order> searchOrders(String fio) {
+        Specification<Order> spec = Specification
+                .where(OrderSpecifications.hasFio(fio));
+
+        return orderRepository.findAll(spec);
+    }
+
+    public List<Order> getOrdersByTypeWithSort(Specification<Order> spec, String sortBy, boolean ascending) {
         Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
-        return orderRepository.findByType(type, sort);
+        return orderRepository.findAll(spec, sort);
     }
 
     public static OrderDto mapOrderToDto(Order order) {

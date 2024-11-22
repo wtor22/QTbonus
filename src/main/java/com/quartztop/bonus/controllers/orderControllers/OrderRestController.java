@@ -9,6 +9,7 @@ import com.quartztop.bonus.repositoriesBonus.UploadedImagesRepository;
 import com.quartztop.bonus.repositoriesCrm.ProductRepositories;
 import com.quartztop.bonus.servises.FileService;
 import com.quartztop.bonus.servises.orderService.OrderService;
+import com.quartztop.bonus.servises.orderService.OrderSpecifications;
 import com.quartztop.bonus.user.UserCrudService;
 import com.quartztop.bonus.user.UserDto;
 import com.quartztop.bonus.user.UserEntity;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -54,6 +56,7 @@ public class OrderRestController {
     private final BonusValueRepositories bonusValueRepositories;
 
 
+
     @GetMapping
     public ResponseEntity<List<OrderDto>> getAllUserOrders(Principal principal) {
         String username = principal.getName();
@@ -65,9 +68,23 @@ public class OrderRestController {
         return ResponseEntity.ok(userOrders);
     }
 
+    // Получить ордера с фильтром
+    @GetMapping("/get-order-filter")
+    public List<Order> getOrderByFilter(
+            @RequestParam(required = false) String fio
+    ) {
+        List<Order> list = orderService.searchOrders(fio);
+        log.info("LIST SIZE " + list.size());
+        return list;
+    }
+
     // Получить ордер по id
     @GetMapping("/get-order")
     public ResponseEntity<?> getUserOrderById(@RequestParam("id") int orderId, Principal principal) {
+
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Доступ запрещен");
+        }
 
         String username = principal.getName();
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
@@ -129,15 +146,26 @@ public class OrderRestController {
     public ResponseEntity<?> getOrders(Principal principal,
             @RequestParam(defaultValue = "bonus") String type,
             @RequestParam(defaultValue = "createDate") String sortBy,
-            @RequestParam(defaultValue = "false") boolean ascending
+            @RequestParam(defaultValue = "false") boolean ascending,
+            @RequestParam(required = false) String fio,
+            @RequestParam(required = false) String managerFio
     ) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Доступ запрещен");
+        }
         String username = principal.getName();
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
+
 
         if(sortBy.equals("user")) sortBy = "userEntity.fio";
         if(sortBy.equals("manager")) sortBy = "userEntity.manager.fio";
 
-        List<Order> orders = orderService.getOrdersByTypeWithSort(type,sortBy,ascending);
+        // Создаем спецификацию для фильтрации
+        Specification<Order> spec = Specification.where(OrderSpecifications.hasFio(fio))
+                .and(OrderSpecifications.hasType(type))
+                .and(OrderSpecifications.hasManager(managerFio));
+
+        List<Order> orders = orderService.getOrdersByTypeWithSort(spec,sortBy,ascending);
 
 
         List<OrderDto> userOrders = orders.stream()
