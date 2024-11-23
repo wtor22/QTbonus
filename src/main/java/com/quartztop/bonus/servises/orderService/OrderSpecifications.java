@@ -1,13 +1,15 @@
 package com.quartztop.bonus.servises.orderService;
 
 import com.quartztop.bonus.orders.Order;
-import com.quartztop.bonus.orders.StatusOrders;
 import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 public class OrderSpecifications {
 
@@ -18,16 +20,14 @@ public class OrderSpecifications {
                 return null; // Не добавляем фильтр, если обе даты отсутствуют
             }
 
-            // Пример: поле createDate — это дата создания заказа
-            Path<LocalDate> orderDatePath = root.get("createDate");
-
-            if (startDate != null && endDate != null) {
-                return criteriaBuilder.between(orderDatePath, startDate, endDate);
-            } else if (startDate != null) {
-                return criteriaBuilder.greaterThanOrEqualTo(orderDatePath, startDate);
-            } else {
-                return criteriaBuilder.lessThanOrEqualTo(orderDatePath, endDate);
+            List<Predicate> predicates = new ArrayList<>();
+            if (startDate != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createDate"), startDate.atStartOfDay()));
             }
+            if (endDate != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createDate"), endDate.atTime(23, 59, 59)));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 
