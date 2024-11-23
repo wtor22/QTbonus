@@ -55,8 +55,6 @@ public class OrderRestController {
     private final FileService fileService;
     private final BonusValueRepositories bonusValueRepositories;
 
-
-
     @GetMapping
     public ResponseEntity<List<OrderDto>> getAllUserOrders(Principal principal) {
         String username = principal.getName();
