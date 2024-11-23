@@ -74,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 orderSumInput.value = orderData.sum;
                 orderStatus.textContent = orderData.statusOrdersDto.name;
                 orderStatus.classList.add(orderData.statusOrdersDto.color);
-
             })
             .catch(error => {
                 console.error('Ошибка:', error);
@@ -131,11 +130,13 @@ document.addEventListener('DOMContentLoaded', function() {
             loadOrders(currentSortField, ascending);
         });
     });
-    // Получит даты в фильтрепо умолчанию ( две недели )
+    // Получит даты в фильтре по умолчанию ( две недели )
     function getDefaultDates() {
         const today = new Date();
+        today.setHours(23, 59, 59, 999);
         const weekAgo = new Date();
         weekAgo.setDate(today.getDate() - 14);
+        weekAgo.setHours(0, 0, 0, 0);
 
         const formatDate = date => date.toISOString().split('T')[0];
 

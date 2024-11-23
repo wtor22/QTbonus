@@ -66,16 +66,6 @@ public class OrderRestController {
         return ResponseEntity.ok(userOrders);
     }
 
-    // Получить ордера с фильтром
-    @GetMapping("/get-order-filter")
-    public List<Order> getOrderByFilter(
-            @RequestParam(required = false) String fio
-    ) {
-        List<Order> list = orderService.searchOrders(fio);
-        log.info("LIST SIZE " + list.size());
-        return list;
-    }
-
     // Получить ордер по id
     @GetMapping("/get-order")
     public ResponseEntity<?> getUserOrderById(@RequestParam("id") int orderId, Principal principal) {
