@@ -100,9 +100,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const fioInput = document.getElementById('filterFio');
     const fioManagerInput = document.getElementById('filterManager');
     const typeInput = document.querySelector('input[name="type"]');
+    const statusInput = document.getElementById('filterStatus');
+    const invoiceInput = document.getElementById('filterInvoice');
+    const startDateInput = document.getElementById('filterStartDate');
+    const endDateInput = document.getElementById('filterEndDate');
 
     const tableHeaders = document.querySelectorAll('.sortable');
-    let currentSortField = null;
+    let currentSortField = '';
     let ascending = true;
 
     tableHeaders.forEach(header => {
@@ -127,6 +131,19 @@ document.addEventListener('DOMContentLoaded', function() {
             loadOrders(currentSortField, ascending);
         });
     });
+    // Получит даты в фильтрепо умолчанию ( две недели )
+    function getDefaultDates() {
+        const today = new Date();
+        const weekAgo = new Date();
+        weekAgo.setDate(today.getDate() - 14);
+
+        const formatDate = date => date.toISOString().split('T')[0];
+
+        return {
+            startDate: formatDate(weekAgo),
+            endDate: formatDate(today)
+        };
+    }
 
     // Функция загрузки данных с сортировкой
     function loadOrders(sortField = '', ascending = false) {
@@ -134,10 +151,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const fio = fioInput.value.trim();
         const managerFio = fioManagerInput.value.trim();
         const type = typeInput ? typeInput.value : '';
+        const statusId = statusInput.value;
+        const invoice = invoiceInput.value;
+
+        // Установить значения в HTML форму по умолчанию, если не заданы
+        if(!startDateInput.value) startDateInput.value = getDefaultDates().startDate;
+        if(!endDateInput.value) endDateInput.value = getDefaultDates().endDate;
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
 
         const queryParams = new URLSearchParams({
             sortBy: sortField,
-            ascending: ascending
+            ascending: ascending,
+            startDate: startDate,
+            endDate: endDate
         });
 
         if (type) {
@@ -149,6 +176,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (managerFio) {
             queryParams.append('managerFio', managerFio);
         }
+        if (statusId) queryParams.append('statusId', statusId);
+
+        if (invoiceInput) queryParams.append('invoiceInput', invoiceInput);
+
 
         fetch(`/order/orders?${queryParams.toString()}`)
             .then(response => {
@@ -320,17 +351,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Клик по кнопке применить фильтр
     filterForm.addEventListener('submit', function (event) {
+
+
         event.preventDefault();
 
         const fio = fioInput.value.trim();
-        const type = typeInput ? typeInput.value : '';
+        const type = typeInput.value;
+        const statusId = statusInput.value;
         const managerFio = fioManagerInput.value.trim();
+        const invoiceNumber = invoiceInput.value.trim();
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
 
         const queryParams = new URLSearchParams({
-            type,
-            fio,
-            managerFio
+            sortBy: currentSortField,
+            ascending: ascending
         });
+
+        if (type) queryParams.append('type', type);
+        if (fio) queryParams.append('fio', fio);
+        if (managerFio) queryParams.append('managerFio', managerFio);
+        if (statusId) queryParams.append('statusId', statusId);
+        if (invoiceNumber) queryParams.append('invoiceNumber', invoiceNumber);
+        if (startDate) queryParams.append('startDate', startDate);
+        if (endDate) queryParams.append('endDate', endDate);
 
         fetch(`/order/orders?${queryParams.toString()}`)
             .then(response => {
@@ -352,9 +396,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Не удалось загрузить заказы.');
             });
     });
-
-
-
     // Загружаем заказы через таймаут, чтобы убедиться, что HTML загружен
     setTimeout(loadOrders, 100); // 100 миллисекунд
 

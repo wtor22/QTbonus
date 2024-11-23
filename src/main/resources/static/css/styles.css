@@ -130,11 +130,18 @@
     color:  rgb(196, 196, 196);
 }
 
-#filterOrderForm .form-control {
+#filterOrderForm .form-control, #filterOrderForm .form-select {
     line-height: 14px;
     font-size: 12px;
     padding: 5px;
+    border-radius: 0;
+    border: 1px solid rgb(196, 196, 196);
+    letter-spacing: 0.5px;
 }
+ #filterOrderForm .form-select {
+    padding-right: 25px;
+    min-width: 120px;
+ }
 .form-label, .form-check-label {
     font-size: 16px;
     line-height: 16px;

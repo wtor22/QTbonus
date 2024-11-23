@@ -148,25 +148,29 @@ public class OrderRestController {
             @RequestParam(defaultValue = "createDate") String sortBy,
             @RequestParam(defaultValue = "false") boolean ascending,
             @RequestParam(required = false) String fio,
-            @RequestParam(required = false) String managerFio
+            @RequestParam(required = false) String managerFio,
+            @RequestParam(required = false) Integer statusId,
+            @RequestParam(required = false) String invoiceNumber,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate
     ) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Доступ запрещен");
         }
         String username = principal.getName();
         UserEntity user = userCrudService.findByEmail(username).orElseThrow();
-
-
         if(sortBy.equals("user")) sortBy = "userEntity.fio";
         if(sortBy.equals("manager")) sortBy = "userEntity.manager.fio";
 
         // Создаем спецификацию для фильтрации
         Specification<Order> spec = Specification.where(OrderSpecifications.hasFio(fio))
                 .and(OrderSpecifications.hasType(type))
-                .and(OrderSpecifications.hasManager(managerFio));
+                .and(OrderSpecifications.hasManager(managerFio))
+                .and(OrderSpecifications.hasStatus(statusId))
+                .and(OrderSpecifications.hasInvoice(invoiceNumber))
+                .and(OrderSpecifications.hasDateRange(startDate, endDate));
 
         List<Order> orders = orderService.getOrdersByTypeWithSort(spec,sortBy,ascending);
-
 
         List<OrderDto> userOrders = orders.stream()
                 .map(OrderService::mapOrderToDto)
