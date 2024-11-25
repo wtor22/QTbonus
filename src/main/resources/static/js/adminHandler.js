@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const canselPaymentButton = document.getElementById('cancelSetPayment');
     const form = document.getElementById('setStatus');
     const formAddedPayment = document.getElementById('setPayment');
-    const editPaymentButton = document.getElementById('editPaymentButton');
+    //const editPaymentButton = document.getElementById('editPaymentButton');
 
     // Переменные фильтра
     const filterForm = document.getElementById('filterOrderForm');
@@ -275,10 +275,10 @@ document.addEventListener('DOMContentLoaded', () => {
         formAddedPayment.classList.toggle('d-none');
     });
 
-    editPaymentButton.addEventListener('click'), () => {
-
-
-    }
+//    editPaymentButton.addEventListener('click'), () => {
+//
+//
+//    }
     // Нажатие кнопки редактирования статуса
     editButton.addEventListener('click', () => {
         // Получаем список статусов
