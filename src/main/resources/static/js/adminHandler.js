@@ -29,23 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
         invoiceBonusBid.textContent = '';
         invoiceBonusValue.textContent = '';
         orderSumInput.value = '';
+        orderStatus.className = 'badge';
         orderStatus.textContent = '';
     }
 
+    function getPayments(orderId) {
+        if (!orderId) {
+            console.error('orderId отсутствует');
+            alert('Не указан идентификатор ордера.');
+            return Promise.reject('Идентификатор ордера отсутствует'); // Возвращаем отклонённый промис
+        }
 
-    editOrderModal.addEventListener('show.bs.modal', (event) => {
-
-        clearModalFields();
-        // Получаем ID ордера из строки таблицы
-        const triggerElement = event.relatedTarget.closest('tr'); // элемент <tr>, открывший модальное окно
-        const orderId = triggerElement.getAttribute('data-order-id');
-
-
-        // Устанавливаем ID в скрытое поле
-        orderIdInput.value = orderId;
-        orderIdToHeader.textContent = orderId;
-        // Выполняем запрос к серверу
-        fetch(`/order/get-order?id=${orderId}`)
+        return fetch(`/payment/get-payments?orderId=${orderId}`)
             .then(response => {
                 if (response.status === 403) {
                     // Если сервер вернул статус 403, перенаправляем на страницу 403
@@ -55,45 +50,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok) {
                     throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
                 }
-                return response.json();
-            })
-            .then(orderData => {
-                // Заполняем данные в форме
-                orderDateToHeader.textContent = orderData.createDate;
-                orderStatusInput.value = orderData.statusOrdersDto.id;
-
-                orderClientInput.textContent = orderData.userDto.fio;
-                orderManager.textContent = orderData.userDto.managerDto.fio;
-                invoiceNumber.textContent = orderData.invoiceNumber;
-                invoiceDate.textContent = orderData.invoiceDate;
-                invoiceNameMaterial.textContent = orderData.productName;
-                invoiceQuantityMaterial.textContent = orderData.productQuantity;
-                invoiceSum.textContent = orderData.sumByInvoice;
-                invoiceBonusBid.textContent = orderData.bonusValueDto.value;
-                invoiceBonusValue.textContent = orderData.sum;
-                orderSumInput.value = orderData.sum;
-                orderStatus.textContent = orderData.statusOrdersDto.name;
-                orderStatus.classList.add(orderData.statusOrdersDto.color);
+                console.log("PAYMENTS GET OK")
+                return response.json().catch(error => {
+                  throw new Error('Ошибка обработки JSON: ' + error.message);
+               });
             })
             .catch(error => {
                 console.error('Ошибка:', error);
                 alert('Не удалось загрузить данные ордера.');
+                throw error; // Пробрасываем ошибку дальше
             });
+    }
+
+    editOrderModal.addEventListener('show.bs.modal', (event) => {
+        clearModalFields();
+        // Получаем ID ордера из строки таблицы
+        const triggerElement = event.relatedTarget.closest('tr'); // элемент <tr>, открывший модальное окно
+        const orderTriggerId = triggerElement.getAttribute('data-order-id');
+        loadOrderDetails(orderTriggerId);
+
     });
-});
 
-
-// AJAX список ордеров
-document.addEventListener('DOMContentLoaded', function() {
-
+    // AJAX список ордеров
     // Получаем CSRF токен из meta-тегов
     const csrfToken = $('meta[name="_csrf"]').attr('content');
     const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
 
     const blockStatusInfo = document.getElementById('block-status-info');
     const editButton = document.getElementById('editStatusButton');
+    const addPaymentButton = document.getElementById('addPaymentsButton');
     const cancelButton = document.getElementById('cancelEditStatus');
+    const canselPaymentButton = document.getElementById('cancelSetPayment');
     const form = document.getElementById('setStatus');
+    const formAddedPayment = document.getElementById('setPayment');
+    const editPaymentButton = document.getElementBiId('editPaymentButton');
+
     // Переменные фильтра
     const filterForm = document.getElementById('filterOrderForm');
     const fioInput = document.getElementById('filterFio');
@@ -135,9 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date();
         const weekAgo = new Date();
         weekAgo.setDate(today.getDate() - 14);
-
         const formatDate = date => date.toISOString().split('T')[0];
-
         return {
             startDate: formatDate(weekAgo),
             endDate: formatDate(today)
@@ -178,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (statusId) queryParams.append('statusId', statusId);
 
         if (invoiceInput) queryParams.append('invoiceInput', invoiceInput);
-
 
         fetch(`/order/orders?${queryParams.toString()}`)
             .then(response => {
@@ -226,6 +214,68 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Нажатие кнопки добавление выплаты
+    addPaymentButton.addEventListener('click', () => {
+        const statusId = document.getElementById('orderStatus').value;
+
+        const paymentValueInput = document.getElementById('orderPayment');
+        const datePaymentInput = document.getElementById('orderPaymentDate');
+        paymentValueInput.value = document.getElementById('bonus-value').textContent;
+        datePaymentInput.value = getDefaultDates().endDate; // Устанавливаю сегодняшнюю дату
+        formAddedPayment.classList.toggle('d-none');
+    });
+
+    // Обработка добавления выплаты
+    formAddedPayment.addEventListener('submit', () => {
+        event.preventDefault();
+
+        const orderIdMod = document.getElementById('order-id').textContent;
+        const paymentValueInput = document.getElementById('orderPayment');
+        const datePaymentInput = document.getElementById('orderPaymentDate');
+        const commentToPaymentInput = document.getElementById('commentPayment')
+
+        // Собираю BonusPayment
+        const bonusPayment = {
+            order: {
+                id: orderIdMod
+            },
+            sum: paymentValueInput.value,
+            datePayment: datePaymentInput.value,
+            commentToPayment: commentToPaymentInput.value,
+        };
+
+        // Отправка данных через fetch (AJAX)
+        fetch(formAddedPayment.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken // Добавляем CSRF-токен в заголовки
+            },
+            body: JSON.stringify(bonusPayment)
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Ошибка при отправке данных');
+        })
+        .then(data => {
+            // Обновляем интерфейс
+            loadOrderDetails(orderIdMod);
+            console.log("CALL FUNCTION UPDATE MODAL FIELD")
+            formAddedPayment.classList.toggle('d-none');
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('Не удалось обновить статус.');
+        });
+    });
+
+    canselPaymentButton.addEventListener('click', () => {
+        formAddedPayment.classList.toggle('d-none');
+    });
+
+    // Нажатие кнопки редактирования статуса
     editButton.addEventListener('click', () => {
         // Получаем список статусов
         fetch('/order/statuses')
@@ -315,43 +365,82 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function loadOrderDetails(orderId) {
-        fetch(`/order/get-order?id=${orderId}`) // URL для получения деталей ордера
-            .then(response => {
-                if (response.status === 403) {
-                    // Если сервер вернул статус 403, перенаправляем на страницу 403
-                    window.location.href = '/403';
-                    return;
-                }
-                if (!response.ok) {
-                    throw new Error('Ошибка при загрузке деталей ордера');
-                }
-                return response.json();
-            })
-            .then(orderDetails => {
-                // Заполняем модальное окно данными ордера
-                document.getElementById('order-id').textContent = orderDetails.id;
-                document.getElementById('order-date').textContent = orderDetails.createDate;
-                document.getElementById('orderStatus').textContent = orderDetails.statusOrdersDto.name; //Статус в форме выбора
-                document.getElementById('order-status').classList.add(orderDetails.statusOrdersDto.color)
-                document.getElementById('order-status').textContent = orderDetails.statusOrdersDto.name; // Статус в описании
-                document.getElementById('orderClient').textContent = orderDetails.userDto.fio;
-                document.getElementById('managerClient').textContent = orderDetails.userDto.managerDto.fio;
-                document.getElementById('invoice-number').textContent = orderDetails.invoiceNumber;
-                document.getElementById('invoice-date').textContent = orderDetails.invoiceDate;
-                document.getElementById('invoice-quantity-material').textContent = orderDetails.productQuantity;
-                document.getElementById('invoice-name-material').textContent = orderDetails.productName;
-                document.getElementById('invoice-sum').textContent = orderDetails.sumByInvoice;
-                document.getElementById('bonus-bid').textContent = orderDetails.bonusValueDto.value;
-                document.getElementById('bonus-value').textContent = orderDetails.sum;
+    clearModalFields();
+            const containerDataPayment = document.getElementById('payment-data');
+            // Получаем выплаты
+            getPayments(orderId)
+                .then(payments => {
+                    containerDataPayment.innerHTML = '';
+                    // Прохожу по массиву платежей
+                    payments.forEach(payment => {
+                        // Создаем элемент p для каждой записи
+                        const paymentElement = document.createElement('p');
 
-            })
-            .catch(error => console.error('Ошибка при загрузке деталей ордера:', error));
+                        // Добавляем информацию о платеже (сумма и дата)
+                        paymentElement.innerHTML = `
+                            <span style="display:none">${payment.id}</span>
+                            <span>Сумма: ${payment.sum}</span>
+                            <span>Дата: ${payment.datePayment}</span>
+                            ${payment.commentToPayment ? `</br><span>Комментарий: ${payment.commentToPayment}</span>` : ''}
+                            <button id="editPaymentButton" attr-id="${payment.id}" class="btn btn-link" style="font-weight: normal;">Изменить</button>
+                        `;
+
+                        // Добавляем элемент p в контейнер
+                        containerDataPayment.appendChild(paymentElement);
+                    });
+                    if (payments.length > 0) {
+                        containerDataPayment.style.display = 'block';
+                    } else {
+                        containerDataPayment.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка при обработке платежей:', error);
+                });
+
+
+            // Устанавливаем ID в скрытое поле
+            orderIdInput.value = orderId;
+            orderIdToHeader.textContent = orderId;
+            // Выполняем запрос к серверу
+            fetch(`/order/get-order?id=${orderId}`)
+                .then(response => {
+                    if (response.status === 403) {
+                        // Если сервер вернул статус 403, перенаправляем на страницу 403
+                        window.location.href = '/403';
+                        return;
+                    }
+                    if (!response.ok) {
+                        throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(orderData => {
+                    // Заполняем данные в форме
+                    orderDateToHeader.textContent = orderData.createDate;
+                    orderStatusInput.value = orderData.statusOrdersDto.id;
+
+                    orderClientInput.textContent = orderData.userDto.fio;
+                    orderManager.textContent = orderData.userDto.managerDto.fio;
+                    invoiceNumber.textContent = orderData.invoiceNumber;
+                    invoiceDate.textContent = orderData.invoiceDate;
+                    invoiceNameMaterial.textContent = orderData.productName;
+                    invoiceQuantityMaterial.textContent = orderData.productQuantity;
+                    invoiceSum.textContent = orderData.sumByInvoice;
+                    invoiceBonusBid.textContent = orderData.bonusValueDto.value;
+                    invoiceBonusValue.textContent = orderData.sum;
+                    orderSumInput.value = orderData.sum;
+                    orderStatus.textContent = orderData.statusOrdersDto.name;
+                    orderStatus.classList.add(orderData.statusOrdersDto.color);
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Не удалось загрузить данные ордера.');
+                });
     }
 
     // Клик по кнопке применить фильтр
     filterForm.addEventListener('submit', function (event) {
-
-
         event.preventDefault();
 
         const fio = fioInput.value.trim();

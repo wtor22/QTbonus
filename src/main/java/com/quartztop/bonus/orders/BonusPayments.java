@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,7 +19,7 @@ public class BonusPayments {
     private int id;
 
     @Column(name = "date_payment")
-    private LocalDateTime datePayment;
+    private LocalDate datePayment;
 
     private double sum;
 
@@ -28,7 +29,7 @@ public class BonusPayments {
     @ManyToOne
     private Order order;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity userId;
 }

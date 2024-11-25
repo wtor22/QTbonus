@@ -175,9 +175,9 @@
                             <button id="editStatusButton" class="btn btn-link btn-sm" style="font-weight: normal;">Изменить</button>
                         </div>
                         <form id="setStatus" method="post" action="order/set-status" style="display:none">
-                            <div class="mb-5" >
-                                <label for="orderStatus" class="form-label">Статус</label>
-                                <select id="orderStatus" class="form-select" name="status">
+                            <div class="mb-5 p-3" style="display: block; background: rgba(0, 0, 0, 0.1);">
+                                <label for="orderStatus" class="form-label">Изменить Статус</label>
+                                <select id="orderStatus" class="form-select" name="status" style="background-color: rgba(255,255,255,0.5);">
                                     <option th:each="status : ${listOfStatus}" th:value="${status.id}"
                                             th:text="${status.name}"></option>
                                 </select>
@@ -185,7 +185,41 @@
                                 <button id="cancelEditStatus" type="button" class="btn btn-sm m-3 btn-secondary">Отменить</button>
                             </div>
                         </form>
+
+                        <div id="block-payment-info" class="mb-3">
+                            <p>Выплаты: </p>
+                            <div id="payment-data" style="display: none;"></div>
+                            <button id="addPaymentsButton" class="btn btn-link btn-sm" style="font-weight: normal;">Добавить выплату</button>
+                        </div>
+                        <form id="setPayment" class="d-none" action="payment/create">
+                            <div class="mb-5 p-3" style="display: block; background: rgba(0, 0, 0, 0.1);">
+
+                                <div class="d-flex">
+                                    <div class="me-1 col-auto">
+                                        <label for="orderPayment" class="form-label">Сумма выплаты</label>
+                                        <input id="orderPayment" class="form-control" name="editOrder"
+                                               required pattern="\d*" inputmode="numeric">
+                                    </div>
+                                    <div class="ms-1 col-auto">
+                                        <label for="orderPaymentDate" class="form-label">Дата выплаты</label>
+                                        <input type="date" id="orderPaymentDate" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-check d-flex align-items-center mt-2">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkSetStatusPayment" checked>
+                                    <label class="form-check-label ms-2" for="checkSetStatusPayment">
+                                        Установить статус ордера как Выплачен
+                                    </label>
+                                </div>
+                                <label for="commentPayment" class="form-label">Комментарий к оплате</label>
+                                <textarea id="commentPayment" class="form-control" name="editOrder" rows="3"></textarea>
+                                <button id="submitSetPayment" type="submit" class="btn btn-sm m-3 btn-outline-primary">Сохранить</button>
+                                <button id="cancelSetPayment" type="button" class="btn btn-sm m-3 btn-secondary">Отменить</button>
+                            </div>
+                        </form>
                         <div class="mb-3">
+
                             <p>Партнер: <strong id="orderClient"></strong></p>
                             <p>Менеджер: <strong id="managerClient"></strong></p>
                             <p>Счёт №  <strong id="invoice-number"></strong> от  <strong id="invoice-date"></strong></p>
