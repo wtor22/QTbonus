@@ -88,6 +88,7 @@ public class OrderService {
         orderDto.setProductName(order.getProductName());
         orderDto.setProductQuantity(order.getProductQuantity());
         orderDto.setSumByInvoice(order.getSumByInvoice());
+        orderDto.setDataPayment(order.getDataPayment());
 
         return orderDto;
     }

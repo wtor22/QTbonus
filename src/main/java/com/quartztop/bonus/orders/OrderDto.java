@@ -30,4 +30,5 @@ public class OrderDto {
     private StatusOrdersDto statusOrdersDto;
     private UserDto userDto;
     private BonusValueDto bonusValueDto;
+    String dataPayment;
 }

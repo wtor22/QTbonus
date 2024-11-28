@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const invoiceSum = document.getElementById('invoice-sum');
     const invoiceBonusBid = document.getElementById('bonus-bid');
     const invoiceBonusValue = document.getElementById('bonus-value');
+    const paymentInfoBlock = document.getElementById('payment-info');
 
     function clearModalFields() {
         orderDateToHeader.textContent = '';
@@ -50,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok) {
                     throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
                 }
-                console.log("PAYMENTS GET OK")
                 return response.json().catch(error => {
                   throw new Error('Ошибка обработки JSON: ' + error.message);
                });
@@ -262,8 +262,23 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             // Обновляем интерфейс
             loadOrderDetails(orderIdMod);
-            console.log("CALL FUNCTION UPDATE MODAL FIELD")
             formAddedPayment.classList.toggle('d-none');
+
+            // Обновляю ряд со статусом в списке
+            const row = document.querySelector(`tr[data-order-id="${orderIdMod}"]`);
+            if (row) {
+
+                // Получаю пятую ячейку (td) в строке
+                const cell = row.children[4];
+
+                const statusSpan = `<span class="badge ${data.order.status.color}">${data.order.status.name}</span>`;
+
+                // Меняем содержимое ячейки
+                cell.innerHTML = statusSpan;
+
+            }
+
+
         })
         .catch(error => {
             console.error('Ошибка:', error);
@@ -271,14 +286,151 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // клик по кнопке редактировать платеж
+    editOrderModal.addEventListener('click', (event) => {
+        if (event.target && event.target.classList.contains('editor-payment')) {
+
+            const parent = event.target.parentElement; // родительский элемент кнопки <p>
+
+            // Получаем данные из соседних элементов кнопки
+            const sumElement = parent.querySelector('span:nth-of-type(1)');
+            const dateElement = parent.querySelector('span:nth-of-type(2)');
+            const commentElement = parent.querySelector('span:nth-of-type(3)');
+            const comment = commentElement?.textContent || '';
+            const paymentId = event.target.getAttribute('attr-id');
+            const editBlock = parent.nextElementSibling;
+
+
+            if (editBlock) {
+
+                if (!editBlock.classList.contains('d-none')) {
+                    editBlock.classList.add('d-none');
+                    return;
+                }
+                editBlock.classList.remove('d-none');
+                editBlock.innerHTML = `
+                    <form id="form-payment-${paymentId}" action="payment/update">
+                        <div class="mb-5 p-3" attr-id="${paymentId}" style="display: block; background: rgba(0, 0, 0, 0.1);" >
+                            <div class="d-flex block-data-payment">
+                                <div class="me-1 col-auto">
+                                    <label for="editSum-${paymentId}" class="form-label">Сумма:</label>
+                                    <input required pattern="\\d*" inputmode="numeric" id="editSum-${paymentId}" class="form-control" value="${sumElement.textContent}">
+                                </div>
+                                <div class="me-1 col-auto">
+                                    <label for="editDate-${paymentId}" class="form-label">Дата:</label>
+                                    <input type="date" id="editDate-${paymentId}" class="form-control" value="${dateElement.textContent}" required>
+                                </div>
+                            </div>
+                            <div class="me-1 col-auto block-comment">
+                                <label for="editComment-${paymentId}" class="form-label">Комментарий:</label>
+                                <textarea id="editComment-${paymentId}" class="form-control" >${comment || ''}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-sm m-3 btn-outline-primary edit-payment">Сохранить изменение</button>
+                            <button type="button" class="btn btn-sm m-3 btn-secondary cancel-edit-payment">Отменить</button>
+                        </div>
+                    </form>
+                `;
+            }
+        }
+    });
+
+    // Клик сохранить изменения платежа
+    editOrderModal.addEventListener('click', (event) => {
+
+        if (event.target && event.target.classList.contains('edit-payment')) {
+
+            event.preventDefault();
+            const parent = event.target.parentElement; // родительский элемент кнопки <div>
+            const idPayments = parent.getAttribute('attr-id');
+            const idParentOrder = document.getElementById('order-id').textContent;
+
+            const formUpdatePayment = document.getElementById("form-payment-" + idPayments);
+
+            const sumInputValue = document.getElementById("editSum-" + idPayments).value;
+            const dateInputValue = document.getElementById("editDate-" + idPayments).value;
+            const commentInputValue = document.getElementById("editComment-" + idPayments).value;
+
+            // Собираю BonusPayment
+            const bonusPayment = {
+                id: idPayments,
+                datePayment: dateInputValue
+            };
+            if(sumInputValue.trim() !== '' && parseFloat(sumInputValue) > 0 ) {
+                bonusPayment.sum = sumInputValue;
+            }
+            if (commentInputValue.trim() !== '') {
+                bonusPayment.commentToPayment = commentInputValue;
+            }
+
+            if(sumInputValue.trim() === '' || parseFloat(sumInputValue) <= 0 ) {
+                const requestDeletePayment = "payment/delete/" + idPayments;
+                fetch(requestDeletePayment, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [csrfHeader]: csrfToken // Добавляем CSRF-токен в заголовки
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Обновляем интерфейс
+                        loadOrderDetails(idParentOrder);
+                        return;
+                    }
+                    throw new Error('Ошибка при отправке данных');
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Не удалось удалить выплату.');
+                });
+            } else {
+                // Отправка данных через fetch (AJAX)
+                fetch(formUpdatePayment.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [csrfHeader]: csrfToken // Добавляем CSRF-токен в заголовки
+                    },
+                    body: JSON.stringify(bonusPayment)
+                })
+                .then(response => {
+                    if (response.ok) {
+
+
+                        return response.json();
+                    }
+                    throw new Error('Ошибка при отправке данных');
+                })
+                .then(data => {
+
+                    // Обновляем интерфейс
+                    loadOrderDetails(data.order.id);
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Не удалось обновить статус.');
+                });
+            }
+        }
+    });
+
+     // Клик отмена сохранить изменения платежа
+    editOrderModal.addEventListener('click', (event) => {
+
+        if (event.target && event.target.classList.contains('cancel-edit-payment')) {
+            const parent = event.target.parentElement; // родительский элемент кнопки <div>
+            const idPayments = parent.getAttribute('attr-id');
+
+            const editPaymentBlock = document.getElementById("edit-payment-block-" + idPayments);
+
+            editPaymentBlock.classList.add('d-none');
+        }
+    });
+
     canselPaymentButton.addEventListener('click', () => {
         formAddedPayment.classList.toggle('d-none');
     });
 
-//    editPaymentButton.addEventListener('click'), () => {
-//
-//
-//    }
     // Нажатие кнопки редактирования статуса
     editButton.addEventListener('click', () => {
         // Получаем список статусов
@@ -310,13 +462,13 @@ document.addEventListener('DOMContentLoaded', () => {
         blockStatusInfo.style.display = 'block';
     });
 
+
     // Обработка отправки формы на изменение статуса
     form.addEventListener('submit', () => {
         event.preventDefault();
 
         const orderIdMod = document.getElementById('order-id').textContent;
         const statusId = document.getElementById('orderStatus').value;
-
         // Собираю Order
         const order = {
             id: orderIdMod,
@@ -324,7 +476,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 id: statusId
             }
         };
-
         // Отправка данных через fetch (AJAX)
         fetch(form.action, {
             method: 'POST',
@@ -369,39 +520,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function loadOrderDetails(orderId) {
-    clearModalFields();
-            const containerDataPayment = document.getElementById('payment-data');
-            // Получаем выплаты
-            getPayments(orderId)
-                .then(payments => {
-                    containerDataPayment.innerHTML = '';
-                    // Прохожу по массиву платежей
-                    payments.forEach(payment => {
-                        // Создаем элемент p для каждой записи
-                        const paymentElement = document.createElement('p');
+        clearModalFields();
+        const containerDataPayment = document.getElementById('payment-data');
+        // Получаем выплаты
+        getPayments(orderId)
+            .then(payments => {
+                containerDataPayment.innerHTML = '';
+                // Прохожу по массиву платежей
+                payments.forEach(payment => {
+                    // Создаем элемент p для каждой записи
+                    const paymentElement = document.createElement('div');
 
-                        // Добавляем информацию о платеже (сумма и дата)
-                        paymentElement.innerHTML = `
-                            <span style="display:none">${payment.id}</span>
-                            <span>Сумма: ${payment.sum}</span>
-                            <span>Дата: ${payment.datePayment}</span>
-                            ${payment.commentToPayment ? `</br><span>Комментарий: ${payment.commentToPayment}</span>` : ''}
-                            <button id="editPaymentButton" attr-id="${payment.id}" class="btn btn-link" style="font-weight: normal;">Изменить</button>
-                        `;
+                    // Добавляем информацию о платеже (сумма и дата)
+                    paymentElement.innerHTML = `
+                        <p>Сумма: <span>${payment.sum}</span>
+                        Дата: <span>${payment.datePayment}</span>
+                        ${payment.commentToPayment ? `</br>Комментарий: <span>${payment.commentToPayment}</span>` : ''}
+                        <button attr-id="${payment.id}" class="btn btn-link editor-payment" style="font-weight: normal;">Изменить</button>
+                        </p>
+                        <div id="edit-payment-block-${payment.id}" class="edit-payment-block d-none"></div>
+                    `;
 
-                        // Добавляем элемент p в контейнер
-                        containerDataPayment.appendChild(paymentElement);
-                    });
-                    if (payments.length > 0) {
-                        containerDataPayment.style.display = 'block';
-                    } else {
-                        containerDataPayment.style.display = 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка при обработке платежей:', error);
+                    containerDataPayment.appendChild(paymentElement);
                 });
-
+                if (payments.length > 0) {
+                    containerDataPayment.style.display = 'block';
+                } else {
+                    containerDataPayment.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при обработке платежей:', error);
+            });
 
             // Устанавливаем ID в скрытое поле
             orderIdInput.value = orderId;
@@ -436,6 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     orderSumInput.value = orderData.sum;
                     orderStatus.textContent = orderData.statusOrdersDto.name;
                     orderStatus.classList.add(orderData.statusOrdersDto.color);
+                    paymentInfoBlock.innerHTML = orderData.dataPayment;
                 })
                 .catch(error => {
                     console.error('Ошибка:', error);
@@ -481,6 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return response.json();
             })
             .then(data => {
+                console.log("DATA ",data)
                 updateOrdersTable(data);
             })
             .catch(error => {

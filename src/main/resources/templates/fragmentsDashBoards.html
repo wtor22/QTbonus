@@ -207,7 +207,7 @@
                                 </div>
 
                                 <div class="form-check d-flex align-items-center mt-2">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkSetStatusPayment" checked>
+                                    <input class="form-check-input" type="checkbox" value="" id="checkSetStatusPayment" checked disabled>
                                     <label class="form-check-label ms-2" for="checkSetStatusPayment">
                                         Установить статус ордера как Выплачен
                                     </label>
@@ -226,6 +226,8 @@
                             <p>Материал: <strong id="invoice-name-material"></strong> количество: <strong id="invoice-quantity-material"></strong></p>
                             <p>На сумму: <strong id="invoice-sum"></strong></p>
                             <p>Бонус: <strong id="bonus-bid"></strong> <b>%</b> Размер бонуса <strong id="bonus-value"></strong></p>
+                            <p><strong >Информация для оплаты</strong> </br>
+                            <span id="payment-info"></span></p>
                         </div>
 
                         <form id="setStatusModalForm" method="post" action="order/set-status" style="display:none">
